@@ -91,17 +91,35 @@ De momento la web usa colores en vez de fotos para no depender de nada externo. 
 
 Recomiendo **Render.com**: es sencillo, tiene un plan gratuito/muy barato, y soporta bien esto (a diferencia de un hosting solo-PHP, aquí necesitamos Node.js corriendo todo el rato para las reservas).
 
-Pasos resumidos:
+El código ya está subido en: `https://github.com/restaurantelaruedachulilla-bot/larueda`
 
-1. Subid esta carpeta a un repositorio de GitHub (puedo ayudaros con esto).
-2. Entrad en https://render.com, "New +" → "Web Service", conectad el repositorio.
-3. Configuración:
+Pasos:
+
+1. Entrad en https://render.com y creaos una cuenta (lo más fácil es "Sign up with GitHub").
+2. Una vez dentro, **"New +"** → **"Web Service"**.
+3. Conectad el repositorio `larueda` (Render os pedirá autorizar el acceso a GitHub la primera vez).
+4. Configuración del servicio:
+   - **Name**: `la-rueda-web` (o el que queráis)
+   - **Region**: la más cercana a España (normalmente Frankfurt)
+   - **Branch**: `main`
    - **Root Directory**: `server`
+   - **Runtime**: `Node`
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-4. En la pestaña "Environment" añadid las variables: `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `RESTAURANT_EMAIL`, `ADMIN_PASSWORD`, `CALLMEBOT_PHONE`, `CALLMEBOT_APIKEY`.
-5. Añadid un "Disk" persistente (Render lo llama así) montado en `/opt/render/project/src/data` para que la carta y las reservas no se borren cada vez que se actualiza la web.
-6. Una vez publicada, comprad vuestro dominio (p. ej. en Namecheap o similar) y apuntadlo al servicio de Render.
+5. En **"Environment Variables"** añadid:
+   ```
+   ADMIN_PASSWORD=roble-rio-9641
+   RESTAURANT_EMAIL=restaurantelaruedachulilla@gmail.com
+   GMAIL_USER=restaurantelaruedachulilla@gmail.com
+   GMAIL_APP_PASSWORD=(la contraseña de aplicación del punto 3)
+   CALLMEBOT_PHONE=34613727680
+   CALLMEBOT_APIKEY=(la clave del punto 4)
+   DATA_DIR=/var/data
+   ```
+   (podéis dejar vacías las de email/WhatsApp de momento y añadirlas más adelante)
+6. **Importante — que los datos no se borren**: en la pestaña **"Disks"** del servicio, añadid un disco persistente con **Mount Path** = `/var/data` (el mismo valor que pusisteis en `DATA_DIR`). Esto es lo que hace que la carta, las mesas y las reservas sobrevivan cada vez que se actualiza la web. **Los discos persistentes requieren un plan de pago** (el más básico suele bastar); en el plan gratuito el servicio funciona pero cualquier cambio guardado se perderá la próxima vez que Render reinicie el servicio.
+7. Guardad y desplegad. Render os dará una URL tipo `la-rueda-web.onrender.com` — esa ya es vuestra web funcionando.
+8. Cuando compréis un dominio (p. ej. en Namecheap o similar), en Render vais a **"Settings" → "Custom Domain"** y os indica los registros DNS que hay que añadir en vuestro proveedor de dominio.
 
 Si preferís otro hosting (uno que ya tengáis, o uno con cPanel), avisadme del proveedor y os digo cómo adaptar estos pasos.
 

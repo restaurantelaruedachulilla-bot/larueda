@@ -9,15 +9,35 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const MENU_PATH = path.join(__dirname, 'data', 'menu.json');
-const RESERVAS_PATH = path.join(__dirname, 'data', 'reservas.json');
-const CONFIG_PATH = path.join(__dirname, 'data', 'config.json');
+// Carpeta donde viven los datos "de fabrica" (los que llegan con el codigo en git).
+const SEED_DIR = path.join(__dirname, 'data');
+// Carpeta donde se leen/escriben los datos realmente. En local es la misma que SEED_DIR.
+// En produccion, DATA_DIR debe apuntar a un disco persistente (ver README) para que la
+// carta, las mesas y las reservas sobrevivan a cada despliegue.
+const DATA_DIR = process.env.DATA_DIR || SEED_DIR;
+
+function asegurarArchivoDatos(nombre, contenidoPorDefecto) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  const destino = path.join(DATA_DIR, nombre);
+  if (fs.existsSync(destino)) return;
+
+  const semilla = path.join(SEED_DIR, nombre);
+  if (semilla !== destino && fs.existsSync(semilla)) {
+    fs.copyFileSync(semilla, destino);
+  } else {
+    fs.writeFileSync(destino, contenidoPorDefecto, 'utf8');
+  }
+}
+
+asegurarArchivoDatos('menu.json', JSON.stringify({ actualizado: '', aviso: '', carta: [], menus: [] }, null, 2));
+asegurarArchivoDatos('config.json', JSON.stringify({ turnoMinutos: 120, mesas: [], franjas: [] }, null, 2));
+asegurarArchivoDatos('reservas.json', '[]');
+
+const MENU_PATH = path.join(DATA_DIR, 'menu.json');
+const RESERVAS_PATH = path.join(DATA_DIR, 'reservas.json');
+const CONFIG_PATH = path.join(DATA_DIR, 'config.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'cambia-esta-contrasena';
 const LIMITE_GRUPO_TELEFONO = 8;
-
-if (!fs.existsSync(RESERVAS_PATH)) {
-  fs.writeFileSync(RESERVAS_PATH, '[]', 'utf8');
-}
 
 app.use(cors());
 app.use(express.json());
