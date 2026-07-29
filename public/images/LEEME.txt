@@ -1,0 +1,5 @@
+Pon aqui vuestras fotos reales (desde el Instagram @restaurante.larueda o camara propia):
+
+- hero-fachada.jpg  -> foto de portada (fachada, brasa o un plato bonito), horizontal, minimo 1600px de ancho.
+
+Mientras no exista ese archivo, la portada usa un degradado de color en vez de foto, asi que la web no se rompe.

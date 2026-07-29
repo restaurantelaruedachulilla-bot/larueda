@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Panel · La Rueda</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+<div id="pantalla-login" class="admin-login">
+  <h1>La Rueda</h1>
+  <p>Panel de gestión</p>
+  <input type="password" id="input-password" placeholder="Contraseña" autocomplete="current-password">
+  <button class="btn btn-primary btn-full" id="btn-login">Entrar</button>
+  <p id="login-error" class="admin-error"></p>
+</div>
+
+<div id="panel" class="admin-panel" hidden>
+  <header class="admin-header">
+    <span class="logo">La Rueda · Panel</span>
+    <button id="btn-logout" class="btn-link">Salir</button>
+  </header>
+
+  <div class="admin-tabs">
+    <button class="tab-btn active" data-tab="carta">📋 Carta</button>
+    <button class="tab-btn" data-tab="menus">🍽️ Menús</button>
+    <button class="tab-btn" data-tab="reservas">📅 Reservas</button>
+    <button class="tab-btn" data-tab="mesas">🪑 Mesas y turnos</button>
+  </div>
+
+  <section id="tab-carta" class="tab-panel">
+    <p class="admin-hint">Aquí puedes editar la carta al momento: cambia precios, añade el producto del día o quita platos que se hayan acabado. Los cambios se ven en la web en cuanto pulsas "Guardar".</p>
+    <div id="lista-categorias"></div>
+    <button id="btn-add-categoria" class="btn btn-outline btn-full">+ Añadir categoría</button>
+
+    <div class="admin-save-bar">
+      <button id="btn-guardar-carta" class="btn btn-primary btn-full btn-guardar-menu">Guardar cambios</button>
+      <p id="guardar-mensaje-carta" class="guardar-mensaje"></p>
+    </div>
+  </section>
+
+  <section id="tab-menus" class="tab-panel" hidden>
+    <p class="admin-hint">Aquí editáis los menús cerrados (Menú Chulilla, Menú Brasa, Menú del día...): nombre, precio, condiciones y los platos de cada uno.</p>
+    <div id="lista-menus"></div>
+    <button id="btn-add-menu" class="btn btn-outline btn-full">+ Añadir menú</button>
+
+    <div class="admin-save-bar">
+      <button id="btn-guardar-menus" class="btn btn-primary btn-full btn-guardar-menu">Guardar cambios</button>
+      <p id="guardar-mensaje-menus" class="guardar-mensaje"></p>
+    </div>
+  </section>
+
+  <section id="tab-reservas" class="tab-panel" hidden>
+    <p class="admin-hint">Reservas recibidas desde la web, más recientes primero. La mesa se asigna sola según la disponibilidad.</p>
+    <div id="lista-reservas"></div>
+  </section>
+
+  <section id="tab-mesas" class="tab-panel" hidden>
+    <p class="admin-hint">Aquí configuráis vuestras mesas reales y los turnos de reserva. La web asigna la mesa sola y avisa cuando un turno se llena, según lo que pongáis aquí.</p>
+
+    <label class="config-label" for="input-turno-minutos">Tiempo que ocupa una mesa (minutos)</label>
+    <input type="number" id="input-turno-minutos" min="30" step="15" class="config-input-ancho">
+    <p class="admin-hint admin-hint-sutil">Mientras dure este tiempo desde la hora de inicio del turno, esa mesa no se puede asignar a otra reserva que se solape.</p>
+
+    <h3 class="config-subtitulo">Mesas</h3>
+    <div id="lista-mesas"></div>
+    <button id="btn-add-mesa" class="btn btn-outline btn-full">+ Añadir mesa</button>
+
+    <h3 class="config-subtitulo">Turnos de reserva</h3>
+    <p class="admin-hint admin-hint-sutil">Las letras (L M X J V S D) marcan en qué días de la semana aplica cada turno. Tócalas para activar o desactivar un día.</p>
+    <div id="lista-franjas"></div>
+    <button id="btn-add-franja" class="btn btn-outline btn-full">+ Añadir turno</button>
+
+    <div class="admin-save-bar">
+      <button id="btn-guardar-config" class="btn btn-primary btn-full btn-guardar-menu">Guardar cambios</button>
+      <p id="guardar-mensaje-config" class="guardar-mensaje"></p>
+    </div>
+  </section>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

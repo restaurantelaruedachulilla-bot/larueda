@@ -1,0 +1,15 @@
+{
+  "name": "la-rueda-server",
+  "version": "1.0.0",
+  "description": "Backend de reservas y carta para Restaurante La Rueda (Chulilla)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemailer": "^9.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5"
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "turnoMinutos": 120,
+  "mesas": [
+    {
+      "id": "m1",
+      "nombre": "Interior 1",
+      "zona": "Interior",
+      "capacidad": 6
+    },
+    {
+      "id": "m2",
+      "nombre": "Interior 2",
+      "zona": "Interior",
+      "capacidad": 6
+    },
+    {
+      "id": "m3",
+      "nombre": "Interior 3",
+      "zona": "Interior",
+      "capacidad": 6
+    },
+    {
+      "id": "m4",
+      "nombre": "Interior 4",
+      "zona": "Interior",
+      "capacidad": 6
+    },
+    {
+      "id": "m5",
+      "nombre": "Interior 5",
+      "zona": "Interior",
+      "capacidad": 4
+    },
+    {
+      "id": "m6",
+      "nombre": "Interior 6",
+      "zona": "Interior",
+      "capacidad": 4
+    },
+    {
+      "id": "m7",
+      "nombre": "Interior 7",
+      "zona": "Interior",
+      "capacidad": 4
+    },
+    {
+      "id": "m8",
+      "nombre": "Interior 8",
+      "zona": "Interior",
+      "capacidad": 4
+    },
+    {
+      "id": "m9",
+      "nombre": "Interior 9",
+      "zona": "Interior",
+      "capacidad": 4
+    },
+    {
+      "id": "m10",
+      "nombre": "Interior 10",
+      "zona": "Interior",
+      "capacidad": 4
+    },
+    {
+      "id": "m11",
+      "nombre": "Terraza 1",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m12",
+      "nombre": "Terraza 2",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m13",
+      "nombre": "Terraza 3",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m14",
+      "nombre": "Terraza 4",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m15",
+      "nombre": "Terraza 5",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m16",
+      "nombre": "Terraza 6",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m17",
+      "nombre": "Terraza 7",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m18",
+      "nombre": "Terraza 8",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m19",
+      "nombre": "Terraza 9",
+      "zona": "Terraza",
+      "capacidad": 4
+    },
+    {
+      "id": "m20",
+      "nombre": "Terraza 10",
+      "zona": "Terraza",
+      "capacidad": 4
+    }
+  ],
+  "franjas": [
+    {
+      "id": "f1",
+      "nombre": "Comida",
+      "inicio": "13:00",
+      "fin": "13:15",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f2",
+      "nombre": "Comida",
+      "inicio": "13:15",
+      "fin": "13:30",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f3",
+      "nombre": "Comida",
+      "inicio": "13:30",
+      "fin": "13:45",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f4",
+      "nombre": "Comida",
+      "inicio": "13:45",
+      "fin": "14:00",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f5",
+      "nombre": "Comida",
+      "inicio": "14:00",
+      "fin": "14:15",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f6",
+      "nombre": "Comida",
+      "inicio": "14:15",
+      "fin": "14:30",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f7",
+      "nombre": "Comida",
+      "inicio": "14:30",
+      "fin": "14:45",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f8",
+      "nombre": "Comida",
+      "inicio": "14:45",
+      "fin": "15:00",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f9",
+      "nombre": "Comida",
+      "inicio": "15:00",
+      "fin": "15:15",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f10",
+      "nombre": "Comida",
+      "inicio": "15:15",
+      "fin": "15:30",
+      "capacidadMaxima": 8,
+      "dias": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "f11",
+      "nombre": "Cena",
+      "inicio": "20:30",
+      "fin": "20:45",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "f12",
+      "nombre": "Cena",
+      "inicio": "20:45",
+      "fin": "21:00",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "f13",
+      "nombre": "Cena",
+      "inicio": "21:00",
+      "fin": "21:15",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "f14",
+      "nombre": "Cena",
+      "inicio": "21:15",
+      "fin": "21:30",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "f15",
+      "nombre": "Cena",
+      "inicio": "21:30",
+      "fin": "21:45",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "f16",
+      "nombre": "Cena",
+      "inicio": "21:45",
+      "fin": "22:00",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "f17",
+      "nombre": "Cena",
+      "inicio": "22:00",
+      "fin": "22:15",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "f18",
+      "nombre": "Cena",
+      "inicio": "22:15",
+      "fin": "22:30",
+      "capacidadMaxima": 8,
+      "dias": [
+        5,
+        6
+      ]
+    }
+  ]
+}

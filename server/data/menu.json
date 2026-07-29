@@ -1,0 +1,315 @@
+{
+  "actualizado": "2026-07-29",
+  "aviso": "Producto fresco de mercado: la carta puede variar según el día.",
+  "carta": [
+    {
+      "categoria": "Entrantes fríos",
+      "platos": [
+        {
+          "nombre": "Gildas",
+          "descripcion": "Aceituna, piparra y anchoa",
+          "precio": "2.50€"
+        },
+        {
+          "nombre": "Ajoarriero",
+          "descripcion": "Con bacalao ahumado y huevo cocido",
+          "precio": "8€ / 11€"
+        },
+        {
+          "nombre": "Ensaladilla de pescados ahumados",
+          "descripcion": "Con mayonesa de ponzu y piparras",
+          "precio": "9€ / 12€"
+        },
+        {
+          "nombre": "Tabla de queso manchego",
+          "descripcion": "Queso de oveja, 120g",
+          "precio": "12€"
+        },
+        {
+          "nombre": "Tomate valenciano con ventresca",
+          "descripcion": "Con aceite de cilantro",
+          "precio": "14€"
+        },
+        {
+          "nombre": "Tabla de jamón ibérico",
+          "descripcion": "100% ibérico de bellota, 100g cortado a cuchillo",
+          "precio": "25€"
+        },
+        {
+          "nombre": "Pan con tomate y alioli",
+          "descripcion": "",
+          "precio": "2€"
+        },
+        {
+          "nombre": "Pan",
+          "descripcion": "",
+          "precio": "1.20€"
+        }
+      ]
+    },
+    {
+      "categoria": "Entrantes calientes",
+      "platos": [
+        {
+          "nombre": "Torrezno de Soria",
+          "descripcion": "Con glaseado de soja ácido",
+          "precio": "7€"
+        },
+        {
+          "nombre": "Pimientos de Padrón",
+          "descripcion": "",
+          "precio": "8€"
+        },
+        {
+          "nombre": "Patatas campesinas",
+          "descripcion": "Con emulsión de ajo y puerro",
+          "precio": "9€"
+        },
+        {
+          "nombre": "Croquetas de cangrejo",
+          "descripcion": "",
+          "precio": "3.50€ / 12€"
+        },
+        {
+          "nombre": "Morteruelo",
+          "descripcion": "Con gallina, jabalí y trufa",
+          "precio": "9€ / 14€"
+        }
+      ]
+    },
+    {
+      "categoria": "Con un par de...",
+      "platos": [
+        {
+          "nombre": "Huevos rotos con torreznos",
+          "descripcion": "Huevos camperos y patatas fritas",
+          "precio": "16€"
+        },
+        {
+          "nombre": "Huevos rotos con sobrasada a la brasa",
+          "descripcion": "Con pimientos",
+          "precio": "18€"
+        },
+        {
+          "nombre": "Huevos rotos con jamón ibérico",
+          "descripcion": "Con pimientos",
+          "precio": "20€"
+        }
+      ]
+    },
+    {
+      "categoria": "A la brasa",
+      "platos": [
+        {
+          "nombre": "Chuletas de cordero lechal (350g)",
+          "descripcion": "De Segovia, con patatas y huevo frito",
+          "precio": "21€"
+        },
+        {
+          "nombre": "Entrecot nacional (350g)",
+          "descripcion": "A la brasa",
+          "precio": "21€"
+        },
+        {
+          "nombre": "Chuletón de vaca simmental",
+          "descripcion": "Más de 60 días de maduración",
+          "precio": "60€/kg"
+        },
+        {
+          "nombre": "Pulpo a la brasa (180g)",
+          "descripcion": "Con parmentier de maíz",
+          "precio": "21€"
+        }
+      ]
+    },
+    {
+      "categoria": "Guarniciones",
+      "platos": [
+        {
+          "nombre": "Patatas fritas",
+          "descripcion": "",
+          "precio": "3.50€"
+        },
+        {
+          "nombre": "Tomate valenciano",
+          "descripcion": "Aliñado con AOVE y sal",
+          "precio": "4€"
+        },
+        {
+          "nombre": "Dos huevos fritos",
+          "descripcion": "Cobardes y gallinas",
+          "precio": "4€"
+        },
+        {
+          "nombre": "Pimientos de Padrón",
+          "descripcion": "",
+          "precio": "4€"
+        }
+      ]
+    },
+    {
+      "categoria": "Platos de cuchara",
+      "platos": [
+        {
+          "nombre": "Olla de berzas",
+          "descripcion": "Plato típico chulillano con patatas, judías y verduras",
+          "precio": "14€"
+        },
+        {
+          "nombre": "Arroz de secreto ibérico y coliflor",
+          "descripcion": "Mínimo 2 personas",
+          "precio": "19€"
+        },
+        {
+          "nombre": "Arroz de jabalí y ajetes",
+          "descripcion": "Mínimo 2 personas",
+          "precio": "17€"
+        }
+      ]
+    },
+    {
+      "categoria": "Carnes",
+      "platos": [
+        {
+          "nombre": "Manitas de cerdo \"La Rueda\"",
+          "descripcion": "Con patatas panadera y su jugo",
+          "precio": "14€"
+        },
+        {
+          "nombre": "Rabo de toro estofado",
+          "descripcion": "Con vino tinto y patatas",
+          "precio": "17€"
+        },
+        {
+          "nombre": "Cachopo de ciervo (400g)",
+          "descripcion": "Jamón, queso y cebolla caramelizada al PX",
+          "precio": "24€"
+        }
+      ]
+    },
+    {
+      "categoria": "Pescados",
+      "platos": [
+        {
+          "nombre": "Trucha con veloute de jamón ibérico",
+          "descripcion": "",
+          "precio": "18€"
+        }
+      ]
+    },
+    {
+      "categoria": "Postres",
+      "platos": [
+        {
+          "nombre": "Bola de helado",
+          "descripcion": "Horchata, coco o vainilla",
+          "precio": "4€"
+        },
+        {
+          "nombre": "Tarta de horchata y fartons",
+          "descripcion": "",
+          "precio": "6€"
+        },
+        {
+          "nombre": "Tarta cremosa de queso Cabrales",
+          "descripcion": "Con crumble de pimienta y miel cruda",
+          "precio": "7€"
+        },
+        {
+          "nombre": "Cheesecake de Lotus",
+          "descripcion": "Con crema de caramelo salado",
+          "precio": "7€"
+        },
+        {
+          "nombre": "Torrija caramelizada",
+          "descripcion": "Con helado de horchata",
+          "precio": "8€"
+        },
+        {
+          "nombre": "Brownie 72%",
+          "descripcion": "Con helado de coco",
+          "precio": "9€"
+        }
+      ]
+    }
+  ],
+  "menus": [
+    {
+      "nombre": "Menú Chulilla",
+      "precio": "26€ / persona",
+      "condiciones": "Incluye postre o café. No incluye pan ni bebidas.",
+      "secciones": [
+        {
+          "titulo": "Para compartir",
+          "platos": [
+            "Ajoarriero",
+            "Patatas campesinas",
+            "Torrezno de Soria con salsa de soja y limón"
+          ]
+        },
+        {
+          "titulo": "A elegir (uno por persona)",
+          "platos": [
+            "Rabo de toro estofado con patatas",
+            "Manitas de cerdo con patatas",
+            "Olla de berzas",
+            "Huevos rotos de torreznos",
+            "Huevos camperos con patatas fritas",
+            "Trucha con veloute de jamón ibérico",
+            "Burger de pulled pork con emulsión de trufa"
+          ]
+        },
+        {
+          "titulo": "Postre (uno por persona)",
+          "platos": [
+            "Tarta de horchata y fartons",
+            "Cheesecake de Lotus",
+            "Tarta cremosa de queso Cabrales",
+            "Bola de helado"
+          ]
+        }
+      ]
+    },
+    {
+      "nombre": "Menú Brasa",
+      "precio": "35€ / persona",
+      "condiciones": "Incluye postre y café. No incluye pan ni bebidas. Mesa completa con el mismo menú. IVA incluido.",
+      "secciones": [
+        {
+          "titulo": "Para compartir",
+          "platos": [
+            "Ensaladilla de pescados ahumados",
+            "Morteruelo de jabalí trufado",
+            "Croqueta de txangurro"
+          ]
+        },
+        {
+          "titulo": "A elegir (uno por persona)",
+          "platos": [
+            "Olla de berzas",
+            "Cachopo de ciervo (+2€)",
+            "Arroz de jabalí y ajetes (mín. 2 personas)",
+            "Entrecot nacional a la brasa",
+            "Manitas de cerdo con patatas fritas",
+            "Huevos rotos con sobrasada a la brasa",
+            "Rabo de toro con patatas fritas",
+            "Pata de pulpo a la brasa con parmentier de calabaza",
+            "Arroz de secreto ibérico y coliflor (mín. 2 personas)",
+            "Chuletas de cordero lechal a la brasa"
+          ]
+        },
+        {
+          "titulo": "Postre (uno por persona)",
+          "platos": [
+            "Tarta de horchata y fartons",
+            "Brownie 72% (+2€)",
+            "Tarta de queso de oveja con crumble de pimienta y miel de azahar de Chulilla",
+            "Torrija caramelizada con helado de leche merengada",
+            "Cheesecake de Lotus",
+            "Helado (leche merengada, coco o vainilla)"
+          ]
+        }
+      ]
+    }
+  ]
+}

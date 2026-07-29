@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurante La Rueda · Chulilla</title>
+<meta name="description" content="Restaurante La Rueda en Chulilla. Más de cincuenta años de tradición, cocina de brasa y producto de mercado, ahora en manos de Edu y Carla.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#inicio" class="logo">La Rueda</a>
+    <nav class="main-nav" id="main-nav">
+      <a href="#chulilla">Chulilla</a>
+      <a href="#historia">Historia</a>
+      <a href="#carta">Carta</a>
+      <a href="#menus">Menús</a>
+      <a href="#ubicacion">Cómo llegar</a>
+      <a href="#reservas" class="nav-cta">Reservar</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú">☰</button>
+  </div>
+</header>
+
+<section id="inicio" class="hero">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <p class="hero-kicker">Chulilla · Desde hace más de 50 años</p>
+    <h1>Restaurante La Rueda</h1>
+    <p class="hero-subtitle">Cocina tradicional y brasa, con producto de mercado y raíces de pueblo.</p>
+    <div class="hero-buttons">
+      <a href="#reservas" class="btn btn-primary">Reservar mesa</a>
+      <a href="#carta" class="btn btn-outline">Ver la carta</a>
+    </div>
+  </div>
+</section>
+
+<section id="chulilla" class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Antes de sentarte a la mesa</p>
+    <h2>Chulilla, el pueblo que da sabor a esta casa</h2>
+    <p>
+      Chulilla es un pequeño pueblo de la Comunitat Valenciana, encajado entre los cortados de piedra
+      de las Hoces del Turia. Es un lugar conocido por sus pasarelas colgantes sobre el río, por el
+      castillo que vigila el valle desde lo alto y por un paisaje de barranco que atrae a senderistas,
+      escaladores y amantes del agua tranquila de sus pozas.
+    </p>
+    <p>
+      Pero Chulilla también es despensa: colmenas de miel de azahar, hortalizas de secano, caza y
+      un recetario de cuchara que se ha cocinado en las casas del pueblo durante generaciones. En
+      La Rueda partimos de ahí. La brasa y el producto del día son nuestro punto de partida, y el
+      pueblo, siempre, el punto de referencia.
+    </p>
+  </div>
+</section>
+
+<section id="historia" class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Nuestra historia</p>
+    <h2>Más de cincuenta años de mesa puesta</h2>
+    <p>
+      La Rueda lleva más de cincuenta años abriendo sus puertas en Chulilla. Varias generaciones han
+      pasado por esta casa, primero como clientes y después, muchas veces, como parte de su historia.
+      Es ese tipo de restaurante que forma parte del paisaje del pueblo: el sitio al que se vuelve,
+      el que atesora recetas y también celebraciones familiares.
+    </p>
+    <p>
+      Desde 2024, Edu y Carla llevan las riendas de la casa. Son pareja, y esa complicidad se nota
+      en cómo han decidido repartirse el restaurante: Edu al frente de la cocina, Carla al frente de
+      la sala. Es ese equilibrio —el fuego de la cocina y la cercanía de la sala— lo que le da a La
+      Rueda su toque personal.
+    </p>
+
+    <div class="perfil-grid">
+      <div class="perfil-card">
+        <h3>Edu · Cocina</h3>
+        <p>
+          Antes de coger las riendas de La Rueda, Edu ha construido su trayectoria en algunas de las
+          cocinas más reconocidas de la gastronomía española: Enigma, el proyecto de alta cocina de
+          Albert Adrià en Barcelona; El Poblet, de Quique Dacosta; el Restaurante Ricard Camarena y
+          su Canalla Bistró, entre otras casas de referencia. De ese recorrido se trae la exigencia
+          por el producto, la técnica y el detalle, que hoy aplica a algo mucho más cercano: la
+          cocina tradicional y la brasa de su propio pueblo.
+        </p>
+      </div>
+      <div class="perfil-card">
+        <h3>Carla · Sala</h3>
+        <p>
+          Carla es quien recibe, quien acompaña la comida y quien conoce cada mesa por su nombre.
+          Su forma de entender la sala —cercana, atenta, sin impostura— es la que convierte una
+          comida en La Rueda en algo que se recuerda tanto por el trato como por el plato.
+        </p>
+      </div>
+    </div>
+
+    <p>
+      El resultado es una cocina que respeta la memoria de la casa —la olla de berzas, las manitas
+      de cerdo, los platos de cuchara de toda la vida— y que a la vez incorpora la brasa y la mirada
+      de una cocina profesional curtida en algunos de los fogones más exigentes del país. Tradición
+      y oficio, en la misma mesa.
+    </p>
+  </div>
+</section>
+
+<section id="carta" class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Producto del día</p>
+    <h2>La carta</h2>
+    <p class="carta-aviso" id="carta-aviso">Trabajamos con producto fresco de mercado: la carta puede variar según el día.</p>
+    <div id="carta-contenido" class="carta-grid">
+      <p class="cargando">Cargando la carta…</p>
+    </div>
+  </div>
+</section>
+
+<section id="menus" class="section">
+  <div class="container">
+    <p class="eyebrow">Para grupos y celebraciones</p>
+    <h2>Nuestros menús</h2>
+    <div id="menus-contenido" class="menus-grid">
+      <p class="cargando">Cargando los menús…</p>
+    </div>
+  </div>
+</section>
+
+<section id="reservas" class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Te esperamos</p>
+    <h2>Reserva tu mesa</h2>
+    <p>Rellena el formulario y Carla confirmará tu reserva lo antes posible. Si lo prefieres, también puedes llamarnos directamente.</p>
+
+    <form id="form-reserva" class="form-reserva">
+      <div class="form-row">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" required>
+      </div>
+      <div class="form-row form-row-split">
+        <div>
+          <label for="telefono">Teléfono *</label>
+          <input type="tel" id="telefono" name="telefono" required>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
+      </div>
+      <div class="form-row form-row-split">
+        <div>
+          <label for="fecha">Fecha *</label>
+          <input type="date" id="fecha" name="fecha" required>
+        </div>
+        <div>
+          <label for="personas">Personas *</label>
+          <input type="number" id="personas" name="personas" min="1" max="40" required>
+        </div>
+      </div>
+      <p id="aviso-grupo-grande" class="aviso-grupo-grande" hidden>
+        Para grupos de 8 personas o más, os pedimos que reservéis llamando al
+        <a href="tel:+34613727680">613 72 76 80</a>. Para estos grupos trabajamos con menús a mesa completa,
+        así que preferimos comentároslo directamente por teléfono.
+      </p>
+      <div class="form-row" id="fila-turno">
+        <label for="franjaId">Turno *</label>
+        <select id="franjaId" name="franjaId" required>
+          <option value="">Elige antes la fecha y el número de personas</option>
+        </select>
+        <p id="turno-ayuda" class="turno-ayuda"></p>
+      </div>
+      <div class="form-row">
+        <label for="comentarios">Comentarios (alergias, celebraciones...)</label>
+        <textarea id="comentarios" name="comentarios" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-reservar">Enviar solicitud de reserva</button>
+      <p id="reserva-mensaje" class="reserva-mensaje"></p>
+    </form>
+
+    <p class="reserva-alt">
+      ¿Prefieres hablar directamente con nosotros?
+      <a href="tel:+34613727680">📞 613 72 76 80</a>
+      ·
+      <a href="https://wa.me/34613727680" target="_blank" rel="noopener">WhatsApp</a>
+    </p>
+  </div>
+</section>
+
+<section id="ubicacion" class="section">
+  <div class="container">
+    <p class="eyebrow">Encuéntranos</p>
+    <h2>Cómo llegar</h2>
+    <div class="ubicacion-grid">
+      <div class="ubicacion-info">
+        <p><strong>Dirección</strong><br>Avenida Ermita, 15<br>46167 Chulilla, Valencia</p>
+        <p><strong>Teléfono</strong><br><a href="tel:+34613727680">613 72 76 80</a></p>
+        <p><strong>Email</strong><br><a href="mailto:restaurantelaruedachulilla@gmail.com">restaurantelaruedachulilla@gmail.com</a></p>
+        <a class="btn btn-outline" href="https://www.google.com/maps/dir/?api=1&destination=Avenida+Ermita+15+46167+Chulilla+Valencia" target="_blank" rel="noopener">Cómo llegar en Google Maps</a>
+        <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&query=Restaurante+La+Rueda+Chulilla" target="_blank" rel="noopener">Ver en Google</a>
+      </div>
+      <div class="ubicacion-mapa">
+        <iframe
+          title="Mapa Restaurante La Rueda, Chulilla"
+          src="https://www.google.com/maps?q=Restaurante+La+Rueda,+Avenida+Ermita+15,+46167+Chulilla,+Valencia&output=embed"
+          width="100%" height="380" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© <span id="anio"></span> Restaurante La Rueda · Chulilla</p>
+    <p>Avenida Ermita, 15 · 46167 Chulilla, Valencia · 613 72 76 80</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
