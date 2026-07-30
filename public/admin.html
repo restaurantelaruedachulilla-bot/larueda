@@ -67,6 +67,56 @@
   <section id="tab-reservas" class="tab-panel" hidden>
     <p class="admin-hint">Reservas recibidas desde la web, más recientes primero. La mesa se asigna sola según la disponibilidad.</p>
 
+    <button id="btn-toggle-nueva-reserva" class="btn btn-outline btn-full">📞 + Añadir reserva por teléfono</button>
+
+    <form id="form-nueva-reserva" class="form-reserva" hidden>
+      <p class="admin-hint admin-hint-sutil">Para cuando os llamen por teléfono. Aquí sí puedes meter cualquier número de personas (para grupos grandes se guarda igualmente aunque no quepan en una sola mesa).</p>
+      <div class="form-row">
+        <label for="admin-r-nombre">Nombre *</label>
+        <input type="text" id="admin-r-nombre" required>
+      </div>
+      <div class="form-row form-row-split">
+        <div>
+          <label for="admin-r-telefono">Teléfono *</label>
+          <input type="tel" id="admin-r-telefono" required>
+        </div>
+        <div>
+          <label for="admin-r-email">Email (opcional)</label>
+          <input type="email" id="admin-r-email">
+        </div>
+      </div>
+      <div class="form-row form-row-split">
+        <div>
+          <label for="admin-r-fecha">Fecha *</label>
+          <input type="date" id="admin-r-fecha" required>
+        </div>
+        <div>
+          <label for="admin-r-personas">Personas *</label>
+          <input type="number" id="admin-r-personas" min="1" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="admin-r-turno">Turno *</label>
+        <select id="admin-r-turno" required>
+          <option value="">Elige antes la fecha</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="admin-r-zona">Zona preferida</label>
+        <select id="admin-r-zona">
+          <option value="Cualquiera">Sin preferencia</option>
+          <option value="Interior">Interior</option>
+          <option value="Terraza">Terraza</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="admin-r-comentarios">Comentarios</label>
+        <textarea id="admin-r-comentarios" rows="2"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" id="btn-guardar-nueva-reserva">Guardar reserva</button>
+      <p id="nueva-reserva-mensaje" class="guardar-mensaje"></p>
+    </form>
+
     <label class="config-label" for="input-aforo-fecha">Ver aforo por turno de un día</label>
     <input type="date" id="input-aforo-fecha" class="config-input-ancho">
     <div id="aforo-resultado" class="aforo-resultado"></div>

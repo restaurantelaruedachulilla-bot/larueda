@@ -76,6 +76,9 @@
 
 .tab-panel { padding: 1.25rem; max-width: 700px; margin: 0 auto; }
 
+#btn-toggle-nueva-reserva { margin-bottom: 1rem; }
+#form-nueva-reserva { background: #fff; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; }
+
 .admin-hint {
   background: #fff;
   border-left: 4px solid var(--color-olive);
@@ -282,6 +285,17 @@
 .mesa-nombre, .franja-nombre { flex: 2; min-width: 0; }
 .mesa-capacidad, .franja-capacidad { flex: 1; min-width: 0; }
 .mesa-zona { flex: 1.2; min-width: 0; }
+.mesa-campo-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  color: #8a7a6a;
+  font-weight: 600;
+}
+.mesa-campo-label input { width: 100%; }
+.mesa-campo-label-ancho { flex: 1 1 100%; }
 .franja-hora { flex: 1; min-width: 0; }
 
 .franja-dias-row {

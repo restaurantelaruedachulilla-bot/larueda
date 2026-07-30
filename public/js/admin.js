@@ -324,8 +324,20 @@ function renderMesas() {
       <div class="mesa-card-row">
         <input type="text" placeholder="Nombre" value="${atributo(mesa.nombre)}" data-mi="${mi}" data-campo="nombre" class="mesa-nombre">
         <input type="text" placeholder="Zona (Interior/Terraza)" value="${atributo(mesa.zona || '')}" data-mi="${mi}" data-campo="zona" class="mesa-zona">
-        <input type="number" min="1" placeholder="Plazas" value="${atributo(mesa.capacidad)}" data-mi="${mi}" data-campo="capacidad" class="mesa-capacidad">
         <button class="btn-icon btn-borrar-mesa" data-mi="${mi}" title="Eliminar mesa">🗑️</button>
+      </div>
+      <div class="mesa-card-row">
+        <label class="mesa-campo-label">Plazas
+          <input type="number" min="1" placeholder="Plazas" value="${atributo(mesa.capacidad)}" data-mi="${mi}" data-campo="capacidad" class="mesa-capacidad">
+        </label>
+        <label class="mesa-campo-label">Mínimo personas
+          <input type="number" min="1" placeholder="Mínimo" value="${atributo(mesa.minimo ?? 1)}" data-mi="${mi}" data-campo="minimo" class="mesa-capacidad">
+        </label>
+      </div>
+      <div class="mesa-card-row">
+        <label class="mesa-campo-label mesa-campo-label-ancho">Grupo combinable (solo se juntan mesas del mismo grupo)
+          <input type="text" placeholder="ej. int-estandar" value="${atributo(mesa.grupoCombinable || '')}" data-mi="${mi}" data-campo="grupoCombinable">
+        </label>
       </div>
     </div>
   `).join('');
@@ -333,7 +345,7 @@ function renderMesas() {
   cont.querySelectorAll('input').forEach((input) => {
     input.addEventListener('input', (e) => {
       const { mi, campo } = e.target.dataset;
-      const valor = campo === 'capacidad' ? Number(e.target.value) || 0 : e.target.value;
+      const valor = campo === 'capacidad' || campo === 'minimo' ? Number(e.target.value) || 0 : e.target.value;
       configActual.mesas[mi][campo] = valor;
     });
   });
@@ -348,7 +360,7 @@ function renderMesas() {
 }
 
 document.getElementById('btn-add-mesa').addEventListener('click', () => {
-  configActual.mesas.push({ id: 'm' + Date.now(), nombre: 'Nueva mesa', zona: '', capacidad: 4 });
+  configActual.mesas.push({ id: 'm' + Date.now(), nombre: 'Nueva mesa', zona: '', capacidad: 4, minimo: 1, grupoCombinable: '' });
   renderMesas();
 });
 
@@ -442,6 +454,86 @@ document.getElementById('btn-guardar-config').addEventListener('click', async ()
   }
 });
 
+// ---------- Alta manual de reservas por teléfono ----------
+const btnToggleNuevaReserva = document.getElementById('btn-toggle-nueva-reserva');
+const formNuevaReserva = document.getElementById('form-nueva-reserva');
+const adminRFecha = document.getElementById('admin-r-fecha');
+const adminRTurno = document.getElementById('admin-r-turno');
+
+btnToggleNuevaReserva.addEventListener('click', () => {
+  formNuevaReserva.hidden = !formNuevaReserva.hidden;
+  if (!formNuevaReserva.hidden && !adminRFecha.value) {
+    adminRFecha.value = new Date().toISOString().slice(0, 10);
+    cargarTurnosAdmin();
+  }
+});
+
+adminRFecha.addEventListener('change', cargarTurnosAdmin);
+
+async function cargarTurnosAdmin() {
+  const fecha = adminRFecha.value;
+  if (!fecha) {
+    adminRTurno.innerHTML = '<option value="">Elige antes la fecha</option>';
+    return;
+  }
+  adminRTurno.innerHTML = '<option value="">Cargando turnos...</option>';
+  try {
+    const res = await fetch(`/api/disponibilidad?fecha=${encodeURIComponent(fecha)}`);
+    const data = await res.json();
+    if (!data.franjas.length) {
+      adminRTurno.innerHTML = '<option value="">Ese día no hay turnos configurados</option>';
+      return;
+    }
+    adminRTurno.innerHTML =
+      '<option value="">Elige un turno</option>' +
+      data.franjas.map((f) => `<option value="${f.id}">${atributo(f.nombre)} · ${atributo(f.inicio)}–${atributo(f.fin)} (${f.ocupadas}/${f.capacidadMaxima} ocupadas)</option>`).join('');
+  } catch (err) {
+    adminRTurno.innerHTML = '<option value="">No se han podido cargar los turnos</option>';
+  }
+}
+
+formNuevaReserva.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btn-guardar-nueva-reserva');
+  const msg = document.getElementById('nueva-reserva-mensaje');
+  btn.disabled = true;
+  msg.textContent = '';
+  msg.className = 'guardar-mensaje';
+
+  const datos = {
+    nombre: document.getElementById('admin-r-nombre').value,
+    telefono: document.getElementById('admin-r-telefono').value,
+    email: document.getElementById('admin-r-email').value,
+    fecha: adminRFecha.value,
+    franjaId: adminRTurno.value,
+    personas: document.getElementById('admin-r-personas').value,
+    zona: document.getElementById('admin-r-zona').value,
+    comentarios: document.getElementById('admin-r-comentarios').value,
+  };
+
+  try {
+    const res = await fetch('/api/admin/reservas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+      body: JSON.stringify(datos),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Error al guardar la reserva');
+
+    msg.textContent = `✅ Reserva guardada (mesa: ${json.mesa}).`;
+    msg.classList.add('ok');
+    formNuevaReserva.reset();
+    adminRTurno.innerHTML = '<option value="">Elige antes la fecha</option>';
+    cargarReservas();
+    cargarAforo();
+  } catch (err) {
+    msg.textContent = '❌ ' + (err.message || 'No se ha podido guardar.');
+    msg.classList.add('error');
+  } finally {
+    btn.disabled = false;
+  }
+});
+
 // ---------- Aforo por turno (solo admin) ----------
 const inputAforoFecha = document.getElementById('input-aforo-fecha');
 inputAforoFecha.value = new Date().toISOString().slice(0, 10);
@@ -488,7 +580,7 @@ async function cargarReservas() {
 
   cont.innerHTML = reservas.map((r) => `
     <div class="reserva-card" data-id="${r.id}">
-      <h4>${atributo(r.nombre)} · ${atributo(String(r.personas))}p</h4>
+      <h4>${atributo(r.nombre)} · ${atributo(String(r.personas))}p ${r.creadaPorAdmin ? '📞' : ''}</h4>
       <div class="reserva-detalle">
         📅 ${atributo(r.fecha)} — 🕒 ${atributo(r.franjaNombre || '')} ${atributo(r.hora)}<br>
         🪑 ${atributo(r.mesaNombre || 'sin asignar')}${r.mesaZona ? ' (' + atributo(r.mesaZona) + ')' : ''}<br>

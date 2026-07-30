@@ -165,30 +165,108 @@ function calcularDisponibilidad(config, fecha, reservas) {
   });
 }
 
-// Busca la mesa mas pequeña que quepa al grupo y que no tenga ya otra reserva
-// activa esa fecha cuyo turno (franja.inicio + turnoMinutos) se solape con el nuevo.
-function asignarMesa(config, fecha, franja, personas, reservas) {
+// Junta mesas de un mismo grupo combinable para cubrir el grupo de comensales: coge primero
+// la mesa libre mas grande (asi los grupos de 7-8 caen en una de 6 + una de 4, no dos de 4),
+// y va anadiendo la mas pequeña que cubra lo que falte. Devuelve null si no llega ni juntando
+// todas las mesas de ese grupo.
+function combinarMesasMismoGrupo(mesasLibres, personas) {
+  const disponibles = [...mesasLibres];
+  const elegidas = [];
+  let restante = personas;
+
+  while (restante > 0 && disponibles.length) {
+    const sirven = disponibles.filter((m) => m.capacidad >= restante).sort((a, b) => a.capacidad - b.capacidad);
+    const elegida = sirven.length ? sirven[0] : [...disponibles].sort((a, b) => b.capacidad - a.capacidad)[0];
+    elegidas.push(elegida);
+    restante -= elegida.capacidad;
+    disponibles.splice(disponibles.indexOf(elegida), 1);
+  }
+
+  return restante <= 0 ? elegidas : null;
+}
+
+// De entre las mesas libres (ya de una sola zona), busca la mejor forma de sentar al grupo:
+// 1) una sola mesa libre que quepa entera, respetando su minimo de comensales (para no sentar
+//    a 2 personas en una mesa de 6), la mas pequeña posible que valga.
+// 2) si ninguna sirve sola, se combinan mesas, pero SOLO dentro de un mismo "grupo combinable"
+//    (las mesas de distinto tamaño/forma no se pueden juntar en la vida real). Si hay varios
+//    grupos combinables que podrian cubrir el hueco, se prueba primero el de mesas mas grandes
+//    (asi 9+10 gana a repartir en varias de 4, para grupos de 8-10).
+function buscarMesas(mesasLibres, personas) {
+  const ajustadas = mesasLibres
+    .filter((m) => m.capacidad >= personas && personas >= (m.minimo || 1))
+    .sort((a, b) => a.capacidad - b.capacidad);
+  if (ajustadas.length) return [ajustadas[0]];
+
+  const grupos = {};
+  mesasLibres.forEach((m) => {
+    const clave = m.grupoCombinable || m.zona || 'sin-grupo';
+    (grupos[clave] = grupos[clave] || []).push(m);
+  });
+
+  const ordenGrupos = Object.values(grupos).sort((a, b) => {
+    const minA = Math.min(...a.map((m) => m.capacidad));
+    const minB = Math.min(...b.map((m) => m.capacidad));
+    return minB - minA;
+  });
+
+  for (const grupo of ordenGrupos) {
+    const combo = combinarMesasMismoGrupo(grupo, personas);
+    if (combo) return combo;
+  }
+
+  return null;
+}
+
+// Busca mesa(s) para el grupo, respetando la zona preferida si se indica (Interior/Terraza).
+// Si la zona elegida no tiene sitio ni combinando mesas, cae de vuelta a mirar en cualquier
+// zona antes de rendirse. Solo devuelve null si no queda ninguna mesa libre sin solape.
+function asignarMesa(config, fecha, franja, personas, reservas, zonaPreferida) {
   const inicioNueva = minutosDesdeMedianoche(franja.inicio);
   const finNueva = inicioNueva + config.turnoMinutos;
 
-  const reservasDelDia = reservas.filter((r) => r.fecha === fecha && r.estado !== 'cancelada' && r.mesaId);
+  const reservasDelDia = reservas.filter((r) => r.fecha === fecha && r.estado !== 'cancelada' && (r.mesaId || (r.mesaIds && r.mesaIds.length)));
 
-  const mesasOrdenadas = [...config.mesas]
-    .filter((m) => m.capacidad >= Number(personas))
-    .sort((a, b) => a.capacidad - b.capacidad);
+  function ocupaMesa(r, mesaId) {
+    if (r.mesaId === mesaId) return true;
+    return Array.isArray(r.mesaIds) && r.mesaIds.includes(mesaId);
+  }
 
-  for (const mesa of mesasOrdenadas) {
-    const ocupadaEnSolape = reservasDelDia.some((r) => {
-      if (r.mesaId !== mesa.id) return false;
+  function libre(mesa) {
+    return !reservasDelDia.some((r) => {
+      if (!ocupaMesa(r, mesa.id)) return false;
       const otraFranja = config.franjas.find((f) => f.id === r.franjaId);
       if (!otraFranja) return false;
       const otroInicio = minutosDesdeMedianoche(otraFranja.inicio);
       const otroFin = otroInicio + config.turnoMinutos;
       return inicioNueva < otroFin && otroInicio < finNueva;
     });
-    if (!ocupadaEnSolape) return mesa;
   }
+
+  const zonaFiltro = zonaPreferida && zonaPreferida !== 'Cualquiera' ? zonaPreferida : null;
+  const candidatas = config.mesas.filter((m) => !zonaFiltro || m.zona === zonaFiltro);
+  const libresEnZona = candidatas.filter(libre);
+
+  const combo = buscarMesas(libresEnZona, Number(personas));
+  if (combo) return combo;
+
+  if (zonaFiltro) {
+    const libresTodas = config.mesas.filter(libre);
+    const comboTodas = buscarMesas(libresTodas, Number(personas));
+    if (comboTodas) return comboTodas;
+  }
+
   return null;
+}
+
+// A partir del array de mesas asignadas, arma los campos que se guardan en la reserva.
+function resumenMesas(mesas) {
+  const zonasUnicas = [...new Set(mesas.map((m) => m.zona).filter(Boolean))];
+  return {
+    mesaIds: mesas.map((m) => m.id),
+    mesaNombre: mesas.map((m) => m.nombre).join(' + '),
+    mesaZona: zonasUnicas.join(' + '),
+  };
 }
 
 let transporter = null;
@@ -301,7 +379,7 @@ async function avisarWhatsapp(reserva) {
 }
 
 app.post('/api/reservas', async (req, res) => {
-  const { nombre, telefono, email, fecha, franjaId, personas, comentarios } = req.body || {};
+  const { nombre, telefono, email, fecha, franjaId, personas, comentarios, zona } = req.body || {};
 
   if (!nombre || !telefono || !fecha || !franjaId || !personas) {
     return res.status(400).json({ error: 'Faltan datos obligatorios (nombre, teléfono, fecha, turno, personas)' });
@@ -333,10 +411,11 @@ app.post('/api/reservas', async (req, res) => {
     });
   }
 
-  const mesa = asignarMesa(config, fecha, franja, numPersonas, reservas);
-  if (!mesa) {
+  const mesas = asignarMesa(config, fecha, franja, numPersonas, reservas, zona);
+  if (!mesas) {
+    const zonaTexto = zona && zona !== 'Cualquiera' ? ` en la zona ${zona}` : '';
     return res.status(409).json({
-      error: 'No tenemos ninguna mesa libre para ese número de personas en ese horario. Prueba otro turno.',
+      error: `No tenemos ninguna mesa libre${zonaTexto} para ese horario. Prueba otro turno${zona && zona !== 'Cualquiera' ? ' o cambia de zona' : ''}.`,
     });
   }
 
@@ -352,10 +431,9 @@ app.post('/api/reservas', async (req, res) => {
     franjaId: franja.id,
     franjaNombre: franja.nombre,
     hora: franja.inicio,
+    zonaPreferida: zona && zona !== 'Cualquiera' ? zona : '',
     personas: numPersonas,
-    mesaId: mesa.id,
-    mesaNombre: mesa.nombre,
-    mesaZona: mesa.zona || '',
+    ...resumenMesas(mesas),
     comentarios: comentarios || '',
     estado: 'pendiente',
     recordatorioEnviado: false,
@@ -382,7 +460,7 @@ app.post('/api/reservas', async (req, res) => {
           `Fecha: ${fecha}\n` +
           `Turno: ${franja.nombre} (${franja.inicio})\n` +
           `Personas: ${numPersonas}\n` +
-          `Mesa asignada: ${mesa.nombre}${mesa.zona ? ' (' + mesa.zona + ')' : ''}\n` +
+          `Mesa asignada: ${reserva.mesaNombre}${reserva.mesaZona ? ' (' + reserva.mesaZona + ')' : ''}\n` +
           `Comentarios: ${comentarios || '-'}\n`,
       });
     } catch (err) {
@@ -399,7 +477,64 @@ app.post('/api/reservas', async (req, res) => {
     cuerpo: textoConfirmacionCliente(reserva),
   });
 
-  res.json({ ok: true, id: reserva.id, mesa: mesa.nombre, turno: `${franja.nombre} (${franja.inicio})` });
+  res.json({ ok: true, id: reserva.id, mesa: reserva.mesaNombre, turno: `${franja.nombre} (${franja.inicio})` });
+});
+
+// Alta manual de reservas por telefono (solo admin): sin limite de personas y sin bloquear
+// por aforo, ya que quien llama por telefono conoce la situacion real del restaurante.
+app.post('/api/admin/reservas', requiereAdmin, async (req, res) => {
+  const { nombre, telefono, email, fecha, franjaId, personas, comentarios, zona } = req.body || {};
+
+  if (!nombre || !telefono || !fecha || !franjaId || !personas) {
+    return res.status(400).json({ error: 'Faltan datos obligatorios (nombre, teléfono, fecha, turno, personas)' });
+  }
+
+  const numPersonas = Number(personas);
+  if (!Number.isInteger(numPersonas) || numPersonas < 1) {
+    return res.status(400).json({ error: 'El número de personas no es válido' });
+  }
+
+  const config = leerConfig();
+  const franja = franjasDelDia(config, fecha).find((f) => f.id === franjaId);
+  if (!franja) {
+    return res.status(400).json({ error: 'Ese turno no existe ese día. Elige uno de la lista.' });
+  }
+
+  const reservas = leerReservas();
+  const mesas = asignarMesa(config, fecha, franja, numPersonas, reservas, zona);
+
+  const reservaId = crypto.randomUUID();
+  const cancelUrl = `${req.protocol}://${req.get('host')}/cancelar.html?id=${reservaId}`;
+
+  const reserva = {
+    id: reservaId,
+    nombre,
+    telefono,
+    email: email || '',
+    fecha,
+    franjaId: franja.id,
+    franjaNombre: franja.nombre,
+    hora: franja.inicio,
+    zonaPreferida: zona && zona !== 'Cualquiera' ? zona : '',
+    personas: numPersonas,
+    ...(mesas ? resumenMesas(mesas) : { mesaIds: [], mesaNombre: 'Sin asignar (todas ocupadas)', mesaZona: '' }),
+    comentarios: comentarios || '',
+    estado: 'confirmada',
+    recordatorioEnviado: false,
+    cancelUrl,
+    creada: new Date().toISOString(),
+    creadaPorAdmin: true,
+  };
+
+  reservas.push(reserva);
+  guardarReservas(reservas);
+
+  await enviarEmailCliente(reserva, {
+    asunto: `Confirmación de tu reserva en La Rueda (${reserva.fecha})`,
+    cuerpo: textoConfirmacionCliente(reserva),
+  });
+
+  res.json({ ok: true, id: reserva.id, mesa: reserva.mesaNombre, turno: `${franja.nombre} (${franja.inicio})` });
 });
 
 // Consulta y cancelacion publicas: el propio id (UUID, imposible de adivinar) hace de
