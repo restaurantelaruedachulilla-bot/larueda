@@ -45,7 +45,15 @@ const LIMITE_GRUPO_TELEFONO = 8;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Sin cache para HTML/JS/CSS: asi el movil (sobre todo si esta "instalado" como app) siempre
+// pide la version mas reciente en vez de quedarse con una copia antigua guardada.
+app.use(express.static(path.join(__dirname, '..', 'public'), {
+  setHeaders: (res, filePath) => {
+    if (/\.(html|js|css)$/.test(filePath)) {
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    }
+  },
+}));
 
 // ---------- Autenticacion simple del panel admin ----------
 const sesionesAdmin = new Set();
