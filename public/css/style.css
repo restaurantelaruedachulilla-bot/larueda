@@ -191,6 +191,25 @@ a { color: var(--color-brick); }
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
+
+.resenas-caja {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  text-align: center;
+}
+.resenas-nota {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: var(--color-charcoal);
+  margin-bottom: 1rem;
+}
+.resenas-botones {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 .carta-categoria h3 {
   border-bottom: 2px solid var(--color-brick);
   padding-bottom: 0.4rem;
