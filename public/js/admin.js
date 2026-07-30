@@ -571,18 +571,27 @@ async function cargarReservas() {
   cont.innerHTML = '<p class="cargando">Cargando reservas...</p>';
   const res = await fetch('/api/reservas', { headers: { 'x-admin-token': token } });
   const reservas = await res.json();
-  reservas.sort((a, b) => new Date(b.creada) - new Date(a.creada));
+  reservas.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
 
   if (!reservas.length) {
     cont.innerHTML = '<p class="cargando">Todavía no hay reservas.</p>';
     return;
   }
 
-  cont.innerHTML = reservas.map((r) => `
+  const porDia = [];
+  reservas.forEach((r) => {
+    let grupo = porDia.find((g) => g.fecha === r.fecha);
+    if (!grupo) { grupo = { fecha: r.fecha, items: [] }; porDia.push(grupo); }
+    grupo.items.push(r);
+  });
+
+  cont.innerHTML = porDia.map((grupo) => `
+    <h3 class="reservas-dia-titulo">${formatearFechaLarga(grupo.fecha)}</h3>
+    ${grupo.items.map((r) => `
     <div class="reserva-card" data-id="${r.id}">
       <h4>${atributo(r.nombre)} · ${atributo(String(r.personas))}p ${r.creadaPorAdmin ? '📞' : ''}</h4>
       <div class="reserva-detalle">
-        📅 ${atributo(r.fecha)} — 🕒 ${atributo(r.franjaNombre || '')} ${atributo(r.hora)}<br>
+        🕒 ${atributo(r.franjaNombre || '')} ${atributo(r.hora)}<br>
         🪑 ${atributo(r.mesaNombre || 'sin asignar')}${r.mesaZona ? ' (' + atributo(r.mesaZona) + ')' : ''}<br>
         📞 <a href="tel:${atributo(r.telefono)}">${atributo(r.telefono)}</a>
         ${r.email ? ` · ✉️ ${atributo(r.email)}` : ''}
@@ -598,6 +607,7 @@ async function cargarReservas() {
         <button class="btn-icon btn-borrar-reserva" data-id="${r.id}">🗑️</button>
       </div>
     </div>
+    `).join('')}
   `).join('');
 
   cont.querySelectorAll('.select-estado').forEach((sel) => {
@@ -622,6 +632,13 @@ async function cargarReservas() {
       cargarAforo();
     });
   });
+}
+
+function formatearFechaLarga(fechaISO) {
+  const [y, m, d] = fechaISO.split('-').map(Number);
+  const fecha = new Date(y, m - 1, d);
+  const texto = fecha.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
 function atributo(str) {

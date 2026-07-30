@@ -337,6 +337,15 @@
 .aforo-item.aforo-lleno { background: #f6d9d3; }
 
 /* Reservas */
+.reservas-dia-titulo {
+  margin: 1.5rem 0 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--color-brick);
+  color: var(--color-brick);
+  font-size: 1.1rem;
+}
+.reservas-dia-titulo:first-child { margin-top: 0; }
+
 .reserva-card {
   background: #fff;
   border-radius: 12px;
