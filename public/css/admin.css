@@ -131,6 +131,8 @@
   font-size: 0.95rem;
 }
 .plato-card .campo-precio { max-width: 110px; }
+.plato-card.plato-oculto, .plato-linea.plato-oculto { background: #f3ece2; opacity: 0.6; border-radius: 8px; }
+.btn-visible-toggle { font-size: 1.1rem; }
 
 .btn-add-plato {
   width: 100%;

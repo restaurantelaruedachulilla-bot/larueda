@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-07-29",
+  "actualizado": "2026-07-30",
   "aviso": "Producto fresco de mercado: la carta puede variar según el día.",
   "carta": [
     {
@@ -8,42 +8,50 @@
         {
           "nombre": "Gildas",
           "descripcion": "Aceituna, piparra y anchoa",
-          "precio": "2.50€"
+          "precio": "2.50€",
+          "visible": true
         },
         {
           "nombre": "Ajoarriero",
           "descripcion": "Con bacalao ahumado y huevo cocido",
-          "precio": "8€ / 11€"
+          "precio": "8€ / 11€",
+          "visible": true
         },
         {
           "nombre": "Ensaladilla de pescados ahumados",
           "descripcion": "Con mayonesa de ponzu y piparras",
-          "precio": "9€ / 12€"
+          "precio": "9€ / 12€",
+          "visible": true
         },
         {
           "nombre": "Tabla de queso manchego",
           "descripcion": "Queso de oveja, 120g",
-          "precio": "12€"
+          "precio": "12€",
+          "visible": true
         },
         {
           "nombre": "Tomate valenciano con ventresca",
           "descripcion": "Con aceite de cilantro",
-          "precio": "14€"
+          "precio": "14€",
+          "visible": true
         },
         {
           "nombre": "Tabla de jamón ibérico",
           "descripcion": "100% ibérico de bellota, 100g cortado a cuchillo",
-          "precio": "25€"
+          "precio": "25€",
+          "visible": true
         },
         {
           "nombre": "Pan con tomate y alioli",
           "descripcion": "",
-          "precio": "2€"
+          "precio": "2€",
+          "visible": true
         },
         {
           "nombre": "Pan",
           "descripcion": "",
-          "precio": "1.20€"
+          "precio": "1.20€",
+          "visible": true
         }
       ]
     },
@@ -53,27 +61,32 @@
         {
           "nombre": "Torrezno de Soria",
           "descripcion": "Con glaseado de soja ácido",
-          "precio": "7€"
+          "precio": "7€",
+          "visible": true
         },
         {
           "nombre": "Pimientos de Padrón",
           "descripcion": "",
-          "precio": "8€"
+          "precio": "8€",
+          "visible": true
         },
         {
           "nombre": "Patatas campesinas",
           "descripcion": "Con emulsión de ajo y puerro",
-          "precio": "9€"
+          "precio": "9€",
+          "visible": true
         },
         {
           "nombre": "Croquetas de cangrejo",
           "descripcion": "",
-          "precio": "3.50€ / 12€"
+          "precio": "3.50€ / 12€",
+          "visible": true
         },
         {
           "nombre": "Morteruelo",
           "descripcion": "Con gallina, jabalí y trufa",
-          "precio": "9€ / 14€"
+          "precio": "9€ / 14€",
+          "visible": true
         }
       ]
     },
@@ -83,17 +96,20 @@
         {
           "nombre": "Huevos rotos con torreznos",
           "descripcion": "Huevos camperos y patatas fritas",
-          "precio": "16€"
+          "precio": "16€",
+          "visible": true
         },
         {
           "nombre": "Huevos rotos con sobrasada a la brasa",
           "descripcion": "Con pimientos",
-          "precio": "18€"
+          "precio": "18€",
+          "visible": true
         },
         {
           "nombre": "Huevos rotos con jamón ibérico",
           "descripcion": "Con pimientos",
-          "precio": "20€"
+          "precio": "20€",
+          "visible": true
         }
       ]
     },
@@ -103,22 +119,26 @@
         {
           "nombre": "Chuletas de cordero lechal (350g)",
           "descripcion": "De Segovia, con patatas y huevo frito",
-          "precio": "21€"
+          "precio": "21€",
+          "visible": true
         },
         {
           "nombre": "Entrecot nacional (350g)",
           "descripcion": "A la brasa",
-          "precio": "21€"
+          "precio": "21€",
+          "visible": true
         },
         {
           "nombre": "Chuletón de vaca simmental",
           "descripcion": "Más de 60 días de maduración",
-          "precio": "60€/kg"
+          "precio": "60€/kg",
+          "visible": true
         },
         {
           "nombre": "Pulpo a la brasa (180g)",
           "descripcion": "Con parmentier de maíz",
-          "precio": "21€"
+          "precio": "21€",
+          "visible": true
         }
       ]
     },
@@ -128,22 +148,26 @@
         {
           "nombre": "Patatas fritas",
           "descripcion": "",
-          "precio": "3.50€"
+          "precio": "3.50€",
+          "visible": true
         },
         {
           "nombre": "Tomate valenciano",
           "descripcion": "Aliñado con AOVE y sal",
-          "precio": "4€"
+          "precio": "4€",
+          "visible": true
         },
         {
           "nombre": "Dos huevos fritos",
           "descripcion": "Cobardes y gallinas",
-          "precio": "4€"
+          "precio": "4€",
+          "visible": true
         },
         {
           "nombre": "Pimientos de Padrón",
           "descripcion": "",
-          "precio": "4€"
+          "precio": "4€",
+          "visible": true
         }
       ]
     },
@@ -153,17 +177,20 @@
         {
           "nombre": "Olla de berzas",
           "descripcion": "Plato típico chulillano con patatas, judías y verduras",
-          "precio": "14€"
+          "precio": "14€",
+          "visible": true
         },
         {
           "nombre": "Arroz de secreto ibérico y coliflor",
           "descripcion": "Mínimo 2 personas",
-          "precio": "19€"
+          "precio": "19€",
+          "visible": true
         },
         {
           "nombre": "Arroz de jabalí y ajetes",
           "descripcion": "Mínimo 2 personas",
-          "precio": "17€"
+          "precio": "17€",
+          "visible": true
         }
       ]
     },
@@ -173,17 +200,20 @@
         {
           "nombre": "Manitas de cerdo \"La Rueda\"",
           "descripcion": "Con patatas panadera y su jugo",
-          "precio": "14€"
+          "precio": "14€",
+          "visible": true
         },
         {
           "nombre": "Rabo de toro estofado",
           "descripcion": "Con vino tinto y patatas",
-          "precio": "17€"
+          "precio": "17€",
+          "visible": true
         },
         {
           "nombre": "Cachopo de ciervo (400g)",
           "descripcion": "Jamón, queso y cebolla caramelizada al PX",
-          "precio": "24€"
+          "precio": "24€",
+          "visible": true
         }
       ]
     },
@@ -193,7 +223,8 @@
         {
           "nombre": "Trucha con veloute de jamón ibérico",
           "descripcion": "",
-          "precio": "18€"
+          "precio": "18€",
+          "visible": true
         }
       ]
     },
@@ -203,32 +234,38 @@
         {
           "nombre": "Bola de helado",
           "descripcion": "Horchata, coco o vainilla",
-          "precio": "4€"
+          "precio": "4€",
+          "visible": true
         },
         {
           "nombre": "Tarta de horchata y fartons",
           "descripcion": "",
-          "precio": "6€"
+          "precio": "6€",
+          "visible": true
         },
         {
           "nombre": "Tarta cremosa de queso Cabrales",
           "descripcion": "Con crumble de pimienta y miel cruda",
-          "precio": "7€"
+          "precio": "7€",
+          "visible": true
         },
         {
           "nombre": "Cheesecake de Lotus",
           "descripcion": "Con crema de caramelo salado",
-          "precio": "7€"
+          "precio": "7€",
+          "visible": true
         },
         {
           "nombre": "Torrija caramelizada",
           "descripcion": "Con helado de horchata",
-          "precio": "8€"
+          "precio": "8€",
+          "visible": true
         },
         {
           "nombre": "Brownie 72%",
           "descripcion": "Con helado de coco",
-          "precio": "9€"
+          "precio": "9€",
+          "visible": true
         }
       ]
     }
@@ -242,30 +279,72 @@
         {
           "titulo": "Para compartir",
           "platos": [
-            "Ajoarriero",
-            "Patatas campesinas",
-            "Torrezno de Soria con salsa de soja y limón"
+            {
+              "nombre": "Ajoarriero",
+              "visible": true
+            },
+            {
+              "nombre": "Patatas campesinas",
+              "visible": true
+            },
+            {
+              "nombre": "Torrezno de Soria con salsa de soja y limón",
+              "visible": true
+            }
           ]
         },
         {
           "titulo": "A elegir (uno por persona)",
           "platos": [
-            "Rabo de toro estofado con patatas",
-            "Manitas de cerdo con patatas",
-            "Olla de berzas",
-            "Huevos rotos de torreznos",
-            "Huevos camperos con patatas fritas",
-            "Trucha con veloute de jamón ibérico",
-            "Burger de pulled pork con emulsión de trufa"
+            {
+              "nombre": "Rabo de toro estofado con patatas",
+              "visible": true
+            },
+            {
+              "nombre": "Manitas de cerdo con patatas",
+              "visible": true
+            },
+            {
+              "nombre": "Olla de berzas",
+              "visible": true
+            },
+            {
+              "nombre": "Huevos rotos de torreznos",
+              "visible": true
+            },
+            {
+              "nombre": "Huevos camperos con patatas fritas",
+              "visible": true
+            },
+            {
+              "nombre": "Trucha con veloute de jamón ibérico",
+              "visible": true
+            },
+            {
+              "nombre": "Burger de pulled pork con emulsión de trufa",
+              "visible": true
+            }
           ]
         },
         {
           "titulo": "Postre (uno por persona)",
           "platos": [
-            "Tarta de horchata y fartons",
-            "Cheesecake de Lotus",
-            "Tarta cremosa de queso Cabrales",
-            "Bola de helado"
+            {
+              "nombre": "Tarta de horchata y fartons",
+              "visible": true
+            },
+            {
+              "nombre": "Cheesecake de Lotus",
+              "visible": true
+            },
+            {
+              "nombre": "Tarta cremosa de queso Cabrales",
+              "visible": true
+            },
+            {
+              "nombre": "Bola de helado",
+              "visible": true
+            }
           ]
         }
       ]
@@ -278,35 +357,92 @@
         {
           "titulo": "Para compartir",
           "platos": [
-            "Ensaladilla de pescados ahumados",
-            "Morteruelo de jabalí trufado",
-            "Croqueta de txangurro"
+            {
+              "nombre": "Ensaladilla de pescados ahumados",
+              "visible": true
+            },
+            {
+              "nombre": "Morteruelo de jabalí trufado",
+              "visible": true
+            },
+            {
+              "nombre": "Croqueta de txangurro",
+              "visible": true
+            }
           ]
         },
         {
           "titulo": "A elegir (uno por persona)",
           "platos": [
-            "Olla de berzas",
-            "Cachopo de ciervo (+2€)",
-            "Arroz de jabalí y ajetes (mín. 2 personas)",
-            "Entrecot nacional a la brasa",
-            "Manitas de cerdo con patatas fritas",
-            "Huevos rotos con sobrasada a la brasa",
-            "Rabo de toro con patatas fritas",
-            "Pata de pulpo a la brasa con parmentier de calabaza",
-            "Arroz de secreto ibérico y coliflor (mín. 2 personas)",
-            "Chuletas de cordero lechal a la brasa"
+            {
+              "nombre": "Olla de berzas",
+              "visible": true
+            },
+            {
+              "nombre": "Cachopo de ciervo (+2€)",
+              "visible": true
+            },
+            {
+              "nombre": "Arroz de jabalí y ajetes (mín. 2 personas)",
+              "visible": true
+            },
+            {
+              "nombre": "Entrecot nacional a la brasa",
+              "visible": true
+            },
+            {
+              "nombre": "Manitas de cerdo con patatas fritas",
+              "visible": true
+            },
+            {
+              "nombre": "Huevos rotos con sobrasada a la brasa",
+              "visible": true
+            },
+            {
+              "nombre": "Rabo de toro con patatas fritas",
+              "visible": true
+            },
+            {
+              "nombre": "Pata de pulpo a la brasa con parmentier de calabaza",
+              "visible": true
+            },
+            {
+              "nombre": "Arroz de secreto ibérico y coliflor (mín. 2 personas)",
+              "visible": true
+            },
+            {
+              "nombre": "Chuletas de cordero lechal a la brasa",
+              "visible": true
+            }
           ]
         },
         {
           "titulo": "Postre (uno por persona)",
           "platos": [
-            "Tarta de horchata y fartons",
-            "Brownie 72% (+2€)",
-            "Tarta de queso de oveja con crumble de pimienta y miel de azahar de Chulilla",
-            "Torrija caramelizada con helado de leche merengada",
-            "Cheesecake de Lotus",
-            "Helado (leche merengada, coco o vainilla)"
+            {
+              "nombre": "Tarta de horchata y fartons",
+              "visible": true
+            },
+            {
+              "nombre": "Brownie 72% (+2€)",
+              "visible": true
+            },
+            {
+              "nombre": "Tarta de queso de oveja con crumble de pimienta y miel de azahar de Chulilla",
+              "visible": true
+            },
+            {
+              "nombre": "Torrija caramelizada con helado de leche merengada",
+              "visible": true
+            },
+            {
+              "nombre": "Cheesecake de Lotus",
+              "visible": true
+            },
+            {
+              "nombre": "Helado (leche merengada, coco o vainilla)",
+              "visible": true
+            }
           ]
         }
       ]

@@ -121,7 +121,7 @@ function renderCategorias() {
   cont.querySelectorAll('.btn-add-plato').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const ci = Number(e.target.dataset.cat);
-      menuActual.carta[ci].platos.push({ nombre: '', descripcion: '', precio: '' });
+      menuActual.carta[ci].platos.push({ nombre: '', descripcion: '', precio: '', visible: true });
       renderPlatos(ci);
     });
   });
@@ -131,13 +131,14 @@ function renderPlatos(ci) {
   const cont = document.querySelector(`.platos-lista[data-cat="${ci}"]`);
   const cat = menuActual.carta[ci];
   cont.innerHTML = cat.platos.map((p, pi) => `
-    <div class="plato-card">
+    <div class="plato-card ${p.visible === false ? 'plato-oculto' : ''}">
       <div class="plato-card-row">
         <input type="text" placeholder="Nombre del plato" value="${atributo(p.nombre)}" data-ci="${ci}" data-pi="${pi}" data-campo="nombre">
         <input type="text" placeholder="Precio" value="${atributo(p.precio)}" data-ci="${ci}" data-pi="${pi}" data-campo="precio" class="campo-precio">
       </div>
       <div class="plato-card-row">
         <input type="text" placeholder="Descripción (opcional)" value="${atributo(p.descripcion)}" data-ci="${ci}" data-pi="${pi}" data-campo="descripcion">
+        <button class="btn-icon btn-visible-toggle" data-ci="${ci}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
         <button class="btn-icon btn-borrar-plato" data-ci="${ci}" data-pi="${pi}" title="Eliminar plato">🗑️</button>
       </div>
     </div>
@@ -147,6 +148,14 @@ function renderPlatos(ci) {
     input.addEventListener('input', (e) => {
       const { ci, pi, campo } = e.target.dataset;
       menuActual.carta[ci].platos[pi][campo] = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.btn-visible-toggle').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { ci, pi } = e.target.dataset;
+      const plato = menuActual.carta[ci].platos[pi];
+      plato.visible = plato.visible === false;
+      renderPlatos(Number(ci));
     });
   });
   cont.querySelectorAll('.btn-borrar-plato').forEach((btn) => {
@@ -203,7 +212,7 @@ function renderMenus() {
   cont.querySelectorAll('.btn-add-seccion').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const mi = Number(e.target.dataset.mi);
-      menuActual.menus[mi].secciones.push({ titulo: '', platos: [''] });
+      menuActual.menus[mi].secciones.push({ titulo: '', platos: [{ nombre: '', visible: true }] });
       renderSecciones(mi);
     });
   });
@@ -241,7 +250,7 @@ function renderSecciones(mi) {
   cont.querySelectorAll('.btn-add-plato-linea').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const { mi, si } = e.target.dataset;
-      menuActual.menus[mi].secciones[si].platos.push('');
+      menuActual.menus[mi].secciones[si].platos.push({ nombre: '', visible: true });
       renderPlatosLinea(Number(mi), Number(si));
     });
   });
@@ -250,9 +259,10 @@ function renderSecciones(mi) {
 function renderPlatosLinea(mi, si) {
   const cont = document.querySelector(`.platos-linea-lista[data-mi="${mi}"][data-si="${si}"]`);
   const platos = menuActual.menus[mi].secciones[si].platos;
-  cont.innerHTML = platos.map((texto, pi) => `
-    <div class="plato-linea">
-      <input type="text" value="${atributo(texto)}" data-mi="${mi}" data-si="${si}" data-pi="${pi}" placeholder="Nombre del plato">
+  cont.innerHTML = platos.map((p, pi) => `
+    <div class="plato-linea ${p.visible === false ? 'plato-oculto' : ''}">
+      <input type="text" value="${atributo(p.nombre)}" data-mi="${mi}" data-si="${si}" data-pi="${pi}" placeholder="Nombre del plato">
+      <button class="btn-icon btn-visible-toggle-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
       <button class="btn-icon btn-borrar-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}">🗑️</button>
     </div>
   `).join('');
@@ -260,7 +270,15 @@ function renderPlatosLinea(mi, si) {
   cont.querySelectorAll('input').forEach((input) => {
     input.addEventListener('input', (e) => {
       const { mi, si, pi } = e.target.dataset;
-      menuActual.menus[mi].secciones[si].platos[pi] = e.target.value;
+      menuActual.menus[mi].secciones[si].platos[pi].nombre = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.btn-visible-toggle-linea').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { mi, si, pi } = e.target.dataset;
+      const plato = menuActual.menus[mi].secciones[si].platos[pi];
+      plato.visible = plato.visible === false;
+      renderPlatosLinea(Number(mi), Number(si));
     });
   });
   cont.querySelectorAll('.btn-borrar-linea').forEach((btn) => {
@@ -277,7 +295,7 @@ document.getElementById('btn-add-menu').addEventListener('click', () => {
     nombre: 'Nuevo menú',
     precio: '',
     condiciones: '',
-    secciones: [{ titulo: 'Platos', platos: [''] }],
+    secciones: [{ titulo: 'Platos', platos: [{ nombre: '', visible: true }] }],
   });
   renderMenus();
 });

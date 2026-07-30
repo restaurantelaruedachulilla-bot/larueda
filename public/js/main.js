@@ -18,7 +18,10 @@ async function cargarCarta() {
 
     if (data.aviso) avisoCarta.textContent = data.aviso;
 
-    contenedorCarta.innerHTML = data.carta.map((cat) => `
+    contenedorCarta.innerHTML = data.carta
+      .map((cat) => ({ ...cat, platos: cat.platos.filter((p) => p.visible !== false) }))
+      .filter((cat) => cat.platos.length)
+      .map((cat) => `
       <div class="carta-categoria">
         <h3>${escapeHtml(cat.categoria)}</h3>
         ${cat.platos.map((p) => `
@@ -38,9 +41,12 @@ async function cargarCarta() {
         <h3>${escapeHtml(menu.nombre)}</h3>
         <div class="menu-precio">${escapeHtml(menu.precio)}</div>
         <div class="menu-condiciones">${escapeHtml(menu.condiciones || '')}</div>
-        ${menu.secciones.map((sec) => `
+        ${menu.secciones
+          .map((sec) => ({ ...sec, platos: sec.platos.filter((p) => p.visible !== false) }))
+          .filter((sec) => sec.platos.length)
+          .map((sec) => `
           <div class="menu-seccion-titulo">${escapeHtml(sec.titulo)}</div>
-          <ul>${sec.platos.map((pl) => `<li>${escapeHtml(pl)}</li>`).join('')}</ul>
+          <ul>${sec.platos.map((pl) => `<li>${escapeHtml(pl.nombre)}</li>`).join('')}</ul>
         `).join('')}
       </div>
     `).join('');
