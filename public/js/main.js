@@ -122,12 +122,12 @@ async function actualizarTurnos() {
       '<option value="">Elige un turno</option>' +
       data.franjas.map((f) => {
         const cabe = !personas || f.disponibles >= personas;
-        const etiqueta = `${f.nombre} · ${f.inicio}–${f.fin} (${cabe ? f.disponibles + ' libres' : 'completo'})`;
+        const etiqueta = `${f.nombre} · ${f.inicio}–${f.fin}${cabe ? '' : ' (no disponible)'}`;
         return `<option value="${f.id}" ${!cabe ? 'disabled' : ''}>${escapeHtml(etiqueta)}</option>`;
       }).join('');
 
     turnoAyuda.textContent = personas
-      ? 'Los turnos marcados como "completo" no tienen sitio para tantas personas ese día.'
+      ? 'Los turnos marcados como "no disponible" no tienen sitio para tantas personas ese día.'
       : 'Indica cuántas personas sois para ver qué turnos tienen sitio.';
   } catch (err) {
     selectTurno.innerHTML = '<option value="">No se han podido cargar los turnos</option>';

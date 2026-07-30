@@ -48,7 +48,10 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.classList.add('active');
     const panelId = 'tab-' + btn.dataset.tab;
     document.getElementById(panelId).hidden = false;
-    if (btn.dataset.tab === 'reservas') cargarReservas();
+    if (btn.dataset.tab === 'reservas') {
+      cargarReservas();
+      cargarAforo();
+    }
     if (btn.dataset.tab === 'menus') renderMenus();
     if (btn.dataset.tab === 'mesas') cargarConfigAdmin();
   });
@@ -421,6 +424,37 @@ document.getElementById('btn-guardar-config').addEventListener('click', async ()
   }
 });
 
+// ---------- Aforo por turno (solo admin) ----------
+const inputAforoFecha = document.getElementById('input-aforo-fecha');
+inputAforoFecha.value = new Date().toISOString().slice(0, 10);
+inputAforoFecha.addEventListener('change', cargarAforo);
+
+async function cargarAforo() {
+  const cont = document.getElementById('aforo-resultado');
+  const fecha = inputAforoFecha.value;
+  if (!fecha) { cont.innerHTML = ''; return; }
+
+  cont.innerHTML = '<p class="cargando">Cargando aforo...</p>';
+  try {
+    const res = await fetch(`/api/disponibilidad?fecha=${encodeURIComponent(fecha)}`);
+    const data = await res.json();
+
+    if (!data.franjas.length) {
+      cont.innerHTML = '<p class="cargando">Ese día no hay turnos (cerrado).</p>';
+      return;
+    }
+
+    cont.innerHTML = data.franjas.map((f) => `
+      <div class="aforo-item ${f.disponibles <= 0 ? 'aforo-lleno' : ''}">
+        <strong>${atributo(f.nombre)} ${atributo(f.inicio)}</strong><br>
+        ${f.ocupadas}/${f.capacidadMaxima} ocupadas
+      </div>
+    `).join('');
+  } catch (err) {
+    cont.innerHTML = '<p class="cargando">No se ha podido cargar el aforo.</p>';
+  }
+}
+
 // ---------- Reservas ----------
 async function cargarReservas() {
   const cont = document.getElementById('lista-reservas');
@@ -464,6 +498,7 @@ async function cargarReservas() {
         body: JSON.stringify({ estado: e.target.value }),
       });
       cargarReservas();
+      cargarAforo();
     });
   });
   cont.querySelectorAll('.btn-borrar-reserva').forEach((btn) => {
@@ -474,6 +509,7 @@ async function cargarReservas() {
         headers: { 'x-admin-token': token },
       });
       cargarReservas();
+      cargarAforo();
     });
   });
 }

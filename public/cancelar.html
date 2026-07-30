@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cancelar reserva · La Rueda</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .cancelar-caja {
+    max-width: 480px;
+    margin: 10vh auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(47,38,32,0.12);
+    text-align: center;
+  }
+  .cancelar-detalle { text-align: left; background: var(--color-cream-dark); border-radius: 10px; padding: 1rem; margin: 1.25rem 0; }
+  .cancelar-detalle p { margin: 0.3rem 0; }
+  .cancelar-mensaje { font-weight: 600; margin-top: 1rem; min-height: 1.2em; }
+  .cancelar-mensaje.ok { color: var(--color-olive); }
+  .cancelar-mensaje.error { color: var(--color-brick); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cancelar-caja">
+    <h1>La Rueda</h1>
+    <div id="contenido">
+      <p class="cargando">Cargando tu reserva…</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function escapeHtml(str) {
+  return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+const contenido = document.getElementById('contenido');
+
+async function cargar() {
+  if (!id) {
+    contenido.innerHTML = '<p>Este enlace no es válido. Llámanos al <a href="tel:+34613727680">613 72 76 80</a> si necesitas cancelar una reserva.</p>';
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/reservas/publica/${encodeURIComponent(id)}`);
+    if (!res.ok) throw new Error('no encontrada');
+    const r = await res.json();
+
+    if (r.estado === 'cancelada') {
+      contenido.innerHTML = `<p>Esta reserva ya estaba cancelada. ¡Hasta pronto!</p>`;
+      return;
+    }
+
+    contenido.innerHTML = `
+      <p>¿Seguro que quieres cancelar esta reserva?</p>
+      <div class="cancelar-detalle">
+        <p><strong>${escapeHtml(r.nombre)}</strong></p>
+        <p>📅 ${escapeHtml(r.fecha)} · 🕒 ${escapeHtml(r.franjaNombre)} (${escapeHtml(r.hora)})</p>
+        <p>👥 ${escapeHtml(String(r.personas))} personas</p>
+      </div>
+      <button class="btn btn-primary" id="btn-cancelar">Sí, cancelar mi reserva</button>
+      <p id="mensaje" class="cancelar-mensaje"></p>
+    `;
+
+    document.getElementById('btn-cancelar').addEventListener('click', async (e) => {
+      e.target.disabled = true;
+      e.target.textContent = 'Cancelando...';
+      const mensaje = document.getElementById('mensaje');
+      try {
+        const resCancel = await fetch(`/api/reservas/publica/${encodeURIComponent(id)}/cancelar`, { method: 'POST' });
+        if (!resCancel.ok) throw new Error('fallo');
+        mensaje.textContent = 'Reserva cancelada. ¡Gracias por avisarnos!';
+        mensaje.classList.add('ok');
+        e.target.remove();
+      } catch (err) {
+        mensaje.textContent = 'No se ha podido cancelar. Llámanos al 613 72 76 80.';
+        mensaje.classList.add('error');
+        e.target.disabled = false;
+        e.target.textContent = 'Sí, cancelar mi reserva';
+      }
+    });
+  } catch (err) {
+    contenido.innerHTML = '<p>No encontramos esa reserva. Llámanos al <a href="tel:+34613727680">613 72 76 80</a> si necesitas ayuda.</p>';
+  }
+}
+
+cargar();
+</script>
+</body>
+</html>

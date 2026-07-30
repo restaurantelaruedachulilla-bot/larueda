@@ -1,3 +1,7 @@
+// Todas las fechas/horas del restaurante son hora de Madrid, independientemente
+// de en que zona horaria este el servidor donde se despliegue (ej. Render usa UTC).
+process.env.TZ = 'Europe/Madrid';
+
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
@@ -198,6 +202,76 @@ if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
   });
 }
 
+async function enviarEmailCliente(reserva, { asunto, cuerpo }) {
+  if (!transporter || !reserva.email) return;
+  try {
+    await transporter.sendMail({
+      from: `"Restaurante La Rueda" <${process.env.GMAIL_USER}>`,
+      to: reserva.email,
+      subject: asunto,
+      text: cuerpo,
+    });
+  } catch (err) {
+    console.error('No se pudo enviar el email al cliente:', err.message);
+  }
+}
+
+function textoConfirmacionCliente(reserva) {
+  return (
+    `¡Hola ${reserva.nombre}!\n\n` +
+    `Hemos recibido tu solicitud de reserva en Restaurante La Rueda:\n\n` +
+    `Fecha: ${reserva.fecha}\n` +
+    `Turno: ${reserva.franjaNombre} (${reserva.hora})\n` +
+    `Personas: ${reserva.personas}\n\n` +
+    `Si necesitas cancelarla, hazlo en un clic aquí:\n${reserva.cancelUrl}\n\n` +
+    `(o llámanos al 613 72 76 80 si lo prefieres)\n\n` +
+    `¡Te esperamos!\n` +
+    `Restaurante La Rueda · Chulilla`
+  );
+}
+
+function textoRecordatorioCliente(reserva) {
+  return (
+    `¡Hola ${reserva.nombre}!\n\n` +
+    `Te recordamos tu reserva de hoy en Restaurante La Rueda:\n\n` +
+    `Turno: ${reserva.franjaNombre} (${reserva.hora})\n` +
+    `Personas: ${reserva.personas}\n\n` +
+    `Si al final no podéis venir, cancela en un clic aquí para que podamos ofrecer la mesa a otras personas:\n${reserva.cancelUrl}\n\n` +
+    `¡Hasta ahora!\n` +
+    `Restaurante La Rueda · Chulilla`
+  );
+}
+
+// Cada cierto tiempo revisa las reservas activas y manda un recordatorio por email
+// a las que esten a 3 horas o menos de su turno y no lo hayan recibido ya.
+const MINUTOS_ANTES_RECORDATORIO = 180;
+function comprobarRecordatorios() {
+  const reservas = leerReservas();
+  const ahora = new Date();
+  let cambios = false;
+
+  reservas.forEach((reserva) => {
+    if (reserva.estado === 'cancelada' || reserva.recordatorioEnviado || !reserva.email) return;
+
+    const [anio, mes, dia] = reserva.fecha.split('-').map(Number);
+    const [hora, minuto] = reserva.hora.split(':').map(Number);
+    const momentoReserva = new Date(anio, mes - 1, dia, hora, minuto);
+    const minutosRestantes = (momentoReserva - ahora) / 60000;
+
+    if (minutosRestantes > 0 && minutosRestantes <= MINUTOS_ANTES_RECORDATORIO) {
+      enviarEmailCliente(reserva, {
+        asunto: `Recordatorio: tu reserva de hoy en La Rueda (${reserva.hora})`,
+        cuerpo: textoRecordatorioCliente(reserva),
+      });
+      reserva.recordatorioEnviado = true;
+      cambios = true;
+    }
+  });
+
+  if (cambios) guardarReservas(reservas);
+}
+setInterval(comprobarRecordatorios, 5 * 60 * 1000);
+
 async function avisarWhatsapp(reserva) {
   const telefono = process.env.CALLMEBOT_PHONE;
   const apikey = process.env.CALLMEBOT_APIKEY;
@@ -266,8 +340,11 @@ app.post('/api/reservas', async (req, res) => {
     });
   }
 
+  const reservaId = crypto.randomUUID();
+  const cancelUrl = `${req.protocol}://${req.get('host')}/cancelar.html?id=${reservaId}`;
+
   const reserva = {
-    id: crypto.randomUUID(),
+    id: reservaId,
     nombre,
     telefono,
     email: email || '',
@@ -281,6 +358,8 @@ app.post('/api/reservas', async (req, res) => {
     mesaZona: mesa.zona || '',
     comentarios: comentarios || '',
     estado: 'pendiente',
+    recordatorioEnviado: false,
+    cancelUrl,
     creada: new Date().toISOString(),
   };
 
@@ -315,8 +394,56 @@ app.post('/api/reservas', async (req, res) => {
   }
 
   await avisarWhatsapp(reserva);
+  await enviarEmailCliente(reserva, {
+    asunto: `Confirmación de tu reserva en La Rueda (${reserva.fecha})`,
+    cuerpo: textoConfirmacionCliente(reserva),
+  });
 
   res.json({ ok: true, id: reserva.id, mesa: mesa.nombre, turno: `${franja.nombre} (${franja.inicio})` });
+});
+
+// Consulta y cancelacion publicas: el propio id (UUID, imposible de adivinar) hace de
+// clave de acceso, para que el cliente pueda ver/cancelar su reserva desde el enlace del email.
+app.get('/api/reservas/publica/:id', (req, res) => {
+  const reserva = leerReservas().find((r) => r.id === req.params.id);
+  if (!reserva) return res.status(404).json({ error: 'No encontramos esa reserva.' });
+  const { nombre, fecha, franjaNombre, hora, personas, estado } = reserva;
+  res.json({ nombre, fecha, franjaNombre, hora, personas, estado });
+});
+
+app.post('/api/reservas/publica/:id/cancelar', async (req, res) => {
+  const reservas = leerReservas();
+  const reserva = reservas.find((r) => r.id === req.params.id);
+  if (!reserva) return res.status(404).json({ error: 'No encontramos esa reserva.' });
+
+  if (reserva.estado === 'cancelada') {
+    return res.json({ ok: true, yaEstabaCancelada: true });
+  }
+
+  reserva.estado = 'cancelada';
+  guardarReservas(reservas);
+
+  if (transporter) {
+    const destino = process.env.RESTAURANT_EMAIL || process.env.GMAIL_USER;
+    try {
+      await transporter.sendMail({
+        from: `"Web La Rueda" <${process.env.GMAIL_USER}>`,
+        to: destino,
+        subject: `Reserva cancelada por el cliente: ${reserva.nombre} - ${reserva.fecha} ${reserva.hora}`,
+        text:
+          `El cliente ha cancelado su reserva desde el email:\n\n` +
+          `Nombre: ${reserva.nombre}\n` +
+          `Fecha: ${reserva.fecha}\n` +
+          `Turno: ${reserva.franjaNombre} (${reserva.hora})\n` +
+          `Personas: ${reserva.personas}\n` +
+          `Mesa: ${reserva.mesaNombre}\n`,
+      });
+    } catch (err) {
+      console.error('No se pudo avisar de la cancelación por email:', err.message);
+    }
+  }
+
+  res.json({ ok: true });
 });
 
 app.get('/api/reservas', requiereAdmin, (req, res) => {
