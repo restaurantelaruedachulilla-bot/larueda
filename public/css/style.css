@@ -77,6 +77,18 @@ a { color: var(--color-brick); }
   font-weight: 700;
   color: var(--color-charcoal);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icono { height: 28px; width: auto; }
+
+.hero-logo-icono {
+  height: 64px;
+  width: auto;
+  margin: 0 auto 1rem;
+  display: block;
 }
 
 .main-nav {
