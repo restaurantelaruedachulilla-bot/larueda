@@ -274,7 +274,7 @@
     {
       "nombre": "Menú Chulilla",
       "precio": "26€ / persona",
-      "condiciones": "Incluye postre o café. No incluye pan ni bebidas. Mesa completa con el mismo menú. IVA incluido.",
+      "condiciones": "Incluye postre o café. No incluye pan ni bebidas. El menú se sirve únicamente a mesa completa. IVA incluido.",
       "secciones": [
         {
           "titulo": "Para compartir",
@@ -352,7 +352,7 @@
     {
       "nombre": "Menú Brasa",
       "precio": "35€ / persona",
-      "condiciones": "Incluye postre y café. No incluye pan ni bebidas. Mesa completa con el mismo menú. IVA incluido.",
+      "condiciones": "Incluye postre y café. No incluye pan ni bebidas. El menú se sirve únicamente a mesa completa. IVA incluido.",
       "secciones": [
         {
           "titulo": "Para compartir",
