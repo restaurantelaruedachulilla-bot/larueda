@@ -23,7 +23,7 @@
   text-align: center;
   box-shadow: 0 8px 30px rgba(47,38,32,0.12);
 }
-.login-logo-icono { height: 48px; width: auto; margin-bottom: 0.5rem; }
+.login-logo-completo { height: 180px; width: auto; margin-bottom: 0.5rem; }
 .admin-login h1 { font-size: 1.8rem; margin-bottom: 0; }
 .admin-login p { color: #6b5c4f; }
 .admin-login input {

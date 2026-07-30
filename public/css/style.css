@@ -84,11 +84,21 @@ a { color: var(--color-brick); }
 
 .logo-icono { height: 28px; width: auto; }
 
-.hero-logo-icono {
-  height: 64px;
+.hero-logo-completo {
+  height: 260px;
   width: auto;
-  margin: 0 auto 1rem;
+  margin: 0.5rem auto 1rem;
   display: block;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .main-nav {
@@ -288,6 +298,7 @@ a { color: var(--color-brick); }
   .main-nav.open { display: flex; }
   .nav-toggle { display: block; }
   .hero h1 { font-size: 2.2rem; }
+  .hero-logo-completo { height: 160px; }
   .hero-subtitle { font-size: 1.05rem; }
   .perfil-grid { grid-template-columns: 1fr; }
   .form-row-split, .form-row-split-3 { grid-template-columns: 1fr; }
