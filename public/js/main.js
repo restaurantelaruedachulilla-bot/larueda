@@ -6,6 +6,20 @@ const mainNav = document.getElementById('main-nav');
 navToggle.addEventListener('click', () => mainNav.classList.toggle('open'));
 mainNav.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => mainNav.classList.remove('open')));
 
+// Galería (lightbox)
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+document.querySelectorAll('.galeria-item').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    lightboxImg.src = btn.dataset.full;
+    lightboxImg.alt = btn.querySelector('img').alt;
+    lightbox.hidden = false;
+  });
+});
+document.getElementById('lightbox-cerrar').addEventListener('click', () => { lightbox.hidden = true; });
+lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.hidden = true; });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.hidden = true; });
+
 // Cargar carta y menús desde la API
 async function cargarCarta() {
   const contenedorCarta = document.getElementById('carta-contenido');
