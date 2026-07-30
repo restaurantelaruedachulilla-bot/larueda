@@ -289,14 +289,22 @@ if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
 }
 
 async function enviarEmailCliente(reserva, { asunto, cuerpo }) {
-  if (!transporter || !reserva.email) return;
+  if (!transporter) {
+    console.warn('enviarEmailCliente: no hay transporter configurado, no se envia nada.');
+    return;
+  }
+  if (!reserva.email) {
+    console.warn('enviarEmailCliente: la reserva no tiene email, no se envia nada.');
+    return;
+  }
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"Restaurante La Rueda" <${process.env.GMAIL_USER}>`,
       to: reserva.email,
       subject: asunto,
       text: cuerpo,
     });
+    console.log('enviarEmailCliente: email enviado a', reserva.email, 'messageId:', info.messageId);
   } catch (err) {
     console.error('No se pudo enviar el email al cliente:', err.message);
   }
