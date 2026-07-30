@@ -443,7 +443,7 @@ app.post('/api/reservas', async (req, res) => {
     personas: numPersonas,
     ...resumenMesas(mesas),
     comentarios: comentarios || '',
-    estado: 'pendiente',
+    estado: 'confirmada',
     recordatorioEnviado: false,
     cancelUrl,
     creada: new Date().toISOString(),
