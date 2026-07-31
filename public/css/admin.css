@@ -320,6 +320,11 @@
   color: #fff;
 }
 
+.ayuda-texto {
+  font-size: 0.82rem;
+  color: #6b5c4f;
+  margin: 0.3rem 0 0.5rem;
+}
 .aforo-resultado {
   display: flex;
   flex-wrap: wrap;
@@ -328,13 +333,19 @@
 }
 .aforo-item {
   background: #fff;
+  border: none;
   border-radius: 10px;
   padding: 0.5rem 0.75rem;
   font-size: 0.85rem;
+  font-family: var(--font-body);
+  text-align: left;
   box-shadow: 0 2px 8px rgba(47,38,32,0.06);
+  cursor: pointer;
 }
 .aforo-item strong { color: var(--color-brick); }
 .aforo-item.aforo-lleno { background: #f6d9d3; }
+.aforo-item.aforo-cerrado { background: var(--color-brick); color: #fff; }
+.aforo-item.aforo-cerrado strong { color: #fff; }
 
 /* Reservas */
 .reservas-dia-titulo {

@@ -141,8 +141,9 @@ async function actualizarTurnos() {
     selectTurno.innerHTML =
       '<option value="">Elige un turno</option>' +
       data.franjas.map((f) => {
-        const cabe = !personas || f.disponibles >= personas;
-        const etiqueta = `${f.nombre} · ${f.inicio}–${f.fin}${cabe ? '' : ' (no disponible)'}`;
+        const cabe = !f.cerrada && (!personas || f.disponibles >= personas);
+        const motivo = f.cerrada ? ' (cerrado)' : (cabe ? '' : ' (no disponible)');
+        const etiqueta = `${f.nombre} · ${f.inicio}–${f.fin}${motivo}`;
         return `<option value="${f.id}" ${!cabe ? 'disabled' : ''}>${escapeHtml(etiqueta)}</option>`;
       }).join('');
 

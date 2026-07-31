@@ -554,14 +554,37 @@ async function cargarAforo() {
       return;
     }
 
-    cont.innerHTML = data.franjas.map((f) => `
-      <div class="aforo-item ${f.disponibles <= 0 ? 'aforo-lleno' : ''}">
+    cont.innerHTML = data.franjas.map((f) => {
+      const clase = f.cerrada ? 'aforo-cerrado' : (f.disponibles <= 0 ? 'aforo-lleno' : '');
+      const estado = f.cerrada ? 'Cerrado por el restaurante' : `${f.ocupadas}/${f.capacidadMaxima} ocupadas`;
+      return `
+      <button type="button" class="aforo-item ${clase}" data-franja-id="${atributo(f.id)}" title="Haz clic para ${f.cerrada ? 'reabrir' : 'cerrar'} este turno ese día">
         <strong>${atributo(f.nombre)} ${atributo(f.inicio)}</strong><br>
-        ${f.ocupadas}/${f.capacidadMaxima} ocupadas
-      </div>
-    `).join('');
+        ${estado}
+      </button>
+    `;
+    }).join('');
+
+    cont.querySelectorAll('.aforo-item').forEach((btn) => {
+      btn.addEventListener('click', () => toggleCierreTurno(btn.dataset.franjaId));
+    });
   } catch (err) {
     cont.innerHTML = '<p class="cargando">No se ha podido cargar el aforo.</p>';
+  }
+}
+
+async function toggleCierreTurno(franjaId) {
+  const fecha = inputAforoFecha.value;
+  try {
+    const res = await fetch('/api/admin/cierres/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+      body: JSON.stringify({ fecha, franjaId }),
+    });
+    if (!res.ok) throw new Error();
+    await cargarAforo();
+  } catch (err) {
+    alert('No se ha podido cambiar el estado de ese turno.');
   }
 }
 

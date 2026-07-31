@@ -36,10 +36,12 @@ function asegurarArchivoDatos(nombre, contenidoPorDefecto) {
 asegurarArchivoDatos('menu.json', JSON.stringify({ actualizado: '', aviso: '', carta: [], menus: [] }, null, 2));
 asegurarArchivoDatos('config.json', JSON.stringify({ turnoMinutos: 120, mesas: [], franjas: [] }, null, 2));
 asegurarArchivoDatos('reservas.json', '[]');
+asegurarArchivoDatos('cierres.json', '[]');
 
 const MENU_PATH = path.join(DATA_DIR, 'menu.json');
 const RESERVAS_PATH = path.join(DATA_DIR, 'reservas.json');
 const CONFIG_PATH = path.join(DATA_DIR, 'config.json');
+const CIERRES_PATH = path.join(DATA_DIR, 'cierres.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'cambia-esta-contrasena';
 const LIMITE_GRUPO_TELEFONO = 8;
 
@@ -115,8 +117,34 @@ app.get('/api/disponibilidad', (req, res) => {
   if (!fecha) return res.status(400).json({ error: 'Falta la fecha' });
   const config = leerConfig();
   const reservas = leerReservas();
-  const disponibilidad = calcularDisponibilidad(config, fecha, reservas);
+  const cierres = leerCierres();
+  const disponibilidad = calcularDisponibilidad(config, fecha, reservas, cierres);
   res.json({ turnoMinutos: config.turnoMinutos, franjas: disponibilidad });
+});
+
+// ---------- Cierres manuales de turnos (solo admin) ----------
+// Permite cerrar un turno concreto de un dia concreto (ej. "1 de agosto, 13:00")
+// para que la gente no pueda reservarlo online, sin tener que tocar el horario general.
+app.get('/api/admin/cierres', requiereAdmin, (req, res) => {
+  res.json(leerCierres());
+});
+
+app.post('/api/admin/cierres/toggle', requiereAdmin, (req, res) => {
+  const { fecha, franjaId } = req.body || {};
+  if (!fecha || !franjaId) return res.status(400).json({ error: 'Faltan fecha o franjaId' });
+
+  const cierres = leerCierres();
+  const idx = cierres.findIndex((c) => c.fecha === fecha && c.franjaId === franjaId);
+  let cerrada;
+  if (idx >= 0) {
+    cierres.splice(idx, 1);
+    cerrada = false;
+  } else {
+    cierres.push({ fecha, franjaId });
+    cerrada = true;
+  }
+  guardarCierres(cierres);
+  res.json({ ok: true, cerrada });
 });
 
 app.put('/api/config', requiereAdmin, (req, res) => {
@@ -141,6 +169,13 @@ function guardarReservas(lista) {
   fs.writeFileSync(RESERVAS_PATH, JSON.stringify(lista, null, 2), 'utf8');
 }
 
+function leerCierres() {
+  return JSON.parse(fs.readFileSync(CIERRES_PATH, 'utf8'));
+}
+function guardarCierres(lista) {
+  fs.writeFileSync(CIERRES_PATH, JSON.stringify(lista, null, 2), 'utf8');
+}
+
 function minutosDesdeMedianoche(horaHHMM) {
   const [h, m] = horaHHMM.split(':').map(Number);
   return h * 60 + m;
@@ -160,16 +195,19 @@ function franjasDelDia(config, fecha) {
 }
 
 // Calcula, para una fecha dada, cuantas plazas ya estan ocupadas en cada franja
-// (sumando reservas activas -no canceladas- de esa fecha y esa franja).
-function calcularDisponibilidad(config, fecha, reservas) {
+// (sumando reservas activas -no canceladas- de esa fecha y esa franja), y si el
+// restaurante ha cerrado manualmente ese turno ese dia concreto (ver cierres.json).
+function calcularDisponibilidad(config, fecha, reservas, cierres) {
   const reservasDelDia = reservas.filter((r) => r.fecha === fecha && r.estado !== 'cancelada');
+  const cierresDelDia = new Set(cierres.filter((c) => c.fecha === fecha).map((c) => c.franjaId));
 
   return franjasDelDia(config, fecha).map((franja) => {
     const ocupadas = reservasDelDia
       .filter((r) => r.franjaId === franja.id)
       .reduce((suma, r) => suma + Number(r.personas), 0);
-    const disponibles = Math.max(0, franja.capacidadMaxima - ocupadas);
-    return { ...franja, ocupadas, disponibles };
+    const cerrada = cierresDelDia.has(franja.id);
+    const disponibles = cerrada ? 0 : Math.max(0, franja.capacidadMaxima - ocupadas);
+    return { ...franja, ocupadas, disponibles, cerrada };
   });
 }
 
@@ -419,8 +457,14 @@ app.post('/api/reservas', async (req, res) => {
   }
 
   const reservas = leerReservas();
+  const cierres = leerCierres();
 
-  const disponibilidad = calcularDisponibilidad(config, fecha, reservas).find((f) => f.id === franjaId);
+  const disponibilidad = calcularDisponibilidad(config, fecha, reservas, cierres).find((f) => f.id === franjaId);
+  if (disponibilidad.cerrada) {
+    return res.status(409).json({
+      error: 'Ese turno está cerrado ese día. Elige otro turno o llámanos al 613 72 76 80.',
+    });
+  }
   if (disponibilidad.disponibles < numPersonas) {
     return res.status(409).json({
       error: `Lo sentimos, ya no quedan plazas para ese turno ese día (quedan ${disponibilidad.disponibles}).`,
