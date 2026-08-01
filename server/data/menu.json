@@ -463,7 +463,8 @@
             {
               "nombre": "Finca del Mar Chardonnay",
               "precio": "14€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Vicente Gandía · Chardonnay"
             }
           ]
         },
@@ -473,7 +474,8 @@
             {
               "nombre": "Enrique Mendoza",
               "precio": "24€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Enrique Mendoza · Chardonnay"
             }
           ]
         },
@@ -483,17 +485,20 @@
             {
               "nombre": "Cyatho",
               "precio": "4€ copa · 16€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Cyatho (grupo Fernández de Piérola) · Verdejo"
             },
             {
               "nombre": "Monopole Verdejo",
               "precio": "17€",
-              "visible": true
+              "visible": true,
+              "descripcion": "CVNE · Verdejo"
             },
             {
               "nombre": "Oinoz",
               "precio": "19€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodega CM de Matarromera · Verdejo"
             }
           ]
         },
@@ -503,27 +508,32 @@
             {
               "nombre": "Finca Vidales Blanco 2024",
               "precio": "3.50€ copa · 14€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Burgo Viejo · 2024 · Viura"
             },
             {
               "nombre": "López de Haro Blanco",
               "precio": "16€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Hacienda López de Haro (Vintae) · Viura, Malvasía, Garnacha Blanca, Tempranillo Blanco y Turruntés"
             },
             {
               "nombre": "López de Haro Reserva 2018",
               "precio": "19€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Hacienda López de Haro (Vintae) · 2018 · Tempranillo y Graciano"
             },
             {
               "nombre": "El Pacto",
               "precio": "24€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Viñedos El Pacto (Vintae) · Malvasía, Garnacha Blanca y Jaina"
             },
             {
               "nombre": "875m Blanco",
               "precio": "19€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas El Coto de Rioja, Finca Carbonera · Chardonnay"
             }
           ]
         },
@@ -533,12 +543,14 @@
             {
               "nombre": "Pazo da Torre",
               "precio": "4€ copa · 18€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodega Bouza do Rei · Albariño"
             },
             {
               "nombre": "Martín Códax",
               "precio": "29€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Martín Códax · Albariño"
             }
           ]
         },
@@ -548,17 +560,20 @@
             {
               "nombre": "Casar de Vide",
               "precio": "21€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Grupo Matarromera, D.O. Ribeiro · Treixadura, Albariño, Godello y Torrontés"
             },
             {
               "nombre": "Komokabras",
               "precio": "35€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Adega Entre Os Ríos, Barbanza e Iria (Galicia) · Albariño"
             },
             {
               "nombre": "Teo Legido Las Galgas",
               "precio": "58€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodega Teo Legido (Ávila) · Verdejo de viñas centenarias"
             }
           ]
         }
@@ -573,12 +588,14 @@
             {
               "nombre": "Purita Joven",
               "precio": "29€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas 9c+ (Chulilla) · Merlot"
             },
             {
               "nombre": "Purita Tinaja",
               "precio": "29€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas 9c+ (Chulilla) · crianza en tinaja"
             }
           ]
         },
@@ -588,7 +605,8 @@
             {
               "nombre": "Seda",
               "precio": "3.50€ copa · 14€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Murviedro, La Casa de la Seda · Bobal de viñas de 1923"
             }
           ]
         },
@@ -598,107 +616,128 @@
             {
               "nombre": "López de Haro Crianza 2021",
               "precio": "4€ copa · 16€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Hacienda López de Haro (Vintae) · 2021 · Tempranillo, Garnacha y Graciano"
             },
             {
               "nombre": "Tahur Crianza 2022",
               "precio": "18€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas La Rodetta · 2022 · Tempranillo"
             },
             {
               "nombre": "López de Haro Reserva 2018",
               "precio": "19€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Hacienda López de Haro (Vintae) · 2018 · Tempranillo y Graciano"
             },
             {
               "nombre": "Dominio de la Abadesa",
               "precio": "19€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Ontañón · Tempranillo"
             },
             {
               "nombre": "Fernández de Piérola",
               "precio": "5€ copa · 21€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Fernández de Piérola (Rioja Alavesa) · Tempranillo"
             },
             {
               "nombre": "Cune Gran Reserva 2020",
               "precio": "23€",
-              "visible": true
+              "visible": true,
+              "descripcion": "CVNE · 2020 · Tempranillo y Graciano-Mazuelo"
             },
             {
               "nombre": "Marqués de Valido",
               "precio": "25€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Muriel Wines (Elciego) · Tempranillo y Garnacha"
             },
             {
               "nombre": "Laturce",
               "precio": "26€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Laturce · Tempranillo"
             },
             {
               "nombre": "Ortega Ezquerro",
               "precio": "27.50€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas y Viñedos Ortega Ezquerro (Tudelilla) · Tempranillo, Garnacha y Mencía"
             },
             {
               "nombre": "Viña Pomal Reserva 2018",
               "precio": "28€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Bilbaínas (Haro) · 2018 · Tempranillo"
             },
             {
               "nombre": "Coto de Imaz",
               "precio": "34€",
-              "visible": true
+              "visible": true,
+              "descripcion": "El Coto de Rioja · Reserva · Tempranillo"
             },
             {
               "nombre": "Viña Salceda La Tejera 2020",
               "precio": "30€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Viña Salceda (Elciego) · 2020 · Tempranillo, Graciano y Mazuelo"
             },
             {
               "nombre": "Viña Real Reserva 2021",
               "precio": "32€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Viña Real, grupo CVNE · 2021 · Tempranillo, Mazuelo, Graciano y Garnacha"
             },
             {
               "nombre": "Lan Reserva 2018",
               "precio": "34€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Lan · 2018 · Tempranillo, Mazuelo y Garnacha"
             },
             {
               "nombre": "Muga 2021 Crianza",
               "precio": "40€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Muga (Haro) · 2021 · Tempranillo, Garnacha, Mazuelo y Graciano"
             },
             {
               "nombre": "Macán Clásico 2021",
               "precio": "49€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Benjamin de Rothschild & Vega Sicilia · 2021 · Tempranillo y Garnacha"
             },
             {
               "nombre": "Viña Tondonia 2012",
               "precio": "58€",
-              "visible": true
+              "visible": true,
+              "descripcion": "R. López de Heredia (Haro) · 2012 · Tempranillo, Garnacha, Graciano y Mazuelo"
             },
             {
               "nombre": "El Maquinista 2005",
               "precio": "69€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Privios Wines, D.O.Ca. Rioja · Tempranillo"
             },
             {
               "nombre": "Artadi Valdeginés 2019",
               "precio": "71€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Artadi (Laguardia) · 2019 · Tempranillo, viñedo Valdeginés"
             },
             {
               "nombre": "Macán 2020",
               "precio": "95€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Benjamin de Rothschild & Vega Sicilia · 2020 · Tempranillo"
             },
             {
               "nombre": "Castillo de Ygay Reserva 2011",
               "precio": "290€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Marqués de Murrieta · 2011 · Tempranillo y Mazuelo"
             }
           ]
         },
@@ -708,92 +747,110 @@
             {
               "nombre": "Prado Rey Roble 2024",
               "precio": "5€ copa · 19€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas PradoRey · 2024 · Tempranillo, Cabernet Sauvignon y Merlot"
             },
             {
               "nombre": "La Buena Uva 2024",
               "precio": "21€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodega Matarromera · 2024 · Tempranillo"
             },
             {
               "nombre": "Vallejo",
               "precio": "22€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodega Bela, grupo CVNE · Tempranillo"
             },
             {
               "nombre": "Durón Crianza",
               "precio": "22€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Durón (Roa) · Tinta del País"
             },
             {
               "nombre": "Traslascuestas Roble",
               "precio": "6€ copa · 23€ botella",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Traslascuestas (Valcavado de Roa) · Tempranillo"
             },
             {
               "nombre": "Supernova Reserva 2019",
               "precio": "25€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Briego (Fompedraza) · 2019 · Tempranillo"
             },
             {
               "nombre": "Viña Mayor",
               "precio": "25€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Viña Mayor (Quintanilla de Onésimo) · Tempranillo"
             },
             {
               "nombre": "Hito 2024",
               "precio": "25€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Cepa 21 · 2024 · Tinta Fina (Tempranillo)"
             },
             {
               "nombre": "Monteabellón Crianza 2022",
               "precio": "30€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Monteabellón · 2022 · Tempranillo"
             },
             {
               "nombre": "Viña Pedrosa",
               "precio": "32€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Hermanos Pérez Pascuas (Pedrosa de Duero) · Tempranillo y Cabernet Sauvignon"
             },
             {
               "nombre": "Durón Reserva",
               "precio": "32€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Durón · Tinta del País"
             },
             {
               "nombre": "Viña Mayor Reserva 2019",
               "precio": "32€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Viña Mayor · 2019 · Tempranillo"
             },
             {
               "nombre": "Abadía de San Quirce",
               "precio": "35€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Abadía de San Quirce (Gumiel de Izán) · Tinta Fina"
             },
             {
               "nombre": "Bardos Suprema",
               "precio": "50€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bardos, Vintae (Páramo de Corcos) · Tinta del País"
             },
             {
               "nombre": "Pago de Carraovejas",
               "precio": "56€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Pago de Carraovejas (Peñafiel) · Tinto Fino, Cabernet Sauvignon y Merlot"
             },
             {
               "nombre": "Traslascuestas 2020 Magnum (1,5L)",
               "precio": "62€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Traslascuestas · 2020 · Tempranillo (magnum 1,5L)"
             },
             {
               "nombre": "Viña Pedrosa Reserva 2021",
               "precio": "75€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Hermanos Pérez Pascuas · 2021 · Tinto Fino"
             },
             {
               "nombre": "Alión 2021",
               "precio": "120€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas y Viñedos Alión, grupo Vega Sicilia · 2021 · Tinto Fino"
             }
           ]
         },
@@ -803,22 +860,26 @@
             {
               "nombre": "Libre Canto",
               "precio": "18€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Dominio de Tares · Mencía"
             },
             {
               "nombre": "Señorío del Bierzo",
               "precio": "20€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Vinos Guerra · Mencía centenaria"
             },
             {
               "nombre": "Colección de Barricas",
               "precio": "26€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Dominio de Tares · Mencía con paso por barrica"
             },
             {
               "nombre": "Tilenus",
               "precio": "28€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Estefanía, grupo MGWines · Mencía"
             }
           ]
         },
@@ -828,17 +889,20 @@
             {
               "nombre": "Cyan by Matarromera",
               "precio": "26€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodega Cyan (Matarromera) · Tinta de Toro"
             },
             {
               "nombre": "Gran Colegiata",
               "precio": "30€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Fariña · Tinta de Toro de viñas centenarias"
             },
             {
               "nombre": "Pintia 2020",
               "precio": "90€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas y Viñedos Pintia, grupo Vega Sicilia · 2020 · Tinta de Toro"
             }
           ]
         },
@@ -848,12 +912,14 @@
             {
               "nombre": "Borsao",
               "precio": "22€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Borsao · Garnacha"
             },
             {
               "nombre": "Cabriola",
               "precio": "24€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Borsao · Garnacha, Syrah y Mazuelo"
             }
           ]
         },
@@ -863,7 +929,8 @@
             {
               "nombre": "Fosca del Priorat",
               "precio": "27€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Vintae, La Garnatxa Fosca · Garnacha"
             }
           ]
         },
@@ -873,7 +940,8 @@
             {
               "nombre": "Enate Reserva Privada",
               "precio": "24€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Enate · Merlot y Syrah"
             }
           ]
         },
@@ -883,7 +951,8 @@
             {
               "nombre": "Logos I 2019",
               "precio": "28€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Escudero · 2019 · Garnacha, Tempranillo y Cabernet Sauvignon"
             }
           ]
         },
@@ -893,12 +962,14 @@
             {
               "nombre": "Jiménez-Landi El Corralón 2023",
               "precio": "24€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Jiménez-Landi · 2023 · Garnacha"
             },
             {
               "nombre": "Cinético Gredos",
               "precio": "42€",
-              "visible": true
+              "visible": true,
+              "descripcion": ""
             }
           ]
         },
@@ -908,7 +979,8 @@
             {
               "nombre": "Mauro Cosecha 2023",
               "precio": "51€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Mauro (Mariano García) · 2023 · Tempranillo"
             }
           ]
         },
@@ -918,32 +990,38 @@
             {
               "nombre": "Seascape Malbec (Argentina)",
               "precio": "18€",
-              "visible": true
+              "visible": true,
+              "descripcion": ""
             },
             {
               "nombre": "Estancia Mendoza (Argentina)",
               "precio": "23€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodega Estancia Mendoza, Tupungato (Argentina)"
             },
             {
               "nombre": "1990 Château Le Pape (Pessac-Léognan)",
               "precio": "125€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Château Le Pape, Pessac-Léognan (Burdeos) · 1990 · Merlot y Cabernet Sauvignon"
             },
             {
               "nombre": "1994 Château Le Crock (Saint-Estèphe)",
               "precio": "105€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Château Le Crock, Saint-Estèphe (Burdeos) · 1994 · Merlot, Cabernet Sauvignon, Cabernet Franc y Petit Verdot"
             },
             {
               "nombre": "Mademoiselle de Calon (Saint-Estèphe)",
               "precio": "110€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Segundo vino de Château Calon-Ségur, Saint-Estèphe (Burdeos) · Cabernet Sauvignon y Merlot"
             },
             {
               "nombre": "1994 Château Tour du Cauze (Saint-Émilion)",
               "precio": "100€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Château Tour du Cauze, Saint-Émilion Grand Cru (Burdeos) · 1994 · Merlot, Cabernet Franc y Cabernet Sauvignon"
             }
           ]
         }
@@ -958,22 +1036,26 @@
             {
               "nombre": "Finca del Mar Rosé Bobal",
               "precio": "14€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Vicente Gandía · Bobal"
             },
             {
               "nombre": "El Miracle N5 Rosado",
               "precio": "16€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Vicente Gandía · Bobal"
             },
             {
               "nombre": "Viña Real Rosado",
               "precio": "18€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Viña Real, grupo CVNE · Tempranillo, Garnacha y Viura"
             },
             {
               "nombre": "Ceramic Monastrell Rosé",
               "precio": "32€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Vicente Gandía · Monastrell afinado en tinaja"
             }
           ]
         }
@@ -988,17 +1070,20 @@
             {
               "nombre": "Charles de Courance Brut Rosé",
               "precio": "38€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Maison Charles de Courance (Épernay) · Chardonnay, Pinot Noir y Pinot Meunier"
             },
             {
               "nombre": "Charles de Courance Cuvée Spéciale",
               "precio": "42€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Maison Charles de Courance (Épernay) · Chardonnay, Pinot Noir y Pinot Meunier"
             },
             {
               "nombre": "Champagne Brut G.H. Mumm Cordon Rouge",
               "precio": "45€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Maison G.H. Mumm (Reims) · Pinot Noir, Chardonnay y Pinot Meunier"
             }
           ]
         },
@@ -1008,17 +1093,20 @@
             {
               "nombre": "El Miracle Cava Brut Rosado",
               "precio": "17€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Vicente Gandía · Garnacha"
             },
             {
               "nombre": "El Miracle Cava Brut",
               "precio": "17€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Bodegas Vicente Gandía · Macabeo y Chardonnay"
             },
             {
               "nombre": "Roger Goulart Brut Millésimé 2023",
               "precio": "23€",
-              "visible": true
+              "visible": true,
+              "descripcion": "Caves Roger Goulart, grupo CVNE · 2023 · Xarel·lo, Macabeo y Parellada"
             }
           ]
         }

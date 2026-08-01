@@ -307,7 +307,7 @@ function renderVinosGrupos(ci) {
   cont.querySelectorAll('.btn-add-vino').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const { ci, gi } = e.target.dataset;
-      menuActual.vinos[ci].grupos[gi].vinos.push({ nombre: '', precio: '', visible: true });
+      menuActual.vinos[ci].grupos[gi].vinos.push({ nombre: '', precio: '', descripcion: '', visible: true });
       renderVinosLista(Number(ci), Number(gi));
     });
   });
@@ -323,6 +323,7 @@ function renderVinosLista(ci, gi) {
         <input type="text" placeholder="Precio" value="${atributo(v.precio)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="precio" class="campo-precio">
       </div>
       <div class="plato-card-row">
+        <input type="text" placeholder="Descripción (bodega, añada, uva...)" value="${atributo(v.descripcion)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="descripcion">
         <button class="btn-icon btn-vino-visible-toggle" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" title="${v.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${v.visible === false ? '🙈' : '👁️'}</button>
         <button class="btn-icon btn-borrar-vino" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" title="Eliminar vino">🗑️</button>
       </div>

@@ -66,7 +66,10 @@ async function cargarCarta() {
           ${g.denominacion ? `<h4 class="vinos-denominacion" data-i18n>${escapeHtml(g.denominacion)}</h4>` : ''}
           ${g.vinos.map((v) => `
             <div class="vino">
-              <div class="vino-nombre">${escapeHtml(v.nombre)}</div>
+              <div>
+                <div class="vino-nombre">${escapeHtml(v.nombre)}</div>
+                ${v.descripcion ? `<div class="vino-desc">${escapeHtml(v.descripcion)}</div>` : ''}
+              </div>
               <div class="vino-precio">${escapeHtml(v.precio)}</div>
             </div>
           `).join('')}

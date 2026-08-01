@@ -326,6 +326,7 @@ a { color: var(--color-brick); }
 }
 .vino { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px dashed rgba(0,0,0,0.1); }
 .vino-nombre { font-size: 0.95rem; }
+.vino-desc { font-size: 0.8rem; color: #6b5c4f; margin-top: 0.1rem; }
 .vino-precio { white-space: nowrap; font-weight: 600; color: var(--color-brick); font-size: 0.9rem; }
 .vinos-categoria > .vino:last-child, .vinos-categoria .vino:last-of-type { border-bottom: none; padding-bottom: 1rem; }
 
