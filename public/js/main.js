@@ -84,7 +84,12 @@ async function cargarCarta() {
           .filter((sec) => sec.platos.length)
           .map((sec) => `
           <div class="menu-seccion-titulo" data-i18n>${escapeHtml(sec.titulo)}</div>
-          <ul>${sec.platos.map((pl) => `<li data-i18n>${escapeHtml(pl.nombre)}</li>`).join('')}</ul>
+          <ul>${sec.platos.map((pl) => `
+            <li>
+              <span class="menu-plato-nombre" data-i18n>${escapeHtml(pl.nombre)}</span>
+              ${pl.descripcion ? `<span class="menu-plato-desc" data-i18n>${escapeHtml(pl.descripcion)}</span>` : ''}
+            </li>
+          `).join('')}</ul>
         `).join('')}
       </div>
     `).join('');

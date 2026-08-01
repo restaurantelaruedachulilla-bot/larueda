@@ -218,19 +218,22 @@ app.get('/api/admin/turnos-dia', requiereAdmin, (req, res) => {
 });
 
 // Mapa de mesas: para una fecha y un turno concretos, dice que reserva ocupa cada mesa (si hay
-// alguna). Usa la misma logica de solape horario que la asignacion automatica (una reserva
-// ocupa la mesa durante turnoMinutos desde su hora de inicio, aunque sea de otro turno).
+// alguna), a lo largo de TODO un turno (ej. "Comida"), no solo en un instante concreto: cada
+// mesa devuelve la lista de huecos ocupados (de su hora de inicio a +turnoMinutos) para poder
+// pintar una linea de tiempo y ver como se va quedando libre/ocupada segun avanza el turno.
 app.get('/api/admin/mapa-mesas', requiereAdmin, (req, res) => {
-  const { fecha, franjaId } = req.query;
-  if (!fecha || !franjaId) return res.status(400).json({ error: 'Faltan fecha o franjaId' });
+  const { fecha, turno } = req.query;
+  if (!fecha || !turno) return res.status(400).json({ error: 'Faltan fecha o turno' });
 
   const config = leerConfig();
-  const franjaSeleccionada = config.franjas.find((f) => f.id === franjaId);
-  if (!franjaSeleccionada) return res.status(400).json({ error: 'Ese turno no existe' });
+  const aperturas = leerAperturas();
+  const franjasTurno = franjasDelDia(config, fecha, aperturas).filter((f) => f.nombre === turno);
+  if (!franjasTurno.length) return res.status(400).json({ error: 'Ese turno no existe o no está abierto ese día' });
 
-  const inicioSel = minutosDesdeMedianoche(franjaSeleccionada.inicio);
-  const finSel = inicioSel + config.turnoMinutos;
-  const reservasDelDia = leerReservas().filter((r) => r.fecha === fecha && r.estado !== 'cancelada');
+  const rangoInicio = Math.min(...franjasTurno.map((f) => minutosDesdeMedianoche(f.inicio)));
+  const rangoFin = Math.max(...franjasTurno.map((f) => minutosDesdeMedianoche(f.inicio))) + config.turnoMinutos;
+
+  const reservasDelDia = leerReservas().filter((r) => r.fecha === fecha && r.estado !== 'cancelada' && r.franjaNombre === turno);
 
   function ocupaMesa(r, mesaId) {
     if (r.mesaId === mesaId) return true;
@@ -238,32 +241,28 @@ app.get('/api/admin/mapa-mesas', requiereAdmin, (req, res) => {
   }
 
   const mesas = config.mesas.map((mesa) => {
-    const reserva = reservasDelDia.find((r) => {
-      if (!ocupaMesa(r, mesa.id)) return false;
-      const otraFranja = config.franjas.find((f) => f.id === r.franjaId);
-      if (!otraFranja) return false;
-      const otroInicio = minutosDesdeMedianoche(otraFranja.inicio);
-      const otroFin = otroInicio + config.turnoMinutos;
-      return inicioSel < otroFin && otroInicio < finSel;
-    });
-    return {
-      ...mesa,
-      reserva: reserva
-        ? {
-            id: reserva.id,
-            nombre: reserva.nombre,
-            personas: reserva.personas,
-            telefono: reserva.telefono,
-            hora: reserva.hora,
-            franjaNombre: reserva.franjaNombre,
-            estado: reserva.estado,
-            creadaPorAdmin: !!reserva.creadaPorAdmin,
-          }
-        : null,
-    };
+    const ocupaciones = reservasDelDia
+      .filter((r) => ocupaMesa(r, mesa.id))
+      .map((r) => {
+        const inicio = minutosDesdeMedianoche(r.hora);
+        return {
+          inicio,
+          fin: inicio + config.turnoMinutos,
+          reserva: {
+            id: r.id,
+            nombre: r.nombre,
+            personas: r.personas,
+            telefono: r.telefono,
+            hora: r.hora,
+            creadaPorAdmin: !!r.creadaPorAdmin,
+          },
+        };
+      })
+      .sort((a, b) => a.inicio - b.inicio);
+    return { ...mesa, ocupaciones };
   });
 
-  res.json({ mesas });
+  res.json({ rangoInicio, rangoFin, turnoMinutos: config.turnoMinutos, mesas });
 });
 
 app.put('/api/config', requiereAdmin, (req, res) => {

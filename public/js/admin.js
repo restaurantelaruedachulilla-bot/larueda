@@ -394,7 +394,7 @@ function renderMenus() {
   cont.querySelectorAll('.btn-add-seccion').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const mi = Number(e.target.dataset.mi);
-      menuActual.menus[mi].secciones.push({ titulo: '', platos: [{ nombre: '', visible: true }] });
+      menuActual.menus[mi].secciones.push({ titulo: '', platos: [{ nombre: '', descripcion: '', visible: true }] });
       renderSecciones(mi);
     });
   });
@@ -432,7 +432,7 @@ function renderSecciones(mi) {
   cont.querySelectorAll('.btn-add-plato-linea').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const { mi, si } = e.target.dataset;
-      menuActual.menus[mi].secciones[si].platos.push({ nombre: '', visible: true });
+      menuActual.menus[mi].secciones[si].platos.push({ nombre: '', descripcion: '', visible: true });
       renderPlatosLinea(Number(mi), Number(si));
     });
   });
@@ -444,7 +444,10 @@ function renderPlatosLinea(mi, si) {
   cont.innerHTML = platos.map((p, pi) => `
     <div class="plato-linea ${p.visible === false ? 'plato-oculto' : ''}">
       <span class="asa-arrastre" title="Mantén pulsado y arrastra para reordenar">⠿</span>
-      <input type="text" value="${atributo(p.nombre)}" data-mi="${mi}" data-si="${si}" data-pi="${pi}" placeholder="Nombre del plato">
+      <div class="plato-linea-campos">
+        <input type="text" value="${atributo(p.nombre)}" data-mi="${mi}" data-si="${si}" data-pi="${pi}" data-campo="nombre" placeholder="Nombre del plato">
+        <input type="text" value="${atributo(p.descripcion)}" data-mi="${mi}" data-si="${si}" data-pi="${pi}" data-campo="descripcion" placeholder="Descripción (opcional)" class="input-descripcion-linea">
+      </div>
       <button class="btn-icon btn-visible-toggle-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
       <button class="btn-icon btn-borrar-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}">🗑️</button>
     </div>
@@ -452,8 +455,8 @@ function renderPlatosLinea(mi, si) {
 
   cont.querySelectorAll('input').forEach((input) => {
     input.addEventListener('input', (e) => {
-      const { mi, si, pi } = e.target.dataset;
-      menuActual.menus[mi].secciones[si].platos[pi].nombre = e.target.value;
+      const { mi, si, pi, campo } = e.target.dataset;
+      menuActual.menus[mi].secciones[si].platos[pi][campo] = e.target.value;
     });
   });
   activarArrastre(cont, '.plato-linea', '.asa-arrastre', (origen, destino) => {
@@ -483,7 +486,7 @@ document.getElementById('btn-add-menu').addEventListener('click', () => {
     nombre: 'Nuevo menú',
     precio: '',
     condiciones: '',
-    secciones: [{ titulo: 'Platos', platos: [{ nombre: '', visible: true }] }],
+    secciones: [{ titulo: 'Platos', platos: [{ nombre: '', descripcion: '', visible: true }] }],
   });
   renderMenus();
 });
@@ -884,6 +887,12 @@ function iniciarMapaMesas() {
 mapaFecha.addEventListener('change', cargarTurnosMapa);
 mapaTurno.addEventListener('change', cargarMapaMesas);
 
+function minutosAHora(min) {
+  const h = Math.floor(min / 60).toString().padStart(2, '0');
+  const m = (min % 60).toString().padStart(2, '0');
+  return `${h}:${m}`;
+}
+
 async function cargarTurnosMapa() {
   const fecha = mapaFecha.value;
   mapaResultado.innerHTML = '';
@@ -897,14 +906,14 @@ async function cargarTurnosMapa() {
       headers: { 'x-admin-token': token },
     });
     const data = await res.json();
-    const abiertos = data.turnos.filter((f) => f.abierta);
-    if (!abiertos.length) {
+    const nombres = [...new Set(data.turnos.filter((f) => f.abierta).map((f) => f.nombre))];
+    if (!nombres.length) {
       mapaTurno.innerHTML = '<option value="">Ese día no hay turnos abiertos</option>';
       return;
     }
     mapaTurno.innerHTML =
       '<option value="">Elige un turno</option>' +
-      abiertos.map((f) => `<option value="${f.id}">${atributo(f.nombre)} · ${atributo(f.inicio)}–${atributo(f.fin)}</option>`).join('');
+      nombres.map((n) => `<option value="${atributo(n)}">${atributo(n)}</option>`).join('');
   } catch (err) {
     mapaTurno.innerHTML = '<option value="">No se han podido cargar los turnos</option>';
   }
@@ -912,15 +921,32 @@ async function cargarTurnosMapa() {
 
 async function cargarMapaMesas() {
   const fecha = mapaFecha.value;
-  const franjaId = mapaTurno.value;
-  if (!fecha || !franjaId) { mapaResultado.innerHTML = ''; return; }
+  const turno = mapaTurno.value;
+  if (!fecha || !turno) { mapaResultado.innerHTML = ''; return; }
 
   mapaResultado.innerHTML = '<p class="cargando">Cargando mapa...</p>';
   try {
-    const res = await fetch(`/api/admin/mapa-mesas?fecha=${encodeURIComponent(fecha)}&franjaId=${encodeURIComponent(franjaId)}`, {
+    const res = await fetch(`/api/admin/mapa-mesas?fecha=${encodeURIComponent(fecha)}&turno=${encodeURIComponent(turno)}`, {
       headers: { 'x-admin-token': token },
     });
     const data = await res.json();
+    if (!res.ok) {
+      mapaResultado.innerHTML = `<p class="cargando">${atributo(data.error || 'No se ha podido cargar el mapa.')}</p>`;
+      return;
+    }
+
+    const { rangoInicio, rangoFin } = data;
+    const duracion = rangoFin - rangoInicio;
+
+    const marcas = [];
+    for (let m = rangoInicio; m < rangoFin; m += 30) marcas.push(m);
+    if (rangoFin - marcas[marcas.length - 1] > 20) marcas.push(rangoFin);
+
+    const reglaHtml = `
+      <div class="mapa-regla">
+        ${marcas.map((m) => `<span style="left:${((m - rangoInicio) / duracion) * 100}%">${minutosAHora(m)}</span>`).join('')}
+      </div>
+    `;
 
     const zonas = [];
     data.mesas.forEach((m) => {
@@ -929,19 +955,20 @@ async function cargarMapaMesas() {
       zona.mesas.push(m);
     });
 
-    mapaResultado.innerHTML = zonas.map((zona) => `
+    mapaResultado.innerHTML = reglaHtml + zonas.map((zona) => `
       <h3 class="config-subtitulo">${atributo(zona.nombre)}</h3>
-      <div class="mapa-grid">
+      <div class="mapa-timelines">
         ${zona.mesas.map((m) => `
-          <div class="mapa-mesa ${m.reserva ? 'mapa-mesa-ocupada' : 'mapa-mesa-libre'}">
-            <div class="mapa-mesa-nombre">${atributo(m.nombre)}</div>
-            <div class="mapa-mesa-capacidad">${m.capacidad} plazas</div>
-            ${m.reserva ? `
-              <div class="mapa-mesa-reserva">
-                <strong>${atributo(m.reserva.nombre)}</strong> · ${m.reserva.personas}p${m.reserva.creadaPorAdmin ? ' 📞' : ''}<br>
-                <a href="tel:${atributo(m.reserva.telefono)}">${atributo(m.reserva.telefono)}</a>
-              </div>
-            ` : '<div class="mapa-mesa-libre-texto">Libre</div>'}
+          <div class="mapa-fila">
+            <div class="mapa-fila-nombre">${atributo(m.nombre)}<span class="mapa-fila-capacidad">${m.capacidad} plazas</span></div>
+            <div class="mapa-timeline">
+              ${m.ocupaciones.map((o) => {
+                const left = ((o.inicio - rangoInicio) / duracion) * 100;
+                const width = ((o.fin - o.inicio) / duracion) * 100;
+                const titulo = `${o.reserva.nombre} · ${o.reserva.personas}p · ${o.reserva.hora}${o.reserva.creadaPorAdmin ? ' (tel.)' : ''} · ${o.reserva.telefono}`;
+                return `<div class="mapa-bloque" style="left:${left}%; width:${width}%" title="${atributo(titulo)}">${atributo(o.reserva.nombre)}</div>`;
+              }).join('')}
+            </div>
           </div>
         `).join('')}
       </div>
