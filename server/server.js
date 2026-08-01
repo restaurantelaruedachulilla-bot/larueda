@@ -318,6 +318,8 @@ function trocearTexto(texto, maxLen = 400) {
   return trozos;
 }
 
+// Devuelve el texto traducido, o null si MyMemory ha fallado (incluida la cuota gratuita
+// agotada) para que el llamante NUNCA cachee ni sirva un fallo como si fuera una traduccion.
 async function traducirConMyMemory(texto, destino) {
   const trozos = trocearTexto(texto);
   const partes = [];
@@ -326,7 +328,14 @@ async function traducirConMyMemory(texto, destino) {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(trozo)}&langpair=es|${destino}${emailParam}`;
     const resp = await fetch(url);
     const data = await resp.json();
-    let traducido = data && data.responseData && data.responseData.translatedText ? data.responseData.translatedText : trozo;
+    // Si se agota la cuota gratuita diaria (o cualquier otro fallo), MyMemory NO devuelve un
+    // error HTTP limpio: mete un aviso en texto dentro de "translatedText" (ej. "MYMEMORY
+    // WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS..."). Comprobamos responseStatus
+    // explicitamente para no dar ese aviso por bueno.
+    if (!data || data.responseStatus !== 200 || !data.responseData || !data.responseData.translatedText) {
+      return null;
+    }
+    let traducido = data.responseData.translatedText;
     // MyMemory a veces devuelve el texto envuelto en etiquetas tipo XLIFF (ej. <g id="1">...</g>)
     // cuando reutiliza una entrada de su memoria de traduccion; las quitamos, no son HTML real.
     traducido = traducido.replace(/<\/?[a-z][^>]*>/gi, '').trim();
@@ -366,9 +375,15 @@ app.post('/api/traducir', async (req, res) => {
       const original = String(textos[idx]).trim();
       try {
         const traducido = await traducirConMyMemory(original, destino);
-        cache[destino][original] = traducido;
-        resultado[idx] = traducido;
-        huboCambios = true;
+        if (traducido === null) {
+          // Fallo de MyMemory (cuota agotada u otro error): nos quedamos en español y NO
+          // lo cacheamos, para que se reintente traducir en cuanto el servicio se recupere.
+          resultado[idx] = textos[idx];
+        } else {
+          cache[destino][original] = traducido;
+          resultado[idx] = traducido;
+          huboCambios = true;
+        }
       } catch (err) {
         resultado[idx] = textos[idx];
       }
@@ -378,6 +393,23 @@ app.post('/api/traducir', async (req, res) => {
 
   if (huboCambios) guardarTraducciones(cache);
   res.json({ textos: resultado });
+});
+
+// Mantenimiento: quita de la cache cualquier entrada que en realidad sea un aviso de fallo de
+// MyMemory (cuota agotada, etc.) que se haya podido colar antes de validar responseStatus.
+app.post('/api/admin/traducciones/limpiar', requiereAdmin, (req, res) => {
+  const cache = leerTraducciones();
+  let eliminadas = 0;
+  Object.keys(cache).forEach((idioma) => {
+    Object.keys(cache[idioma]).forEach((texto) => {
+      if (/MYMEMORY|WARNING/i.test(cache[idioma][texto])) {
+        delete cache[idioma][texto];
+        eliminadas++;
+      }
+    });
+  });
+  if (eliminadas) guardarTraducciones(cache);
+  res.json({ ok: true, eliminadas });
 });
 
 // ---------- Reservas ----------
