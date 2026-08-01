@@ -129,6 +129,12 @@ function renderCategorias() {
   });
 }
 
+function moverElemento(array, indice, direccion) {
+  const destino = indice + direccion;
+  if (destino < 0 || destino >= array.length) return;
+  [array[indice], array[destino]] = [array[destino], array[indice]];
+}
+
 function renderPlatos(ci) {
   const cont = document.querySelector(`.platos-lista[data-cat="${ci}"]`);
   const cat = menuActual.carta[ci];
@@ -140,6 +146,8 @@ function renderPlatos(ci) {
       </div>
       <div class="plato-card-row">
         <input type="text" placeholder="Descripción (opcional)" value="${atributo(p.descripcion)}" data-ci="${ci}" data-pi="${pi}" data-campo="descripcion">
+        <button class="btn-icon btn-mover-plato" data-ci="${ci}" data-pi="${pi}" data-dir="-1" title="Subir" ${pi === 0 ? 'disabled' : ''}>▲</button>
+        <button class="btn-icon btn-mover-plato" data-ci="${ci}" data-pi="${pi}" data-dir="1" title="Bajar" ${pi === cat.platos.length - 1 ? 'disabled' : ''}>▼</button>
         <button class="btn-icon btn-visible-toggle" data-ci="${ci}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
         <button class="btn-icon btn-borrar-plato" data-ci="${ci}" data-pi="${pi}" title="Eliminar plato">🗑️</button>
       </div>
@@ -150,6 +158,13 @@ function renderPlatos(ci) {
     input.addEventListener('input', (e) => {
       const { ci, pi, campo } = e.target.dataset;
       menuActual.carta[ci].platos[pi][campo] = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.btn-mover-plato').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { ci, pi, dir } = e.target.dataset;
+      moverElemento(menuActual.carta[ci].platos, Number(pi), Number(dir));
+      renderPlatos(Number(ci));
     });
   });
   cont.querySelectorAll('.btn-visible-toggle').forEach((btn) => {
@@ -385,6 +400,8 @@ function renderPlatosLinea(mi, si) {
   cont.innerHTML = platos.map((p, pi) => `
     <div class="plato-linea ${p.visible === false ? 'plato-oculto' : ''}">
       <input type="text" value="${atributo(p.nombre)}" data-mi="${mi}" data-si="${si}" data-pi="${pi}" placeholder="Nombre del plato">
+      <button class="btn-icon btn-mover-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" data-dir="-1" title="Subir" ${pi === 0 ? 'disabled' : ''}>▲</button>
+      <button class="btn-icon btn-mover-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" data-dir="1" title="Bajar" ${pi === platos.length - 1 ? 'disabled' : ''}>▼</button>
       <button class="btn-icon btn-visible-toggle-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
       <button class="btn-icon btn-borrar-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}">🗑️</button>
     </div>
@@ -394,6 +411,13 @@ function renderPlatosLinea(mi, si) {
     input.addEventListener('input', (e) => {
       const { mi, si, pi } = e.target.dataset;
       menuActual.menus[mi].secciones[si].platos[pi].nombre = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.btn-mover-linea').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { mi, si, pi, dir } = e.target.dataset;
+      moverElemento(menuActual.menus[mi].secciones[si].platos, Number(pi), Number(dir));
+      renderPlatosLinea(Number(mi), Number(si));
     });
   });
   cont.querySelectorAll('.btn-visible-toggle-linea').forEach((btn) => {
