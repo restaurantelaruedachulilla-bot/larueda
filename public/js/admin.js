@@ -55,6 +55,7 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
     if (btn.dataset.tab === 'menus') renderMenus();
     if (btn.dataset.tab === 'vinos') renderVinosCategorias();
     if (btn.dataset.tab === 'mesas') cargarConfigAdmin();
+    if (btn.dataset.tab === 'mapa') iniciarMapaMesas();
   });
 });
 
@@ -129,10 +130,56 @@ function renderCategorias() {
   });
 }
 
-function moverElemento(array, indice, direccion) {
-  const destino = indice + direccion;
-  if (destino < 0 || destino >= array.length) return;
-  [array[indice], array[destino]] = [array[destino], array[indice]];
+// Arrastrar para reordenar (raton en ordenador, mantener pulsado y arrastrar en movil), usando
+// Pointer Events para no tener que distinguir raton/tactil. "seleccionAgarre" es el tirador
+// dentro de cada tarjeta; "seleccionItem" es la tarjeta arrastrable entera; alSoltar(origen,
+// destino) se llama con los indices dentro del contenedor cuando el orden cambia de verdad.
+function activarArrastre(contenedor, seleccionItem, seleccionAgarre, alSoltar) {
+  let arrastrando = null;
+  let indiceOrigen = -1;
+
+  function itemsOrdenados() {
+    return Array.from(contenedor.querySelectorAll(seleccionItem));
+  }
+
+  function alMover(e) {
+    if (!arrastrando) return;
+    const y = e.clientY;
+    const destino = itemsOrdenados().find((el) => {
+      if (el === arrastrando) return false;
+      const r = el.getBoundingClientRect();
+      return y >= r.top && y <= r.bottom;
+    });
+    if (destino) {
+      const r = destino.getBoundingClientRect();
+      const antes = y < r.top + r.height / 2;
+      contenedor.insertBefore(arrastrando, antes ? destino : destino.nextSibling);
+    }
+  }
+
+  function alLevantar() {
+    if (!arrastrando) return;
+    arrastrando.classList.remove('arrastrando');
+    const indiceDestino = itemsOrdenados().indexOf(arrastrando);
+    const elemento = arrastrando;
+    arrastrando = null;
+    document.removeEventListener('pointermove', alMover);
+    document.removeEventListener('pointerup', alLevantar);
+    if (indiceDestino !== -1 && indiceDestino !== indiceOrigen) alSoltar(indiceOrigen, indiceDestino);
+    elemento.classList.remove('arrastrando');
+  }
+
+  contenedor.querySelectorAll(seleccionAgarre).forEach((agarre) => {
+    agarre.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      arrastrando = agarre.closest(seleccionItem);
+      if (!arrastrando) return;
+      indiceOrigen = itemsOrdenados().indexOf(arrastrando);
+      arrastrando.classList.add('arrastrando');
+      document.addEventListener('pointermove', alMover);
+      document.addEventListener('pointerup', alLevantar);
+    });
+  });
 }
 
 function renderPlatos(ci) {
@@ -141,13 +188,12 @@ function renderPlatos(ci) {
   cont.innerHTML = cat.platos.map((p, pi) => `
     <div class="plato-card ${p.visible === false ? 'plato-oculto' : ''}">
       <div class="plato-card-row">
+        <span class="asa-arrastre" title="Mantén pulsado y arrastra para reordenar">⠿</span>
         <input type="text" placeholder="Nombre del plato" value="${atributo(p.nombre)}" data-ci="${ci}" data-pi="${pi}" data-campo="nombre">
         <input type="text" placeholder="Precio" value="${atributo(p.precio)}" data-ci="${ci}" data-pi="${pi}" data-campo="precio" class="campo-precio">
       </div>
       <div class="plato-card-row">
         <input type="text" placeholder="Descripción (opcional)" value="${atributo(p.descripcion)}" data-ci="${ci}" data-pi="${pi}" data-campo="descripcion">
-        <button class="btn-icon btn-mover-plato" data-ci="${ci}" data-pi="${pi}" data-dir="-1" title="Subir" ${pi === 0 ? 'disabled' : ''}>▲</button>
-        <button class="btn-icon btn-mover-plato" data-ci="${ci}" data-pi="${pi}" data-dir="1" title="Bajar" ${pi === cat.platos.length - 1 ? 'disabled' : ''}>▼</button>
         <button class="btn-icon btn-visible-toggle" data-ci="${ci}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
         <button class="btn-icon btn-borrar-plato" data-ci="${ci}" data-pi="${pi}" title="Eliminar plato">🗑️</button>
       </div>
@@ -160,12 +206,10 @@ function renderPlatos(ci) {
       menuActual.carta[ci].platos[pi][campo] = e.target.value;
     });
   });
-  cont.querySelectorAll('.btn-mover-plato').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const { ci, pi, dir } = e.target.dataset;
-      moverElemento(menuActual.carta[ci].platos, Number(pi), Number(dir));
-      renderPlatos(Number(ci));
-    });
+  activarArrastre(cont, '.plato-card', '.asa-arrastre', (origen, destino) => {
+    const [plato] = menuActual.carta[ci].platos.splice(origen, 1);
+    menuActual.carta[ci].platos.splice(destino, 0, plato);
+    renderPlatos(ci);
   });
   cont.querySelectorAll('.btn-visible-toggle').forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -399,9 +443,8 @@ function renderPlatosLinea(mi, si) {
   const platos = menuActual.menus[mi].secciones[si].platos;
   cont.innerHTML = platos.map((p, pi) => `
     <div class="plato-linea ${p.visible === false ? 'plato-oculto' : ''}">
+      <span class="asa-arrastre" title="Mantén pulsado y arrastra para reordenar">⠿</span>
       <input type="text" value="${atributo(p.nombre)}" data-mi="${mi}" data-si="${si}" data-pi="${pi}" placeholder="Nombre del plato">
-      <button class="btn-icon btn-mover-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" data-dir="-1" title="Subir" ${pi === 0 ? 'disabled' : ''}>▲</button>
-      <button class="btn-icon btn-mover-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" data-dir="1" title="Bajar" ${pi === platos.length - 1 ? 'disabled' : ''}>▼</button>
       <button class="btn-icon btn-visible-toggle-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
       <button class="btn-icon btn-borrar-linea" data-mi="${mi}" data-si="${si}" data-pi="${pi}">🗑️</button>
     </div>
@@ -413,12 +456,10 @@ function renderPlatosLinea(mi, si) {
       menuActual.menus[mi].secciones[si].platos[pi].nombre = e.target.value;
     });
   });
-  cont.querySelectorAll('.btn-mover-linea').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const { mi, si, pi, dir } = e.target.dataset;
-      moverElemento(menuActual.menus[mi].secciones[si].platos, Number(pi), Number(dir));
-      renderPlatosLinea(Number(mi), Number(si));
-    });
+  activarArrastre(cont, '.plato-linea', '.asa-arrastre', (origen, destino) => {
+    const [plato] = menuActual.menus[mi].secciones[si].platos.splice(origen, 1);
+    menuActual.menus[mi].secciones[si].platos.splice(destino, 0, plato);
+    renderPlatosLinea(mi, si);
   });
   cont.querySelectorAll('.btn-visible-toggle-linea').forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -828,6 +869,86 @@ async function cargarReservas() {
       cargarAforo();
     });
   });
+}
+
+// ---------- Mapa de mesas (solo admin) ----------
+const mapaFecha = document.getElementById('mapa-fecha');
+const mapaTurno = document.getElementById('mapa-turno');
+const mapaResultado = document.getElementById('mapa-mesas-resultado');
+
+function iniciarMapaMesas() {
+  if (!mapaFecha.value) mapaFecha.value = new Date().toLocaleDateString('sv-SE');
+  cargarTurnosMapa();
+}
+
+mapaFecha.addEventListener('change', cargarTurnosMapa);
+mapaTurno.addEventListener('change', cargarMapaMesas);
+
+async function cargarTurnosMapa() {
+  const fecha = mapaFecha.value;
+  mapaResultado.innerHTML = '';
+  if (!fecha) {
+    mapaTurno.innerHTML = '<option value="">Elige antes la fecha</option>';
+    return;
+  }
+  mapaTurno.innerHTML = '<option value="">Cargando turnos...</option>';
+  try {
+    const res = await fetch(`/api/admin/turnos-dia?fecha=${encodeURIComponent(fecha)}`, {
+      headers: { 'x-admin-token': token },
+    });
+    const data = await res.json();
+    const abiertos = data.turnos.filter((f) => f.abierta);
+    if (!abiertos.length) {
+      mapaTurno.innerHTML = '<option value="">Ese día no hay turnos abiertos</option>';
+      return;
+    }
+    mapaTurno.innerHTML =
+      '<option value="">Elige un turno</option>' +
+      abiertos.map((f) => `<option value="${f.id}">${atributo(f.nombre)} · ${atributo(f.inicio)}–${atributo(f.fin)}</option>`).join('');
+  } catch (err) {
+    mapaTurno.innerHTML = '<option value="">No se han podido cargar los turnos</option>';
+  }
+}
+
+async function cargarMapaMesas() {
+  const fecha = mapaFecha.value;
+  const franjaId = mapaTurno.value;
+  if (!fecha || !franjaId) { mapaResultado.innerHTML = ''; return; }
+
+  mapaResultado.innerHTML = '<p class="cargando">Cargando mapa...</p>';
+  try {
+    const res = await fetch(`/api/admin/mapa-mesas?fecha=${encodeURIComponent(fecha)}&franjaId=${encodeURIComponent(franjaId)}`, {
+      headers: { 'x-admin-token': token },
+    });
+    const data = await res.json();
+
+    const zonas = [];
+    data.mesas.forEach((m) => {
+      let zona = zonas.find((z) => z.nombre === (m.zona || 'Sin zona'));
+      if (!zona) { zona = { nombre: m.zona || 'Sin zona', mesas: [] }; zonas.push(zona); }
+      zona.mesas.push(m);
+    });
+
+    mapaResultado.innerHTML = zonas.map((zona) => `
+      <h3 class="config-subtitulo">${atributo(zona.nombre)}</h3>
+      <div class="mapa-grid">
+        ${zona.mesas.map((m) => `
+          <div class="mapa-mesa ${m.reserva ? 'mapa-mesa-ocupada' : 'mapa-mesa-libre'}">
+            <div class="mapa-mesa-nombre">${atributo(m.nombre)}</div>
+            <div class="mapa-mesa-capacidad">${m.capacidad} plazas</div>
+            ${m.reserva ? `
+              <div class="mapa-mesa-reserva">
+                <strong>${atributo(m.reserva.nombre)}</strong> · ${m.reserva.personas}p${m.reserva.creadaPorAdmin ? ' 📞' : ''}<br>
+                <a href="tel:${atributo(m.reserva.telefono)}">${atributo(m.reserva.telefono)}</a>
+              </div>
+            ` : '<div class="mapa-mesa-libre-texto">Libre</div>'}
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  } catch (err) {
+    mapaResultado.innerHTML = '<p class="cargando">No se ha podido cargar el mapa.</p>';
+  }
 }
 
 function formatearFechaLarga(fechaISO) {

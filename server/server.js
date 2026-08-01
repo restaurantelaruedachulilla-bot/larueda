@@ -217,6 +217,55 @@ app.get('/api/admin/turnos-dia', requiereAdmin, (req, res) => {
   res.json({ turnos });
 });
 
+// Mapa de mesas: para una fecha y un turno concretos, dice que reserva ocupa cada mesa (si hay
+// alguna). Usa la misma logica de solape horario que la asignacion automatica (una reserva
+// ocupa la mesa durante turnoMinutos desde su hora de inicio, aunque sea de otro turno).
+app.get('/api/admin/mapa-mesas', requiereAdmin, (req, res) => {
+  const { fecha, franjaId } = req.query;
+  if (!fecha || !franjaId) return res.status(400).json({ error: 'Faltan fecha o franjaId' });
+
+  const config = leerConfig();
+  const franjaSeleccionada = config.franjas.find((f) => f.id === franjaId);
+  if (!franjaSeleccionada) return res.status(400).json({ error: 'Ese turno no existe' });
+
+  const inicioSel = minutosDesdeMedianoche(franjaSeleccionada.inicio);
+  const finSel = inicioSel + config.turnoMinutos;
+  const reservasDelDia = leerReservas().filter((r) => r.fecha === fecha && r.estado !== 'cancelada');
+
+  function ocupaMesa(r, mesaId) {
+    if (r.mesaId === mesaId) return true;
+    return Array.isArray(r.mesaIds) && r.mesaIds.includes(mesaId);
+  }
+
+  const mesas = config.mesas.map((mesa) => {
+    const reserva = reservasDelDia.find((r) => {
+      if (!ocupaMesa(r, mesa.id)) return false;
+      const otraFranja = config.franjas.find((f) => f.id === r.franjaId);
+      if (!otraFranja) return false;
+      const otroInicio = minutosDesdeMedianoche(otraFranja.inicio);
+      const otroFin = otroInicio + config.turnoMinutos;
+      return inicioSel < otroFin && otroInicio < finSel;
+    });
+    return {
+      ...mesa,
+      reserva: reserva
+        ? {
+            id: reserva.id,
+            nombre: reserva.nombre,
+            personas: reserva.personas,
+            telefono: reserva.telefono,
+            hora: reserva.hora,
+            franjaNombre: reserva.franjaNombre,
+            estado: reserva.estado,
+            creadaPorAdmin: !!reserva.creadaPorAdmin,
+          }
+        : null,
+    };
+  });
+
+  res.json({ mesas });
+});
+
 app.put('/api/config', requiereAdmin, (req, res) => {
   const nuevaConfig = req.body;
   if (

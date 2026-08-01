@@ -40,6 +40,7 @@
     <button class="tab-btn" data-tab="vinos">🍷 Vinos</button>
     <button class="tab-btn" data-tab="menus">🍽️ Menús</button>
     <button class="tab-btn" data-tab="reservas">📅 Reservas</button>
+    <button class="tab-btn" data-tab="mapa">🗺️ Mapa de mesas</button>
     <button class="tab-btn" data-tab="mesas">🪑 Mesas y turnos</button>
   </div>
 
@@ -135,6 +136,25 @@
     <div id="aforo-resultado" class="aforo-resultado"></div>
 
     <div id="lista-reservas"></div>
+  </section>
+
+  <section id="tab-mapa" class="tab-panel" hidden>
+    <p class="admin-hint">Mapa de vuestras mesas para un día y un turno concretos: en rojo las ocupadas (con el nombre de quién reservó) y en verde las libres.</p>
+
+    <div class="form-row form-row-split">
+      <div>
+        <label for="mapa-fecha">Fecha</label>
+        <input type="date" id="mapa-fecha">
+      </div>
+      <div>
+        <label for="mapa-turno">Turno</label>
+        <select id="mapa-turno">
+          <option value="">Elige antes la fecha</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="mapa-mesas-resultado"></div>
   </section>
 
   <section id="tab-mesas" class="tab-panel" hidden>

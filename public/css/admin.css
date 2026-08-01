@@ -124,8 +124,25 @@
   border-radius: 10px;
   padding: 0.75rem;
   margin-bottom: 0.6rem;
+  background: var(--color-cream, #fff);
 }
-.plato-card-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.plato-card-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.asa-arrastre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  flex-shrink: 0;
+  font-size: 1.3rem;
+  color: #9c8a74;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.plato-card.arrastrando, .plato-linea.arrastrando {
+  opacity: 0.5;
+  box-shadow: 0 4px 14px rgba(47,38,32,0.18);
+}
 .plato-card input {
   width: 100%;
   padding: 0.6rem 0.7rem;
@@ -216,6 +233,7 @@
 }
 .plato-linea {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.4rem;
 }
@@ -263,6 +281,25 @@
   margin-top: 1.5rem;
   color: var(--color-brick);
 }
+.mapa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.mapa-mesa {
+  border-radius: 12px;
+  padding: 0.75rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(47,38,32,0.08);
+}
+.mapa-mesa-libre { background: #dcecd2; }
+.mapa-mesa-ocupada { background: #f6d9d3; }
+.mapa-mesa-nombre { font-weight: 700; color: var(--color-charcoal); }
+.mapa-mesa-capacidad { font-size: 0.78rem; color: #6b5c4f; margin-bottom: 0.4rem; }
+.mapa-mesa-libre-texto { font-size: 0.85rem; color: #3d6b2a; font-weight: 600; }
+.mapa-mesa-reserva { font-size: 0.82rem; color: var(--color-charcoal); }
+.mapa-mesa-reserva a { color: var(--color-brick); }
 .mesa-card, .franja-card {
   background: #fff;
   border-radius: 12px;
