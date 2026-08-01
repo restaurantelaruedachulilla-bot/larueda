@@ -251,10 +251,49 @@ async function actualizarTurnos() {
   } catch (err) {
     selectTurno.innerHTML = '<option value="">No se han podido cargar los turnos</option>';
   }
+
+  actualizarZonasDisponibles();
+}
+
+const selectZona = document.getElementById('zona');
+const zonaAyuda = document.getElementById('zona-ayuda');
+
+async function actualizarZonasDisponibles() {
+  Array.from(selectZona.options).forEach((opt) => { opt.disabled = false; });
+  zonaAyuda.textContent = '';
+
+  const fecha = inputFecha.value;
+  const franjaId = selectTurno.value;
+  const personas = Number(inputPersonas.value) || 0;
+  if (!fecha || !franjaId || !personas) { refrescarTraduccion([zonaAyuda]); return; }
+
+  try {
+    const res = await fetch(`/api/zonas-disponibles?fecha=${encodeURIComponent(fecha)}&franjaId=${encodeURIComponent(franjaId)}&personas=${personas}`);
+    const data = await res.json();
+    const sinSitio = Object.entries(data.zonas || {}).filter(([, disponible]) => !disponible).map(([zona]) => zona);
+
+    sinSitio.forEach((zona) => {
+      const opt = Array.from(selectZona.options).find((o) => o.value === zona);
+      if (opt) opt.disabled = true;
+    });
+
+    const actual = selectZona.selectedOptions[0];
+    if (actual && actual.disabled) selectZona.value = 'Cualquiera';
+
+    if (sinSitio.length === 1) {
+      zonaAyuda.textContent = `No quedan mesas en la zona ${sinSitio[0]} para ese turno ese día.`;
+    } else if (sinSitio.length > 1) {
+      zonaAyuda.textContent = 'No quedan mesas libres en ninguna zona para ese turno ese día.';
+    }
+    refrescarTraduccion([zonaAyuda]);
+  } catch (err) {
+    // Si falla la comprobación dejamos todas las zonas seleccionables: nunca bloqueamos al cliente por esto.
+  }
 }
 
 inputFecha.addEventListener('change', actualizarFormularioReserva);
 inputPersonas.addEventListener('input', actualizarFormularioReserva);
+selectTurno.addEventListener('change', actualizarZonasDisponibles);
 
 formReserva.addEventListener('submit', async (e) => {
   e.preventDefault();

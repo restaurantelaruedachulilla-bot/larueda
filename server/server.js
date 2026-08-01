@@ -130,6 +130,32 @@ app.get('/api/disponibilidad', (req, res) => {
   res.json({ turnoMinutos: config.turnoMinutos, franjas: disponibilidad });
 });
 
+// Dice, para un turno concreto y un numero de personas, que zonas tienen sitio de verdad (ni
+// llenas ni bloqueadas por el admin). El formulario publico lo usa para no dejar elegir una
+// zona sin sitio en vez de dejar que la reserva caiga silenciosamente en otra zona distinta.
+app.get('/api/zonas-disponibles', (req, res) => {
+  const { fecha, franjaId, personas } = req.query;
+  if (!fecha || !franjaId || !personas) return res.status(400).json({ error: 'Faltan datos' });
+
+  const numPersonas = Number(personas);
+  if (!Number.isInteger(numPersonas) || numPersonas < 1) {
+    return res.status(400).json({ error: 'El número de personas no es válido' });
+  }
+
+  const config = leerConfig();
+  const aperturas = leerAperturas();
+  const franja = franjasDelDia(config, fecha, aperturas).find((f) => f.id === franjaId);
+  if (!franja) return res.status(400).json({ error: 'Ese turno no está disponible ese día' });
+
+  const reservas = leerReservas();
+  const bloqueosZona = leerBloqueosZona();
+  const zonasBloqueadas = new Set(
+    bloqueosZona.filter((b) => b.fecha === fecha && b.turno === franja.nombre).map((b) => b.zona)
+  );
+
+  res.json({ zonas: zonasConSitio(config, fecha, franja, numPersonas, reservas, zonasBloqueadas) });
+});
+
 // ---------- Cierres manuales de turnos (solo admin) ----------
 // Permite cerrar un turno concreto de un dia concreto (ej. "1 de agosto, 13:00")
 // para que la gente no pueda reservarlo online, sin tener que tocar el horario general.
@@ -561,6 +587,40 @@ function buscarMesas(mesasLibres, personas) {
   }
 
   return null;
+}
+
+// Para cada zona configurada, dice si se podria sentar a un grupo de "personas" SOLO en esa
+// zona (sin caer a otra), en una fecha y franja concretas: o bien porque esta llena de verdad
+// (reservas que se solapan con ese horario) o porque el admin la ha bloqueado a mano. Se usa en
+// el formulario publico para no dejar elegir una zona que en realidad no tiene sitio.
+function zonasConSitio(config, fecha, franja, personas, reservas, zonasBloqueadas) {
+  const inicioNueva = minutosDesdeMedianoche(franja.inicio);
+  const finNueva = inicioNueva + config.turnoMinutos;
+  const reservasDelDia = reservas.filter((r) => r.fecha === fecha && r.estado !== 'cancelada' && (r.mesaId || (r.mesaIds && r.mesaIds.length)));
+
+  function ocupaMesa(r, mesaId) {
+    if (r.mesaId === mesaId) return true;
+    return Array.isArray(r.mesaIds) && r.mesaIds.includes(mesaId);
+  }
+  function libre(mesa) {
+    return !reservasDelDia.some((r) => {
+      if (!ocupaMesa(r, mesa.id)) return false;
+      const otraFranja = config.franjas.find((f) => f.id === r.franjaId);
+      if (!otraFranja) return false;
+      const otroInicio = minutosDesdeMedianoche(otraFranja.inicio);
+      const otroFin = otroInicio + config.turnoMinutos;
+      return inicioNueva < otroFin && otroInicio < finNueva;
+    });
+  }
+
+  const zonasUnicas = [...new Set(config.mesas.map((m) => m.zona).filter(Boolean))];
+  const resultado = {};
+  zonasUnicas.forEach((zona) => {
+    if (zonasBloqueadas.has(zona)) { resultado[zona] = false; return; }
+    const libresEnZona = config.mesas.filter((m) => m.zona === zona).filter(libre);
+    resultado[zona] = !!buscarMesas(libresEnZona, personas);
+  });
+  return resultado;
 }
 
 // Busca mesa(s) para el grupo, respetando la zona preferida si se indica (Interior/Terraza).
