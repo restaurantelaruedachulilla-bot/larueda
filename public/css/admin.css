@@ -346,6 +346,9 @@
 .aforo-item.aforo-lleno { background: #f6d9d3; }
 .aforo-item.aforo-cerrado { background: var(--color-brick); color: #fff; }
 .aforo-item.aforo-cerrado strong { color: #fff; }
+.aforo-item.aforo-inactivo { background: #eee1cf; opacity: 0.7; }
+.aforo-item.aforo-extra { background: var(--color-olive); color: #fff; }
+.aforo-item.aforo-extra strong { color: #fff; }
 
 /* Reservas */
 .reservas-dia-titulo {

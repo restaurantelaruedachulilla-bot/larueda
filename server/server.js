@@ -37,12 +37,14 @@ asegurarArchivoDatos('menu.json', JSON.stringify({ actualizado: '', aviso: '', c
 asegurarArchivoDatos('config.json', JSON.stringify({ turnoMinutos: 120, mesas: [], franjas: [] }, null, 2));
 asegurarArchivoDatos('reservas.json', '[]');
 asegurarArchivoDatos('cierres.json', '[]');
+asegurarArchivoDatos('aperturas.json', '[]');
 asegurarArchivoDatos('traducciones.json', '{}');
 
 const MENU_PATH = path.join(DATA_DIR, 'menu.json');
 const RESERVAS_PATH = path.join(DATA_DIR, 'reservas.json');
 const CONFIG_PATH = path.join(DATA_DIR, 'config.json');
 const CIERRES_PATH = path.join(DATA_DIR, 'cierres.json');
+const APERTURAS_PATH = path.join(DATA_DIR, 'aperturas.json');
 const TRADUCCIONES_PATH = path.join(DATA_DIR, 'traducciones.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'cambia-esta-contrasena';
 const LIMITE_GRUPO_TELEFONO = 8;
@@ -121,7 +123,8 @@ app.get('/api/disponibilidad', (req, res) => {
   const config = leerConfig();
   const reservas = leerReservas();
   const cierres = leerCierres();
-  const disponibilidad = calcularDisponibilidad(config, fecha, reservas, cierres);
+  const aperturas = leerAperturas();
+  const disponibilidad = calcularDisponibilidad(config, fecha, reservas, cierres, aperturas);
   res.json({ turnoMinutos: config.turnoMinutos, franjas: disponibilidad });
 });
 
@@ -148,6 +151,70 @@ app.post('/api/admin/cierres/toggle', requiereAdmin, (req, res) => {
   }
   guardarCierres(cierres);
   res.json({ ok: true, cerrada });
+});
+
+// ---------- Aperturas extraordinarias (solo admin) ----------
+// Al reves que los cierres: permite abrir un turno concreto de un dia concreto aunque ese dia
+// de la semana normalmente esteis cerrados (ej. "abrimos el miercoles 12 de agosto a comer").
+app.get('/api/admin/aperturas', requiereAdmin, (req, res) => {
+  res.json(leerAperturas());
+});
+
+app.post('/api/admin/aperturas/toggle', requiereAdmin, (req, res) => {
+  const { fecha, franjaId } = req.body || {};
+  if (!fecha || !franjaId) return res.status(400).json({ error: 'Faltan fecha o franjaId' });
+
+  const aperturas = leerAperturas();
+  const idx = aperturas.findIndex((a) => a.fecha === fecha && a.franjaId === franjaId);
+  let abierta;
+  if (idx >= 0) {
+    aperturas.splice(idx, 1);
+    abierta = false;
+  } else {
+    aperturas.push({ fecha, franjaId });
+    abierta = true;
+  }
+  guardarAperturas(aperturas);
+  res.json({ ok: true, abierta });
+});
+
+// Vista completa de un dia para el admin: TODOS los turnos configurados (aunque ese dia de la
+// semana no toque), con su estado real (aplica normalmente / cerrado ese dia / abierto extra ese
+// dia), para poder abrir excepciones o cerrar turnos concretos desde el panel.
+app.get('/api/admin/turnos-dia', requiereAdmin, (req, res) => {
+  const { fecha } = req.query;
+  if (!fecha) return res.status(400).json({ error: 'Falta la fecha' });
+
+  const config = leerConfig();
+  const reservas = leerReservas();
+  const cierres = leerCierres();
+  const aperturas = leerAperturas();
+
+  const diaSemana = diaSemanaISO(fecha);
+  const cierresDelDia = new Set(cierres.filter((c) => c.fecha === fecha).map((c) => c.franjaId));
+  const aperturasDelDia = new Set(aperturas.filter((a) => a.fecha === fecha).map((a) => a.franjaId));
+  const reservasDelDia = reservas.filter((r) => r.fecha === fecha && r.estado !== 'cancelada');
+
+  const turnos = config.franjas.map((franja) => {
+    const aplicaNormalmente = !Array.isArray(franja.dias) || franja.dias.includes(diaSemana);
+    const cerrada = aplicaNormalmente && cierresDelDia.has(franja.id);
+    const abiertaExtra = !aplicaNormalmente && aperturasDelDia.has(franja.id);
+    const abierta = (aplicaNormalmente && !cerrada) || abiertaExtra;
+    const ocupadas = reservasDelDia
+      .filter((r) => r.franjaId === franja.id)
+      .reduce((suma, r) => suma + Number(r.personas), 0);
+    return {
+      ...franja,
+      aplicaNormalmente,
+      cerrada,
+      abiertaExtra,
+      abierta,
+      ocupadas,
+      disponibles: abierta ? Math.max(0, franja.capacidadMaxima - ocupadas) : 0,
+    };
+  });
+
+  res.json({ turnos });
 });
 
 app.put('/api/config', requiereAdmin, (req, res) => {
@@ -280,6 +347,13 @@ function guardarCierres(lista) {
   fs.writeFileSync(CIERRES_PATH, JSON.stringify(lista, null, 2), 'utf8');
 }
 
+function leerAperturas() {
+  return JSON.parse(fs.readFileSync(APERTURAS_PATH, 'utf8'));
+}
+function guardarAperturas(lista) {
+  fs.writeFileSync(APERTURAS_PATH, JSON.stringify(lista, null, 2), 'utf8');
+}
+
 function minutosDesdeMedianoche(horaHHMM) {
   const [h, m] = horaHHMM.split(':').map(Number);
   return h * 60 + m;
@@ -292,20 +366,23 @@ function diaSemanaISO(fechaHHMM) {
   return dia === 0 ? 7 : dia;
 }
 
-// Franjas que aplican ese dia de la semana (si una franja no tiene "dias", aplica todos los dias)
-function franjasDelDia(config, fecha) {
+// Franjas que aplican ese dia de la semana (si una franja no tiene "dias", aplica todos los dias),
+// mas las que se hayan abierto excepcionalmente ese dia concreto aunque no toque por horario
+// semanal (ver aperturas.json, ej. "abrimos este miercoles aunque cerramos los miercoles").
+function franjasDelDia(config, fecha, aperturas) {
   const diaSemana = diaSemanaISO(fecha);
-  return config.franjas.filter((f) => !Array.isArray(f.dias) || f.dias.includes(diaSemana));
+  const extraIds = new Set((aperturas || []).filter((a) => a.fecha === fecha).map((a) => a.franjaId));
+  return config.franjas.filter((f) => (!Array.isArray(f.dias) || f.dias.includes(diaSemana)) || extraIds.has(f.id));
 }
 
 // Calcula, para una fecha dada, cuantas plazas ya estan ocupadas en cada franja
 // (sumando reservas activas -no canceladas- de esa fecha y esa franja), y si el
 // restaurante ha cerrado manualmente ese turno ese dia concreto (ver cierres.json).
-function calcularDisponibilidad(config, fecha, reservas, cierres) {
+function calcularDisponibilidad(config, fecha, reservas, cierres, aperturas) {
   const reservasDelDia = reservas.filter((r) => r.fecha === fecha && r.estado !== 'cancelada');
   const cierresDelDia = new Set(cierres.filter((c) => c.fecha === fecha).map((c) => c.franjaId));
 
-  return franjasDelDia(config, fecha).map((franja) => {
+  return franjasDelDia(config, fecha, aperturas).map((franja) => {
     const ocupadas = reservasDelDia
       .filter((r) => r.franjaId === franja.id)
       .reduce((suma, r) => suma + Number(r.personas), 0);
@@ -555,7 +632,8 @@ app.post('/api/reservas', async (req, res) => {
   }
 
   const config = leerConfig();
-  const franja = franjasDelDia(config, fecha).find((f) => f.id === franjaId);
+  const aperturas = leerAperturas();
+  const franja = franjasDelDia(config, fecha, aperturas).find((f) => f.id === franjaId);
   if (!franja) {
     return res.status(400).json({ error: 'Ese turno no está disponible ese día. Elige uno de la lista.' });
   }
@@ -563,7 +641,7 @@ app.post('/api/reservas', async (req, res) => {
   const reservas = leerReservas();
   const cierres = leerCierres();
 
-  const disponibilidad = calcularDisponibilidad(config, fecha, reservas, cierres).find((f) => f.id === franjaId);
+  const disponibilidad = calcularDisponibilidad(config, fecha, reservas, cierres, aperturas).find((f) => f.id === franjaId);
   if (disponibilidad.cerrada) {
     return res.status(409).json({
       error: 'Ese turno está cerrado ese día. Elige otro turno o llámanos al 613 72 76 80.',
@@ -659,7 +737,8 @@ app.post('/api/admin/reservas', requiereAdmin, async (req, res) => {
   }
 
   const config = leerConfig();
-  const franja = franjasDelDia(config, fecha).find((f) => f.id === franjaId);
+  const aperturas = leerAperturas();
+  const franja = franjasDelDia(config, fecha, aperturas).find((f) => f.id === franjaId);
   if (!franja) {
     return res.status(400).json({ error: 'Ese turno no existe ese día. Elige uno de la lista.' });
   }

@@ -693,19 +693,39 @@ async function cargarAforo() {
 
   cont.innerHTML = '<p class="cargando">Cargando aforo...</p>';
   try {
-    const res = await fetch(`/api/disponibilidad?fecha=${encodeURIComponent(fecha)}`);
+    const res = await fetch(`/api/admin/turnos-dia?fecha=${encodeURIComponent(fecha)}`, {
+      headers: { 'x-admin-token': token },
+    });
     const data = await res.json();
 
-    if (!data.franjas.length) {
-      cont.innerHTML = '<p class="cargando">Ese día no hay turnos (cerrado).</p>';
+    if (!data.turnos.length) {
+      cont.innerHTML = '<p class="cargando">Todavía no habéis configurado ningún turno.</p>';
       return;
     }
 
-    cont.innerHTML = data.franjas.map((f) => {
-      const clase = f.cerrada ? 'aforo-cerrado' : (f.disponibles <= 0 ? 'aforo-lleno' : '');
-      const estado = f.cerrada ? 'Cerrado por el restaurante' : `${f.ocupadas}/${f.capacidadMaxima} ocupadas`;
+    cont.innerHTML = data.turnos.map((f) => {
+      let clase = '';
+      let estado;
+      let titulo;
+      if (f.cerrada) {
+        clase = 'aforo-cerrado';
+        estado = 'Cerrado por el restaurante';
+        titulo = 'Haz clic para reabrir este turno ese día';
+      } else if (f.abiertaExtra) {
+        clase = 'aforo-extra';
+        estado = `Abierto excepcionalmente · ${f.ocupadas}/${f.capacidadMaxima} ocupadas`;
+        titulo = 'Haz clic para quitar esta apertura excepcional';
+      } else if (!f.aplicaNormalmente) {
+        clase = 'aforo-inactivo';
+        estado = 'Cerrado ese día de la semana';
+        titulo = 'Haz clic para abrirlo excepcionalmente ese día';
+      } else {
+        clase = f.disponibles <= 0 ? 'aforo-lleno' : '';
+        estado = `${f.ocupadas}/${f.capacidadMaxima} ocupadas`;
+        titulo = 'Haz clic para cerrar este turno ese día';
+      }
       return `
-      <button type="button" class="aforo-item ${clase}" data-franja-id="${atributo(f.id)}" title="Haz clic para ${f.cerrada ? 'reabrir' : 'cerrar'} este turno ese día">
+      <button type="button" class="aforo-item ${clase}" data-franja-id="${atributo(f.id)}" data-aplica="${f.aplicaNormalmente}" title="${titulo}">
         <strong>${atributo(f.nombre)} ${atributo(f.inicio)}</strong><br>
         ${estado}
       </button>
@@ -713,17 +733,18 @@ async function cargarAforo() {
     }).join('');
 
     cont.querySelectorAll('.aforo-item').forEach((btn) => {
-      btn.addEventListener('click', () => toggleCierreTurno(btn.dataset.franjaId));
+      btn.addEventListener('click', () => toggleTurno(btn.dataset.franjaId, btn.dataset.aplica === 'true'));
     });
   } catch (err) {
     cont.innerHTML = '<p class="cargando">No se ha podido cargar el aforo.</p>';
   }
 }
 
-async function toggleCierreTurno(franjaId) {
+async function toggleTurno(franjaId, aplicaNormalmente) {
   const fecha = inputAforoFecha.value;
+  const endpoint = aplicaNormalmente ? '/api/admin/cierres/toggle' : '/api/admin/aperturas/toggle';
   try {
-    const res = await fetch('/api/admin/cierres/toggle', {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
       body: JSON.stringify({ fecha, franjaId }),
