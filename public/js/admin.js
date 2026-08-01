@@ -955,9 +955,17 @@ async function cargarMapaMesas() {
       if (!zona) { zona = { nombre: m.zona || 'Sin zona', mesas: [] }; zonas.push(zona); }
       zona.mesas.push(m);
     });
+    const zonasBloqueadas = data.zonasBloqueadas || [];
 
-    mapaResultado.innerHTML = reglaHtml + zonas.map((zona) => `
-      <h3 class="config-subtitulo">${atributo(zona.nombre)}</h3>
+    mapaResultado.innerHTML = reglaHtml + zonas.map((zona) => {
+      const bloqueada = zonasBloqueadas.includes(zona.nombre);
+      return `
+      <div class="mapa-zona-header">
+        <h3 class="config-subtitulo">${atributo(zona.nombre)}</h3>
+        <button type="button" class="btn-bloquear-zona ${bloqueada ? 'zona-bloqueada' : ''}" data-zona="${atributo(zona.nombre)}">
+          ${bloqueada ? '🚫 Zona bloqueada (clic para reabrir)' : '✅ Bloquear nuevas reservas online'}
+        </button>
+      </div>
       <div class="mapa-timelines">
         ${zona.mesas.map((m) => `
           <div class="mapa-fila">
@@ -973,7 +981,25 @@ async function cargarMapaMesas() {
           </div>
         `).join('')}
       </div>
-    `).join('');
+    `;
+    }).join('');
+
+    mapaResultado.querySelectorAll('.btn-bloquear-zona').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        try {
+          await fetch('/api/admin/bloqueos-zona/toggle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+            body: JSON.stringify({ fecha, turno, zona: btn.dataset.zona }),
+          });
+          await cargarMapaMesas();
+        } catch (err) {
+          alert('No se ha podido cambiar el bloqueo de esa zona.');
+          btn.disabled = false;
+        }
+      });
+    });
   } catch (err) {
     mapaResultado.innerHTML = '<p class="cargando">No se ha podido cargar el mapa.</p>';
   }

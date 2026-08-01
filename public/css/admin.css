@@ -291,6 +291,30 @@
   margin-top: 1.5rem;
   color: var(--color-brick);
 }
+.mapa-zona-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+.mapa-zona-header .config-subtitulo { margin-top: 0; }
+.btn-bloquear-zona {
+  background: #dcecd2;
+  color: #3d6b2a;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+.btn-bloquear-zona.zona-bloqueada {
+  background: var(--color-brick);
+  color: #fff;
+}
 .mapa-regla {
   position: relative;
   height: 1.2rem;

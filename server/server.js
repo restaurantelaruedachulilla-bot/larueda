@@ -38,6 +38,7 @@ asegurarArchivoDatos('config.json', JSON.stringify({ turnoMinutos: 120, mesas: [
 asegurarArchivoDatos('reservas.json', '[]');
 asegurarArchivoDatos('cierres.json', '[]');
 asegurarArchivoDatos('aperturas.json', '[]');
+asegurarArchivoDatos('bloqueosZona.json', '[]');
 asegurarArchivoDatos('traducciones.json', '{}');
 
 const MENU_PATH = path.join(DATA_DIR, 'menu.json');
@@ -45,6 +46,7 @@ const RESERVAS_PATH = path.join(DATA_DIR, 'reservas.json');
 const CONFIG_PATH = path.join(DATA_DIR, 'config.json');
 const CIERRES_PATH = path.join(DATA_DIR, 'cierres.json');
 const APERTURAS_PATH = path.join(DATA_DIR, 'aperturas.json');
+const BLOQUEOS_ZONA_PATH = path.join(DATA_DIR, 'bloqueosZona.json');
 const TRADUCCIONES_PATH = path.join(DATA_DIR, 'traducciones.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'cambia-esta-contrasena';
 const LIMITE_GRUPO_TELEFONO = 8;
@@ -234,6 +236,9 @@ app.get('/api/admin/mapa-mesas', requiereAdmin, (req, res) => {
   const rangoFin = Math.max(...franjasTurno.map((f) => minutosDesdeMedianoche(f.inicio))) + config.turnoMinutos;
 
   const reservasDelDia = leerReservas().filter((r) => r.fecha === fecha && r.estado !== 'cancelada' && r.franjaNombre === turno);
+  const zonasBloqueadas = leerBloqueosZona()
+    .filter((b) => b.fecha === fecha && b.turno === turno)
+    .map((b) => b.zona);
 
   function ocupaMesa(r, mesaId) {
     if (r.mesaId === mesaId) return true;
@@ -262,7 +267,33 @@ app.get('/api/admin/mapa-mesas', requiereAdmin, (req, res) => {
     return { ...mesa, ocupaciones };
   });
 
-  res.json({ rangoInicio, rangoFin, turnoMinutos: config.turnoMinutos, mesas });
+  res.json({ rangoInicio, rangoFin, turnoMinutos: config.turnoMinutos, zonasBloqueadas, mesas });
+});
+
+// Bloquea/desbloquea que se puedan hacer NUEVAS reservas online en una zona concreta, para un
+// dia y turno concretos (ej. "no quiero mas reservas en Interior el 4 de agosto a comer"). No
+// cancela las reservas que ya hubiera en esa zona, solo impide que entren mas por la web; el
+// alta manual del admin puede seguir usando esas mesas si hace falta.
+app.get('/api/admin/bloqueos-zona', requiereAdmin, (req, res) => {
+  res.json(leerBloqueosZona());
+});
+
+app.post('/api/admin/bloqueos-zona/toggle', requiereAdmin, (req, res) => {
+  const { fecha, turno, zona } = req.body || {};
+  if (!fecha || !turno || !zona) return res.status(400).json({ error: 'Faltan fecha, turno o zona' });
+
+  const bloqueos = leerBloqueosZona();
+  const idx = bloqueos.findIndex((b) => b.fecha === fecha && b.turno === turno && b.zona === zona);
+  let bloqueada;
+  if (idx >= 0) {
+    bloqueos.splice(idx, 1);
+    bloqueada = false;
+  } else {
+    bloqueos.push({ fecha, turno, zona });
+    bloqueada = true;
+  }
+  guardarBloqueosZona(bloqueos);
+  res.json({ ok: true, bloqueada });
 });
 
 app.put('/api/config', requiereAdmin, (req, res) => {
@@ -434,6 +465,13 @@ function guardarAperturas(lista) {
   fs.writeFileSync(APERTURAS_PATH, JSON.stringify(lista, null, 2), 'utf8');
 }
 
+function leerBloqueosZona() {
+  return JSON.parse(fs.readFileSync(BLOQUEOS_ZONA_PATH, 'utf8'));
+}
+function guardarBloqueosZona(lista) {
+  fs.writeFileSync(BLOQUEOS_ZONA_PATH, JSON.stringify(lista, null, 2), 'utf8');
+}
+
 function minutosDesdeMedianoche(horaHHMM) {
   const [h, m] = horaHHMM.split(':').map(Number);
   return h * 60 + m;
@@ -528,9 +566,13 @@ function buscarMesas(mesasLibres, personas) {
 // Busca mesa(s) para el grupo, respetando la zona preferida si se indica (Interior/Terraza).
 // Si la zona elegida no tiene sitio ni combinando mesas, cae de vuelta a mirar en cualquier
 // zona antes de rendirse. Solo devuelve null si no queda ninguna mesa libre sin solape.
-function asignarMesa(config, fecha, franja, personas, reservas, zonaPreferida) {
+// "zonasBloqueadas" son zonas que el restaurante ha cerrado a nuevas reservas online para ese
+// dia y turno concretos (ver bloqueosZona.json); esas mesas quedan fuera de la busqueda entera,
+// tanto en la zona preferida como en el resto de zonas de repuesto.
+function asignarMesa(config, fecha, franja, personas, reservas, zonaPreferida, zonasBloqueadas) {
   const inicioNueva = minutosDesdeMedianoche(franja.inicio);
   const finNueva = inicioNueva + config.turnoMinutos;
+  const bloqueadas = zonasBloqueadas || new Set();
 
   const reservasDelDia = reservas.filter((r) => r.fecha === fecha && r.estado !== 'cancelada' && (r.mesaId || (r.mesaIds && r.mesaIds.length)));
 
@@ -550,15 +592,16 @@ function asignarMesa(config, fecha, franja, personas, reservas, zonaPreferida) {
     });
   }
 
+  const mesasAbiertas = config.mesas.filter((m) => !bloqueadas.has(m.zona));
   const zonaFiltro = zonaPreferida && zonaPreferida !== 'Cualquiera' ? zonaPreferida : null;
-  const candidatas = config.mesas.filter((m) => !zonaFiltro || m.zona === zonaFiltro);
+  const candidatas = mesasAbiertas.filter((m) => !zonaFiltro || m.zona === zonaFiltro);
   const libresEnZona = candidatas.filter(libre);
 
   const combo = buscarMesas(libresEnZona, Number(personas));
   if (combo) return combo;
 
   if (zonaFiltro) {
-    const libresTodas = config.mesas.filter(libre);
+    const libresTodas = mesasAbiertas.filter(libre);
     const comboTodas = buscarMesas(libresTodas, Number(personas));
     if (comboTodas) return comboTodas;
   }
@@ -733,7 +776,12 @@ app.post('/api/reservas', async (req, res) => {
     });
   }
 
-  const mesas = asignarMesa(config, fecha, franja, numPersonas, reservas, zona);
+  const bloqueosZona = leerBloqueosZona();
+  const zonasBloqueadas = new Set(
+    bloqueosZona.filter((b) => b.fecha === fecha && b.turno === franja.nombre).map((b) => b.zona)
+  );
+
+  const mesas = asignarMesa(config, fecha, franja, numPersonas, reservas, zona, zonasBloqueadas);
   if (!mesas) {
     const zonaTexto = zona && zona !== 'Cualquiera' ? ` en la zona ${zona}` : '';
     return res.status(409).json({
