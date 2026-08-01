@@ -123,6 +123,30 @@ a { color: var(--color-brick); }
   border-radius: 999px;
 }
 
+.idioma-selector {
+  display: flex;
+  gap: 0.3rem;
+  margin-left: 0.5rem;
+  flex-wrap: wrap;
+}
+.idioma-btn {
+  background: none;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.idioma-btn:hover { border-color: var(--color-brick); }
+.idioma-btn.idioma-activo {
+  background: var(--color-brick);
+  border-color: var(--color-brick);
+  color: #fff;
+}
+
 .nav-toggle {
   display: none;
   background: none;

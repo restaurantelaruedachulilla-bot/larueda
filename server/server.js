@@ -37,11 +37,13 @@ asegurarArchivoDatos('menu.json', JSON.stringify({ actualizado: '', aviso: '', c
 asegurarArchivoDatos('config.json', JSON.stringify({ turnoMinutos: 120, mesas: [], franjas: [] }, null, 2));
 asegurarArchivoDatos('reservas.json', '[]');
 asegurarArchivoDatos('cierres.json', '[]');
+asegurarArchivoDatos('traducciones.json', '{}');
 
 const MENU_PATH = path.join(DATA_DIR, 'menu.json');
 const RESERVAS_PATH = path.join(DATA_DIR, 'reservas.json');
 const CONFIG_PATH = path.join(DATA_DIR, 'config.json');
 const CIERRES_PATH = path.join(DATA_DIR, 'cierres.json');
+const TRADUCCIONES_PATH = path.join(DATA_DIR, 'traducciones.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'cambia-esta-contrasena';
 const LIMITE_GRUPO_TELEFONO = 8;
 
@@ -160,6 +162,107 @@ app.put('/api/config', requiereAdmin, (req, res) => {
   }
   guardarConfig(nuevaConfig);
   res.json({ ok: true });
+});
+
+// ---------- Traduccion automatica de la web (carta incluida) ----------
+// Usamos MyMemory (gratis, sin API key) porque la carta cambia cada dia y no es viable
+// traducir a mano a 5 idiomas. Cada texto traducido se guarda en traducciones.json para
+// no volver a llamar al servicio si ya se tradujo antes (el 99% de las veces sera cache).
+const IDIOMAS_TRADUCCION = new Set(['en', 'ca', 'de', 'it', 'fr']);
+
+// MyMemory a veces confunde frases cortas y ambiguas con entradas sueltas de su memoria de
+// traduccion (ej. "La carta" lo traduce como "the letter"). Para esos casos concretos usamos
+// una traduccion fija en vez de fiarnos del servicio.
+const TRADUCCIONES_MANUALES = {
+  'La carta': { en: 'The menu', ca: 'La carta', de: 'Die Speisekarte', it: 'Il menù', fr: 'La carte' },
+};
+
+function leerTraducciones() {
+  return JSON.parse(fs.readFileSync(TRADUCCIONES_PATH, 'utf8'));
+}
+function guardarTraducciones(cache) {
+  fs.writeFileSync(TRADUCCIONES_PATH, JSON.stringify(cache), 'utf8');
+}
+
+// MyMemory rechaza textos muy largos (limite ~500 caracteres); los parrafos largos de la
+// web (historia, perfiles...) se trocean por frases y se traducen por partes.
+function trocearTexto(texto, maxLen = 400) {
+  if (texto.length <= maxLen) return [texto];
+  const frases = texto.split(/(?<=[.!?])\s+/);
+  const trozos = [];
+  let actual = '';
+  frases.forEach((frase) => {
+    if (actual && (actual + ' ' + frase).trim().length > maxLen) {
+      trozos.push(actual.trim());
+      actual = frase;
+    } else {
+      actual = (actual + ' ' + frase).trim();
+    }
+  });
+  if (actual) trozos.push(actual.trim());
+  return trozos;
+}
+
+async function traducirConMyMemory(texto, destino) {
+  const trozos = trocearTexto(texto);
+  const partes = [];
+  for (const trozo of trozos) {
+    const emailParam = process.env.RESTAURANT_EMAIL ? `&de=${encodeURIComponent(process.env.RESTAURANT_EMAIL)}` : '';
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(trozo)}&langpair=es|${destino}${emailParam}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    let traducido = data && data.responseData && data.responseData.translatedText ? data.responseData.translatedText : trozo;
+    // MyMemory a veces devuelve el texto envuelto en etiquetas tipo XLIFF (ej. <g id="1">...</g>)
+    // cuando reutiliza una entrada de su memoria de traduccion; las quitamos, no son HTML real.
+    traducido = traducido.replace(/<\/?[a-z][^>]*>/gi, '').trim();
+    partes.push(traducido || trozo);
+  }
+  return partes.join(' ');
+}
+
+app.post('/api/traducir', async (req, res) => {
+  const { textos, destino } = req.body || {};
+  if (!Array.isArray(textos) || !IDIOMAS_TRADUCCION.has(destino)) {
+    return res.status(400).json({ error: 'Parámetros inválidos' });
+  }
+
+  const cache = leerTraducciones();
+  cache[destino] = cache[destino] || {};
+
+  const resultado = new Array(textos.length);
+  const pendientes = [];
+  textos.forEach((texto, i) => {
+    const limpio = String(texto || '').trim();
+    if (!limpio) { resultado[i] = texto || ''; return; }
+    if (TRADUCCIONES_MANUALES[limpio] && TRADUCCIONES_MANUALES[limpio][destino]) {
+      resultado[i] = TRADUCCIONES_MANUALES[limpio][destino];
+      return;
+    }
+    if (cache[destino][limpio]) { resultado[i] = cache[destino][limpio]; return; }
+    pendientes.push(i);
+  });
+
+  let huboCambios = false;
+  const CONCURRENCIA = 4;
+  let cursor = 0;
+  async function trabajador() {
+    while (cursor < pendientes.length) {
+      const idx = pendientes[cursor++];
+      const original = String(textos[idx]).trim();
+      try {
+        const traducido = await traducirConMyMemory(original, destino);
+        cache[destino][original] = traducido;
+        resultado[idx] = traducido;
+        huboCambios = true;
+      } catch (err) {
+        resultado[idx] = textos[idx];
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCIA, pendientes.length) }, trabajador));
+
+  if (huboCambios) guardarTraducciones(cache);
+  res.json({ textos: resultado });
 });
 
 // ---------- Reservas ----------

@@ -38,12 +38,12 @@ async function cargarCarta() {
       .filter((cat) => cat.platos.length)
       .map((cat) => `
       <div class="carta-categoria">
-        <h3>${escapeHtml(cat.categoria)}</h3>
+        <h3 data-i18n>${escapeHtml(cat.categoria)}</h3>
         ${cat.platos.map((p) => `
           <div class="plato">
             <div>
-              <div class="plato-nombre">${escapeHtml(p.nombre)}</div>
-              ${p.descripcion ? `<div class="plato-desc">${escapeHtml(p.descripcion)}</div>` : ''}
+              <div class="plato-nombre" data-i18n>${escapeHtml(p.nombre)}</div>
+              ${p.descripcion ? `<div class="plato-desc" data-i18n>${escapeHtml(p.descripcion)}</div>` : ''}
             </div>
             <div class="plato-precio">${escapeHtml(p.precio)}</div>
           </div>
@@ -61,9 +61,9 @@ async function cargarCarta() {
       .filter((cat) => cat.grupos.length)
       .map((cat) => `
       <details class="vinos-categoria">
-        <summary>${escapeHtml(cat.categoria)}</summary>
+        <summary data-i18n>${escapeHtml(cat.categoria)}</summary>
         ${cat.grupos.map((g) => `
-          ${g.denominacion ? `<h4 class="vinos-denominacion">${escapeHtml(g.denominacion)}</h4>` : ''}
+          ${g.denominacion ? `<h4 class="vinos-denominacion" data-i18n>${escapeHtml(g.denominacion)}</h4>` : ''}
           ${g.vinos.map((v) => `
             <div class="vino">
               <div class="vino-nombre">${escapeHtml(v.nombre)}</div>
@@ -76,18 +76,20 @@ async function cargarCarta() {
 
     contenedorMenus.innerHTML = data.menus.map((menu) => `
       <div class="menu-card">
-        <h3>${escapeHtml(menu.nombre)}</h3>
+        <h3 data-i18n>${escapeHtml(menu.nombre)}</h3>
         <div class="menu-precio">${escapeHtml(menu.precio)}</div>
-        <div class="menu-condiciones">${escapeHtml(menu.condiciones || '')}</div>
+        <div class="menu-condiciones" data-i18n>${escapeHtml(menu.condiciones || '')}</div>
         ${menu.secciones
           .map((sec) => ({ ...sec, platos: sec.platos.filter((p) => p.visible !== false) }))
           .filter((sec) => sec.platos.length)
           .map((sec) => `
-          <div class="menu-seccion-titulo">${escapeHtml(sec.titulo)}</div>
-          <ul>${sec.platos.map((pl) => `<li>${escapeHtml(pl.nombre)}</li>`).join('')}</ul>
+          <div class="menu-seccion-titulo" data-i18n>${escapeHtml(sec.titulo)}</div>
+          <ul>${sec.platos.map((pl) => `<li data-i18n>${escapeHtml(pl.nombre)}</li>`).join('')}</ul>
         `).join('')}
       </div>
     `).join('');
+
+    refrescarTraduccion([avisoCarta, contenedorCarta, contenedorVinos, contenedorMenus]);
   } catch (err) {
     contenedorCarta.innerHTML = '<p class="cargando">No se ha podido cargar la carta. Inténtalo de nuevo más tarde.</p>';
     contenedorVinos.innerHTML = '';
@@ -101,6 +103,67 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
+
+// ---------- Traducción automática de la web ----------
+// La carta cambia cada día, así que en vez de traducir a mano en 5 idiomas, cada elemento
+// marcado con data-i18n guarda su texto en español (data-es) y se traduce al vuelo al
+// cambiar de idioma (con caché en el servidor para no traducir lo mismo dos veces).
+let idiomaActual = localStorage.getItem('idioma') || 'es';
+
+function marcarTraducibles(raiz) {
+  if (!raiz) return;
+  if (raiz.hasAttribute && raiz.hasAttribute('data-i18n')) raiz.dataset.es = raiz.textContent;
+  raiz.querySelectorAll('[data-i18n]').forEach((el) => {
+    el.dataset.es = el.textContent;
+  });
+}
+
+async function aplicarIdioma(idioma) {
+  idiomaActual = idioma;
+  localStorage.setItem('idioma', idioma);
+  document.querySelectorAll('.idioma-btn').forEach((btn) => {
+    btn.classList.toggle('idioma-activo', btn.dataset.idioma === idioma);
+  });
+
+  const elementos = Array.from(document.querySelectorAll('[data-i18n]'))
+    .filter((el) => el.dataset.es && el.dataset.es.trim());
+
+  if (idioma === 'es') {
+    elementos.forEach((el) => { el.textContent = el.dataset.es; });
+    return;
+  }
+
+  const textos = elementos.map((el) => el.dataset.es);
+  try {
+    const res = await fetch('/api/traducir', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ textos, destino: idioma }),
+    });
+    const data = await res.json();
+    elementos.forEach((el, i) => {
+      if (data.textos && data.textos[i]) el.textContent = data.textos[i];
+    });
+  } catch (err) {
+    // Si falla la traducción nos quedamos con el texto en español: la web nunca se rompe.
+  }
+}
+
+// raices: elementos cuyo contenido en español se acaba de escribir/refrescar ahora mismo
+// (por eso es seguro volver a capturarlo como data-es). Nunca se pasa "document" aquí salvo
+// en la carga inicial, para no pisar con texto ya traducido el data-es de otros elementos
+// que puedan estar traduciéndose en paralelo (ej. mientras carga la carta).
+function refrescarTraduccion(raices) {
+  (raices || [document]).forEach((raiz) => marcarTraducibles(raiz));
+  aplicarIdioma(idiomaActual);
+}
+
+document.querySelectorAll('.idioma-btn').forEach((btn) => {
+  btn.addEventListener('click', () => aplicarIdioma(btn.dataset.idioma));
+});
+
+marcarTraducibles(document);
+aplicarIdioma(idiomaActual);
 
 cargarCarta();
 
@@ -146,35 +209,37 @@ async function actualizarTurnos() {
   const personas = Number(inputPersonas.value) || 0;
 
   if (!fecha) {
-    selectTurno.innerHTML = '<option value="">Elige antes la fecha y el número de personas</option>';
+    selectTurno.innerHTML = '<option value="" data-i18n>Elige antes la fecha y el número de personas</option>';
     turnoAyuda.textContent = '';
     return;
   }
 
-  selectTurno.innerHTML = '<option value="">Cargando turnos...</option>';
+  selectTurno.innerHTML = '<option value="" data-i18n>Cargando turnos...</option>';
 
   try {
     const res = await fetch(`/api/disponibilidad?fecha=${encodeURIComponent(fecha)}`);
     const data = await res.json();
 
     if (!data.franjas.length) {
-      selectTurno.innerHTML = '<option value="">Ese día cerramos</option>';
+      selectTurno.innerHTML = '<option value="" data-i18n>Ese día cerramos</option>';
       turnoAyuda.textContent = 'Ese día no tenemos servicio. Elige otra fecha o llámanos al 613 72 76 80.';
+      refrescarTraduccion([selectTurno, turnoAyuda]);
       return;
     }
 
     selectTurno.innerHTML =
-      '<option value="">Elige un turno</option>' +
+      '<option value="" data-i18n>Elige un turno</option>' +
       data.franjas.map((f) => {
         const cabe = !f.cerrada && (!personas || f.disponibles >= personas);
         const motivo = f.cerrada ? ' (cerrado)' : (cabe ? '' : ' (no disponible)');
         const etiqueta = `${f.nombre} · ${f.inicio}–${f.fin}${motivo}`;
-        return `<option value="${f.id}" ${!cabe ? 'disabled' : ''}>${escapeHtml(etiqueta)}</option>`;
+        return `<option value="${f.id}" ${!cabe ? 'disabled' : ''} data-i18n>${escapeHtml(etiqueta)}</option>`;
       }).join('');
 
     turnoAyuda.textContent = personas
       ? 'Los turnos marcados como "no disponible" no tienen sitio para tantas personas ese día.'
       : 'Indica cuántas personas sois para ver qué turnos tienen sitio.';
+    refrescarTraduccion([selectTurno, turnoAyuda]);
   } catch (err) {
     selectTurno.innerHTML = '<option value="">No se han podido cargar los turnos</option>';
   }
@@ -210,7 +275,7 @@ formReserva.addEventListener('submit', async (e) => {
     mensajeReserva.textContent = `¡Gracias! Hemos recibido tu solicitud de reserva (${json.turno}). Te confirmaremos en breve.`;
     mensajeReserva.classList.add('ok');
     formReserva.reset();
-    selectTurno.innerHTML = '<option value="">Elige antes la fecha y el número de personas</option>';
+    selectTurno.innerHTML = '<option value="" data-i18n>Elige antes la fecha y el número de personas</option>';
     avisoGrupoGrande.hidden = true;
     filaTurno.hidden = false;
   } catch (err) {
@@ -219,5 +284,6 @@ formReserva.addEventListener('submit', async (e) => {
   } finally {
     btnReservar.disabled = false;
     btnReservar.textContent = 'Enviar solicitud de reserva';
+    refrescarTraduccion([selectTurno, btnReservar]);
   }
 });
