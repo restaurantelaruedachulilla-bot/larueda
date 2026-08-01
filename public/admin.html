@@ -37,6 +37,7 @@
 
   <div class="admin-tabs">
     <button class="tab-btn active" data-tab="carta">📋 Carta</button>
+    <button class="tab-btn" data-tab="vinos">🍷 Vinos</button>
     <button class="tab-btn" data-tab="menus">🍽️ Menús</button>
     <button class="tab-btn" data-tab="reservas">📅 Reservas</button>
     <button class="tab-btn" data-tab="mesas">🪑 Mesas y turnos</button>
@@ -50,6 +51,17 @@
     <div class="admin-save-bar">
       <button id="btn-guardar-carta" class="btn btn-primary btn-full btn-guardar-menu">Guardar cambios</button>
       <p id="guardar-mensaje-carta" class="guardar-mensaje"></p>
+    </div>
+  </section>
+
+  <section id="tab-vinos" class="tab-panel" hidden>
+    <p class="admin-hint">Aquí editáis la carta de vinos: cada apartado es un tipo de vino (blancos, tintos...), y dentro se agrupan por denominación de origen. Los cambios se ven en la web en cuanto pulsas "Guardar".</p>
+    <div id="lista-vinos-categorias"></div>
+    <button id="btn-add-vinos-categoria" class="btn btn-outline btn-full">+ Añadir apartado (ej. "Vinos blancos")</button>
+
+    <div class="admin-save-bar">
+      <button id="btn-guardar-vinos" class="btn btn-primary btn-full btn-guardar-menu">Guardar cambios</button>
+      <p id="guardar-mensaje-vinos" class="guardar-mensaje"></p>
     </div>
   </section>
 

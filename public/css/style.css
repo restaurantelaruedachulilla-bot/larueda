@@ -277,6 +277,34 @@ a { color: var(--color-brick); }
 .plato-desc { font-size: 0.88rem; color: #6b5c4f; margin-top: 0.1rem; }
 .plato-precio { white-space: nowrap; font-weight: 600; color: var(--color-brick); }
 
+/* Vinos */
+.vinos-contenido { max-width: 760px; margin: 0 auto; }
+.vinos-categoria {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.4rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(47,38,32,0.06);
+}
+.vinos-categoria summary {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: var(--color-charcoal);
+  padding: 0.9rem 0;
+  cursor: pointer;
+}
+.vinos-denominacion {
+  color: var(--color-brick);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 1.1rem 0 0.4rem;
+}
+.vino { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px dashed rgba(0,0,0,0.1); }
+.vino-nombre { font-size: 0.95rem; }
+.vino-precio { white-space: nowrap; font-weight: 600; color: var(--color-brick); font-size: 0.9rem; }
+.vinos-categoria > .vino:last-child, .vinos-categoria .vino:last-of-type { border-bottom: none; padding-bottom: 1rem; }
+
 /* Menus */
 .menus-grid {
   display: grid;

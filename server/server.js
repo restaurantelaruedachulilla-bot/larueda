@@ -87,6 +87,7 @@ app.put('/api/menu', requiereAdmin, (req, res) => {
   if (!nuevoMenu || !Array.isArray(nuevoMenu.carta) || !Array.isArray(nuevoMenu.menus)) {
     return res.status(400).json({ error: 'Formato de carta inválido' });
   }
+  if (!Array.isArray(nuevoMenu.vinos)) nuevoMenu.vinos = [];
   nuevoMenu.actualizado = new Date().toISOString().slice(0, 10);
   fs.writeFileSync(MENU_PATH, JSON.stringify(nuevoMenu, null, 2), 'utf8');
   res.json({ ok: true });

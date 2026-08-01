@@ -20,9 +20,10 @@ document.getElementById('lightbox-cerrar').addEventListener('click', () => { lig
 lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.hidden = true; });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.hidden = true; });
 
-// Cargar carta y menús desde la API
+// Cargar carta, vinos y menús desde la API
 async function cargarCarta() {
   const contenedorCarta = document.getElementById('carta-contenido');
+  const contenedorVinos = document.getElementById('vinos-contenido');
   const contenedorMenus = document.getElementById('menus-contenido');
   const avisoCarta = document.getElementById('carta-aviso');
 
@@ -50,6 +51,29 @@ async function cargarCarta() {
       </div>
     `).join('');
 
+    contenedorVinos.innerHTML = (data.vinos || [])
+      .map((cat) => ({
+        ...cat,
+        grupos: cat.grupos
+          .map((g) => ({ ...g, vinos: g.vinos.filter((v) => v.visible !== false) }))
+          .filter((g) => g.vinos.length),
+      }))
+      .filter((cat) => cat.grupos.length)
+      .map((cat) => `
+      <details class="vinos-categoria">
+        <summary>${escapeHtml(cat.categoria)}</summary>
+        ${cat.grupos.map((g) => `
+          ${g.denominacion ? `<h4 class="vinos-denominacion">${escapeHtml(g.denominacion)}</h4>` : ''}
+          ${g.vinos.map((v) => `
+            <div class="vino">
+              <div class="vino-nombre">${escapeHtml(v.nombre)}</div>
+              <div class="vino-precio">${escapeHtml(v.precio)}</div>
+            </div>
+          `).join('')}
+        `).join('')}
+      </details>
+    `).join('');
+
     contenedorMenus.innerHTML = data.menus.map((menu) => `
       <div class="menu-card">
         <h3>${escapeHtml(menu.nombre)}</h3>
@@ -66,6 +90,7 @@ async function cargarCarta() {
     `).join('');
   } catch (err) {
     contenedorCarta.innerHTML = '<p class="cargando">No se ha podido cargar la carta. Inténtalo de nuevo más tarde.</p>';
+    contenedorVinos.innerHTML = '';
     contenedorMenus.innerHTML = '';
   }
 }

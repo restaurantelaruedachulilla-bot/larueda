@@ -53,6 +53,7 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
       cargarAforo();
     }
     if (btn.dataset.tab === 'menus') renderMenus();
+    if (btn.dataset.tab === 'vinos') renderVinosCategorias();
     if (btn.dataset.tab === 'mesas') cargarConfigAdmin();
   });
 });
@@ -84,6 +85,7 @@ async function guardarMenu(msgElId) {
 async function cargarCartaAdmin() {
   const res = await fetch('/api/menu');
   menuActual = await res.json();
+  if (!Array.isArray(menuActual.vinos)) menuActual.vinos = [];
   renderCategorias();
 }
 
@@ -174,6 +176,127 @@ document.getElementById('btn-add-categoria').addEventListener('click', () => {
 
 document.getElementById('btn-guardar-carta').addEventListener('click', () => guardarMenu('guardar-mensaje-carta'));
 document.getElementById('btn-guardar-menus').addEventListener('click', () => guardarMenu('guardar-mensaje-menus'));
+document.getElementById('btn-guardar-vinos').addEventListener('click', () => guardarMenu('guardar-mensaje-vinos'));
+
+// ---------- Vinos ----------
+function renderVinosCategorias() {
+  const cont = document.getElementById('lista-vinos-categorias');
+  cont.innerHTML = menuActual.vinos.map((cat, ci) => `
+    <div class="cat-card" data-ci="${ci}">
+      <div class="cat-card-header">
+        <input type="text" value="${atributo(cat.categoria)}" data-ci="${ci}" class="input-vinos-categoria">
+        <button class="btn-icon btn-borrar-vinos-cat" data-ci="${ci}" title="Eliminar apartado">🗑️</button>
+      </div>
+      <div class="vinos-grupos-lista" data-ci="${ci}"></div>
+      <button class="btn-add-linea btn-add-grupo" data-ci="${ci}">+ Añadir denominación de origen</button>
+    </div>
+  `).join('');
+
+  menuActual.vinos.forEach((cat, ci) => renderVinosGrupos(ci));
+
+  cont.querySelectorAll('.input-vinos-categoria').forEach((input) => {
+    input.addEventListener('input', (e) => {
+      menuActual.vinos[e.target.dataset.ci].categoria = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.btn-borrar-vinos-cat').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      if (confirm('¿Eliminar este apartado de vinos entero?')) {
+        menuActual.vinos.splice(Number(e.target.dataset.ci), 1);
+        renderVinosCategorias();
+      }
+    });
+  });
+  cont.querySelectorAll('.btn-add-grupo').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const ci = Number(e.target.dataset.ci);
+      menuActual.vinos[ci].grupos.push({ denominacion: '', vinos: [{ nombre: '', precio: '', visible: true }] });
+      renderVinosGrupos(ci);
+    });
+  });
+}
+
+function renderVinosGrupos(ci) {
+  const cont = document.querySelector(`.vinos-grupos-lista[data-ci="${ci}"]`);
+  const cat = menuActual.vinos[ci];
+  cont.innerHTML = cat.grupos.map((g, gi) => `
+    <div class="seccion-edit">
+      <div class="seccion-edit-header">
+        <input type="text" placeholder="Denominación de origen (ej. D.O. Rioja)" value="${atributo(g.denominacion)}" data-ci="${ci}" data-gi="${gi}" class="input-vinos-denominacion">
+        <button class="btn-icon btn-borrar-grupo" data-ci="${ci}" data-gi="${gi}" title="Eliminar denominación">🗑️</button>
+      </div>
+      <div class="vinos-lista" data-ci="${ci}" data-gi="${gi}"></div>
+      <button class="btn-add-linea btn-add-vino" data-ci="${ci}" data-gi="${gi}">+ Añadir vino</button>
+    </div>
+  `).join('');
+
+  cat.grupos.forEach((g, gi) => renderVinosLista(ci, gi));
+
+  cont.querySelectorAll('.input-vinos-denominacion').forEach((input) => {
+    input.addEventListener('input', (e) => {
+      const { ci, gi } = e.target.dataset;
+      menuActual.vinos[ci].grupos[gi].denominacion = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.btn-borrar-grupo').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { ci, gi } = e.target.dataset;
+      menuActual.vinos[ci].grupos.splice(Number(gi), 1);
+      renderVinosGrupos(Number(ci));
+    });
+  });
+  cont.querySelectorAll('.btn-add-vino').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { ci, gi } = e.target.dataset;
+      menuActual.vinos[ci].grupos[gi].vinos.push({ nombre: '', precio: '', visible: true });
+      renderVinosLista(Number(ci), Number(gi));
+    });
+  });
+}
+
+function renderVinosLista(ci, gi) {
+  const cont = document.querySelector(`.vinos-lista[data-ci="${ci}"][data-gi="${gi}"]`);
+  const vinos = menuActual.vinos[ci].grupos[gi].vinos;
+  cont.innerHTML = vinos.map((v, vi) => `
+    <div class="plato-card ${v.visible === false ? 'plato-oculto' : ''}">
+      <div class="plato-card-row">
+        <input type="text" placeholder="Nombre del vino" value="${atributo(v.nombre)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="nombre">
+        <input type="text" placeholder="Precio" value="${atributo(v.precio)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="precio" class="campo-precio">
+      </div>
+      <div class="plato-card-row">
+        <button class="btn-icon btn-vino-visible-toggle" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" title="${v.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${v.visible === false ? '🙈' : '👁️'}</button>
+        <button class="btn-icon btn-borrar-vino" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" title="Eliminar vino">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+
+  cont.querySelectorAll('input').forEach((input) => {
+    input.addEventListener('input', (e) => {
+      const { ci, gi, vi, campo } = e.target.dataset;
+      menuActual.vinos[ci].grupos[gi].vinos[vi][campo] = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.btn-vino-visible-toggle').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { ci, gi, vi } = e.target.dataset;
+      const vino = menuActual.vinos[ci].grupos[gi].vinos[vi];
+      vino.visible = vino.visible === false;
+      renderVinosLista(Number(ci), Number(gi));
+    });
+  });
+  cont.querySelectorAll('.btn-borrar-vino').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const { ci, gi, vi } = e.target.dataset;
+      menuActual.vinos[ci].grupos[gi].vinos.splice(Number(vi), 1);
+      renderVinosLista(Number(ci), Number(gi));
+    });
+  });
+}
+
+document.getElementById('btn-add-vinos-categoria').addEventListener('click', () => {
+  menuActual.vinos.push({ categoria: 'Nuevo apartado', grupos: [] });
+  renderVinosCategorias();
+});
 
 // ---------- Menús cerrados (Menú Chulilla, Menú Brasa...) ----------
 function renderMenus() {
@@ -593,11 +716,16 @@ async function cargarReservas() {
   const cont = document.getElementById('lista-reservas');
   cont.innerHTML = '<p class="cargando">Cargando reservas...</p>';
   const res = await fetch('/api/reservas', { headers: { 'x-admin-token': token } });
-  const reservas = await res.json();
+  const todas = await res.json();
+
+  // Las reservas de dias ya pasados se quedan guardadas (por si hace falta consultarlas),
+  // pero no se muestran aqui para no llenar el panel de reservas que ya no estan por venir.
+  const hoy = new Date().toLocaleDateString('sv-SE');
+  const reservas = todas.filter((r) => r.fecha >= hoy);
   reservas.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
 
   if (!reservas.length) {
-    cont.innerHTML = '<p class="cargando">Todavía no hay reservas.</p>';
+    cont.innerHTML = '<p class="cargando">No hay reservas por venir.</p>';
     return;
   }
 

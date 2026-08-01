@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-07-30",
+  "actualizado": "2026-08-01",
   "aviso": "Producto fresco de mercado: la carta puede variar según el día.",
   "carta": [
     {
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "categoria": "A la brasa",
+      "categoria": "A la brasa · Carnes",
       "platos": [
         {
           "nombre": "Chuletas de cordero lechal (350g)",
@@ -133,7 +133,12 @@
           "descripcion": "Más de 60 días de maduración",
           "precio": "60€/kg",
           "visible": true
-        },
+        }
+      ]
+    },
+    {
+      "categoria": "A la brasa · Pescados",
+      "platos": [
         {
           "nombre": "Pulpo a la brasa (180g)",
           "descripcion": "Con parmentier de maíz",
@@ -441,6 +446,578 @@
             },
             {
               "nombre": "Helado (leche merengada, coco o vainilla)",
+              "visible": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "vinos": [
+    {
+      "categoria": "Vinos blancos",
+      "grupos": [
+        {
+          "denominacion": "D.O. Utiel-Requena",
+          "vinos": [
+            {
+              "nombre": "Finca del Mar Chardonnay",
+              "precio": "14€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Alicante",
+          "vinos": [
+            {
+              "nombre": "Enrique Mendoza",
+              "precio": "24€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Rueda",
+          "vinos": [
+            {
+              "nombre": "Cyatho",
+              "precio": "4€ copa · 16€ botella",
+              "visible": true
+            },
+            {
+              "nombre": "Monopole Verdejo",
+              "precio": "17€",
+              "visible": true
+            },
+            {
+              "nombre": "Oinoz",
+              "precio": "19€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Rioja",
+          "vinos": [
+            {
+              "nombre": "Finca Vidales Blanco 2024",
+              "precio": "3.50€ copa · 14€ botella",
+              "visible": true
+            },
+            {
+              "nombre": "López de Haro Blanco",
+              "precio": "16€",
+              "visible": true
+            },
+            {
+              "nombre": "López de Haro Reserva 2018",
+              "precio": "19€",
+              "visible": true
+            },
+            {
+              "nombre": "El Pacto",
+              "precio": "24€",
+              "visible": true
+            },
+            {
+              "nombre": "875m Blanco",
+              "precio": "19€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Rías Baixas",
+          "vinos": [
+            {
+              "nombre": "Pazo da Torre",
+              "precio": "4€ copa · 18€ botella",
+              "visible": true
+            },
+            {
+              "nombre": "Martín Códax",
+              "precio": "29€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "Otras denominaciones",
+          "vinos": [
+            {
+              "nombre": "Casar de Vide",
+              "precio": "21€",
+              "visible": true
+            },
+            {
+              "nombre": "Komokabras",
+              "precio": "35€",
+              "visible": true
+            },
+            {
+              "nombre": "Teo Legido Las Galgas",
+              "precio": "58€",
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "categoria": "Vinos tintos",
+      "grupos": [
+        {
+          "denominacion": "Vino de Chulilla",
+          "vinos": [
+            {
+              "nombre": "Purita Joven",
+              "precio": "29€",
+              "visible": true
+            },
+            {
+              "nombre": "Purita Tinaja",
+              "precio": "29€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Utiel-Requena",
+          "vinos": [
+            {
+              "nombre": "Seda",
+              "precio": "3.50€ copa · 14€ botella",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Rioja",
+          "vinos": [
+            {
+              "nombre": "López de Haro Crianza 2021",
+              "precio": "4€ copa · 16€ botella",
+              "visible": true
+            },
+            {
+              "nombre": "Tahur Crianza 2022",
+              "precio": "18€",
+              "visible": true
+            },
+            {
+              "nombre": "López de Haro Reserva 2018",
+              "precio": "19€",
+              "visible": true
+            },
+            {
+              "nombre": "Dominio de la Abadesa",
+              "precio": "19€",
+              "visible": true
+            },
+            {
+              "nombre": "Fernández de Piérola",
+              "precio": "5€ copa · 21€ botella",
+              "visible": true
+            },
+            {
+              "nombre": "Cune Gran Reserva 2020",
+              "precio": "23€",
+              "visible": true
+            },
+            {
+              "nombre": "Marqués de Valido",
+              "precio": "25€",
+              "visible": true
+            },
+            {
+              "nombre": "Laturce",
+              "precio": "26€",
+              "visible": true
+            },
+            {
+              "nombre": "Ortega Ezquerro",
+              "precio": "27.50€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Pomal Reserva 2018",
+              "precio": "28€",
+              "visible": true
+            },
+            {
+              "nombre": "Coto de Imaz",
+              "precio": "34€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Salceda La Tejera 2020",
+              "precio": "30€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Real Reserva 2021",
+              "precio": "32€",
+              "visible": true
+            },
+            {
+              "nombre": "Lan Reserva 2018",
+              "precio": "34€",
+              "visible": true
+            },
+            {
+              "nombre": "Muga 2021 Crianza",
+              "precio": "40€",
+              "visible": true
+            },
+            {
+              "nombre": "Macán Clásico 2021",
+              "precio": "49€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Tondonia 2012",
+              "precio": "58€",
+              "visible": true
+            },
+            {
+              "nombre": "El Maquinista 2005",
+              "precio": "69€",
+              "visible": true
+            },
+            {
+              "nombre": "Artadi Valdeginés 2019",
+              "precio": "71€",
+              "visible": true
+            },
+            {
+              "nombre": "Macán 2020",
+              "precio": "95€",
+              "visible": true
+            },
+            {
+              "nombre": "Castillo de Ygay Reserva 2011",
+              "precio": "290€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Ribera del Duero",
+          "vinos": [
+            {
+              "nombre": "Prado Rey Roble 2024",
+              "precio": "5€ copa · 19€ botella",
+              "visible": true
+            },
+            {
+              "nombre": "La Buena Uva 2024",
+              "precio": "21€",
+              "visible": true
+            },
+            {
+              "nombre": "Vallejo",
+              "precio": "22€",
+              "visible": true
+            },
+            {
+              "nombre": "Durón Crianza",
+              "precio": "22€",
+              "visible": true
+            },
+            {
+              "nombre": "Traslascuestas Roble",
+              "precio": "6€ copa · 23€ botella",
+              "visible": true
+            },
+            {
+              "nombre": "Supernova Reserva 2019",
+              "precio": "25€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Mayor",
+              "precio": "25€",
+              "visible": true
+            },
+            {
+              "nombre": "Hito 2024",
+              "precio": "25€",
+              "visible": true
+            },
+            {
+              "nombre": "Monteabellón Crianza 2022",
+              "precio": "30€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Pedrosa",
+              "precio": "32€",
+              "visible": true
+            },
+            {
+              "nombre": "Durón Reserva",
+              "precio": "32€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Mayor Reserva 2019",
+              "precio": "32€",
+              "visible": true
+            },
+            {
+              "nombre": "Abadía de San Quirce",
+              "precio": "35€",
+              "visible": true
+            },
+            {
+              "nombre": "Bardos Suprema",
+              "precio": "50€",
+              "visible": true
+            },
+            {
+              "nombre": "Pago de Carraovejas",
+              "precio": "56€",
+              "visible": true
+            },
+            {
+              "nombre": "Traslascuestas 2020 Magnum (1,5L)",
+              "precio": "62€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Pedrosa Reserva 2021",
+              "precio": "75€",
+              "visible": true
+            },
+            {
+              "nombre": "Alión 2021",
+              "precio": "120€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Bierzo",
+          "vinos": [
+            {
+              "nombre": "Libre Canto",
+              "precio": "18€",
+              "visible": true
+            },
+            {
+              "nombre": "Señorío del Bierzo",
+              "precio": "20€",
+              "visible": true
+            },
+            {
+              "nombre": "Colección de Barricas",
+              "precio": "26€",
+              "visible": true
+            },
+            {
+              "nombre": "Tilenus",
+              "precio": "28€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Toro",
+          "vinos": [
+            {
+              "nombre": "Cyan by Matarromera",
+              "precio": "26€",
+              "visible": true
+            },
+            {
+              "nombre": "Gran Colegiata",
+              "precio": "30€",
+              "visible": true
+            },
+            {
+              "nombre": "Pintia 2020",
+              "precio": "90€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Campo de Borja",
+          "vinos": [
+            {
+              "nombre": "Borsao",
+              "precio": "22€",
+              "visible": true
+            },
+            {
+              "nombre": "Cabriola",
+              "precio": "24€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Priorat",
+          "vinos": [
+            {
+              "nombre": "Fosca del Priorat",
+              "precio": "27€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Somontano",
+          "vinos": [
+            {
+              "nombre": "Enate Reserva Privada",
+              "precio": "24€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "D.O. Navarra",
+          "vinos": [
+            {
+              "nombre": "Logos I 2019",
+              "precio": "28€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "Sierra de Gredos",
+          "vinos": [
+            {
+              "nombre": "Jiménez-Landi El Corralón 2023",
+              "precio": "24€",
+              "visible": true
+            },
+            {
+              "nombre": "Cinético Gredos",
+              "precio": "42€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "Vino de Castilla y León",
+          "vinos": [
+            {
+              "nombre": "Mauro Cosecha 2023",
+              "precio": "51€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "Vinos internacionales",
+          "vinos": [
+            {
+              "nombre": "Seascape Malbec (Argentina)",
+              "precio": "18€",
+              "visible": true
+            },
+            {
+              "nombre": "Estancia Mendoza (Argentina)",
+              "precio": "23€",
+              "visible": true
+            },
+            {
+              "nombre": "1990 Château Le Pape (Pessac-Léognan)",
+              "precio": "125€",
+              "visible": true
+            },
+            {
+              "nombre": "1994 Château Le Crock (Saint-Estèphe)",
+              "precio": "105€",
+              "visible": true
+            },
+            {
+              "nombre": "Mademoiselle de Calon (Saint-Estèphe)",
+              "precio": "110€",
+              "visible": true
+            },
+            {
+              "nombre": "1994 Château Tour du Cauze (Saint-Émilion)",
+              "precio": "100€",
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "categoria": "Vinos rosados",
+      "grupos": [
+        {
+          "denominacion": "",
+          "vinos": [
+            {
+              "nombre": "Finca del Mar Rosé Bobal",
+              "precio": "14€",
+              "visible": true
+            },
+            {
+              "nombre": "El Miracle N5 Rosado",
+              "precio": "16€",
+              "visible": true
+            },
+            {
+              "nombre": "Viña Real Rosado",
+              "precio": "18€",
+              "visible": true
+            },
+            {
+              "nombre": "Ceramic Monastrell Rosé",
+              "precio": "32€",
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "categoria": "Cava y champagne",
+      "grupos": [
+        {
+          "denominacion": "Champagne",
+          "vinos": [
+            {
+              "nombre": "Charles de Courance Brut Rosé",
+              "precio": "38€",
+              "visible": true
+            },
+            {
+              "nombre": "Charles de Courance Cuvée Spéciale",
+              "precio": "42€",
+              "visible": true
+            },
+            {
+              "nombre": "Champagne Brut G.H. Mumm Cordon Rouge",
+              "precio": "45€",
+              "visible": true
+            }
+          ]
+        },
+        {
+          "denominacion": "Cava",
+          "vinos": [
+            {
+              "nombre": "El Miracle Cava Brut Rosado",
+              "precio": "17€",
+              "visible": true
+            },
+            {
+              "nombre": "El Miracle Cava Brut",
+              "precio": "17€",
+              "visible": true
+            },
+            {
+              "nombre": "Roger Goulart Brut Millésimé 2023",
+              "precio": "23€",
               "visible": true
             }
           ]
