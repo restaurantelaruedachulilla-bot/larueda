@@ -595,7 +595,7 @@
               "nombre": "Purita Tinaja",
               "precio": "29€",
               "visible": true,
-              "descripcion": "Bodegas 9c+ (Chulilla) · crianza en tinaja"
+              "descripcion": "Bodegas 9c+ (Chulilla) · crianza en tinaja, notas a fruta madura y especias"
             }
           ]
         },
@@ -719,7 +719,7 @@
               "nombre": "El Maquinista 2005",
               "precio": "69€",
               "visible": true,
-              "descripcion": "Privios Wines, D.O.Ca. Rioja · Tempranillo"
+              "descripcion": "Privios Wines, D.O.Ca. Rioja · 2005 · Tempranillo, vino de guarda extrema"
             },
             {
               "nombre": "Artadi Valdeginés 2019",
@@ -737,7 +737,7 @@
               "nombre": "Castillo de Ygay Reserva 2011",
               "precio": "290€",
               "visible": true,
-              "descripcion": "Marqués de Murrieta · 2011 · Tempranillo y Mazuelo"
+              "descripcion": "Marqués de Murrieta · 2011 · Tempranillo (~85%), Mazuelo, Graciano y Garnacha"
             }
           ]
         },
@@ -790,7 +790,7 @@
               "nombre": "Hito 2024",
               "precio": "25€",
               "visible": true,
-              "descripcion": "Bodegas Cepa 21 · 2024 · Tinta Fina (Tempranillo)"
+              "descripcion": "Bodegas Cepa 21, D.O. Ribera del Duero (Castrillo de Duero) · Tinto Fino (Tempranillo)"
             },
             {
               "nombre": "Monteabellón Crianza 2022",
@@ -873,7 +873,7 @@
               "nombre": "Colección de Barricas",
               "precio": "26€",
               "visible": true,
-              "descripcion": "Bodegas Dominio de Tares · Mencía con paso por barrica"
+              "descripcion": "Bodegas Dominio de Tares, D.O. Bierzo · 2021 · Mencía, 12 meses en barrica de roble"
             },
             {
               "nombre": "Tilenus",
@@ -969,7 +969,7 @@
               "nombre": "Cinético Gredos",
               "precio": "42€",
               "visible": true,
-              "descripcion": ""
+              "descripcion": "Bodega Teo Legido, VdT Castilla y León (Sierra de Gredos) · Garnacha, crianza 10 meses en barricas usadas"
             }
           ]
         },
@@ -991,13 +991,13 @@
               "nombre": "Seascape Malbec (Argentina)",
               "precio": "18€",
               "visible": true,
-              "descripcion": ""
+              "descripcion": "Costa Atlántica, Argentina · Malbec"
             },
             {
               "nombre": "Estancia Mendoza (Argentina)",
               "precio": "23€",
               "visible": true,
-              "descripcion": "Bodega Estancia Mendoza, Tupungato (Argentina)"
+              "descripcion": "Valle de Uco, Mendoza (Argentina) · Malbec"
             },
             {
               "nombre": "1990 Château Le Pape (Pessac-Léognan)",
@@ -1015,7 +1015,7 @@
               "nombre": "Mademoiselle de Calon (Saint-Estèphe)",
               "precio": "110€",
               "visible": true,
-              "descripcion": "Segundo vino de Château Calon-Ségur, Saint-Estèphe (Burdeos) · Cabernet Sauvignon y Merlot"
+              "descripcion": "Segundo vino de Château Calon-Ségur, Saint-Estèphe (Burdeos) · 1994 · Merlot (~65%) y Cabernet Sauvignon (~35%)"
             },
             {
               "nombre": "1994 Château Tour du Cauze (Saint-Émilion)",
