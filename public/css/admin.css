@@ -315,62 +315,43 @@
   background: var(--color-brick);
   color: #fff;
 }
-.mapa-regla {
-  position: relative;
-  height: 1.2rem;
-  margin: 0.5rem 0 0.25rem 116px;
-  border-bottom: 1px solid #d8cdbc;
+.mapa-grid-visual {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
-.mapa-regla span {
-  position: absolute;
-  transform: translateX(-50%);
-  font-size: 0.72rem;
-  color: #8a7a6a;
-  white-space: nowrap;
+.mesa-visual-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.85rem;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(47,38,32,0.07);
+  border: 2px solid #f6d9d3;
 }
-.mapa-timelines { margin-bottom: 1rem; }
-.mapa-fila {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-.mapa-fila-nombre {
-  width: 100px;
-  flex-shrink: 0;
-  font-weight: 700;
-  font-size: 0.85rem;
+.mesa-visual-card.mesa-visual-libre-card { border-color: #dcecd2; }
+.svg-mesa { width: 72px; height: 72px; margin: 0 auto 0.4rem; display: block; }
+.svg-mesa .tablero { fill: var(--color-cream-dark); stroke: var(--color-brick); stroke-width: 3; }
+.mesa-visual-libre-card .svg-mesa .tablero { stroke: var(--color-olive); }
+.svg-mesa .silla { fill: var(--color-brick); }
+.mesa-visual-libre-card .svg-mesa .silla { fill: var(--color-olive); }
+.mesa-visual-nombre { font-weight: 700; color: var(--color-charcoal); font-size: 0.95rem; }
+.mesa-visual-capacidad { font-size: 0.75rem; color: #8a7a6a; margin-bottom: 0.5rem; }
+.mesa-visual-reservas { text-align: left; }
+.mesa-visual-reserva-item {
+  font-size: 0.76rem;
   color: var(--color-charcoal);
+  background: #f6d9d3;
+  border-radius: 6px;
+  padding: 0.3rem 0.45rem;
+  margin-bottom: 0.3rem;
   line-height: 1.3;
 }
-.mapa-fila-capacidad {
-  display: block;
-  font-weight: 400;
-  font-size: 0.72rem;
-  color: #8a7a6a;
-}
-.mapa-timeline {
-  position: relative;
-  flex: 1;
-  height: 2.5rem;
-  background: #dcecd2;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.mapa-bloque {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background: var(--color-brick);
-  color: #fff;
-  font-size: 0.75rem;
+.mesa-visual-libre-texto {
+  font-size: 0.8rem;
+  color: #3d6b2a;
   font-weight: 600;
-  padding: 0.3rem 0.4rem;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  border-right: 2px solid var(--color-cream-dark, #f0e6d3);
-  box-sizing: border-box;
+  text-align: center;
 }
 .mesa-card, .franja-card {
   background: #fff;

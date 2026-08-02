@@ -920,6 +920,24 @@ async function cargarTurnosMapa() {
   }
 }
 
+// Dibuja una mesa vista desde arriba, con una silla por plaza repartida alrededor. Sirve para
+// cualquier capacidad (2, 4, 6...), no hace falta un dibujo distinto para cada tamaño de mesa.
+function iconoMesa(capacidad) {
+  const sillas = Array.from({ length: capacidad }, (_, i) => {
+    const angulo = (360 / capacidad) * i - 90;
+    const rad = (angulo * Math.PI) / 180;
+    const x = 50 + 40 * Math.cos(rad);
+    const y = 50 + 40 * Math.sin(rad);
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" class="silla" />`;
+  }).join('');
+  return `
+    <svg viewBox="0 0 100 100" class="svg-mesa" aria-hidden="true">
+      <rect x="26" y="26" width="48" height="48" rx="10" class="tablero" />
+      ${sillas}
+    </svg>
+  `;
+}
+
 async function cargarMapaMesas() {
   const fecha = mapaFecha.value;
   const turno = mapaTurno.value;
@@ -936,19 +954,6 @@ async function cargarMapaMesas() {
       return;
     }
 
-    const { rangoInicio, rangoFin } = data;
-    const duracion = rangoFin - rangoInicio;
-
-    const marcas = [];
-    for (let m = rangoInicio; m < rangoFin; m += 30) marcas.push(m);
-    if (rangoFin - marcas[marcas.length - 1] > 20) marcas.push(rangoFin);
-
-    const reglaHtml = `
-      <div class="mapa-regla">
-        ${marcas.map((m) => `<span style="left:${((m - rangoInicio) / duracion) * 100}%">${minutosAHora(m)}</span>`).join('')}
-      </div>
-    `;
-
     const zonas = [];
     data.mesas.forEach((m) => {
       let zona = zonas.find((z) => z.nombre === (m.zona || 'Sin zona'));
@@ -957,7 +962,7 @@ async function cargarMapaMesas() {
     });
     const zonasBloqueadas = data.zonasBloqueadas || [];
 
-    mapaResultado.innerHTML = reglaHtml + zonas.map((zona) => {
+    mapaResultado.innerHTML = zonas.map((zona) => {
       const bloqueada = zonasBloqueadas.includes(zona.nombre);
       return `
       <div class="mapa-zona-header">
@@ -966,17 +971,18 @@ async function cargarMapaMesas() {
           ${bloqueada ? '🚫 Zona bloqueada (clic para reabrir)' : '✅ Bloquear nuevas reservas online'}
         </button>
       </div>
-      <div class="mapa-timelines">
+      <div class="mapa-grid-visual">
         ${zona.mesas.map((m) => `
-          <div class="mapa-fila">
-            <div class="mapa-fila-nombre">${atributo(m.nombre)}<span class="mapa-fila-capacidad">${m.capacidad} plazas</span></div>
-            <div class="mapa-timeline">
-              ${m.ocupaciones.map((o) => {
-                const left = ((o.inicio - rangoInicio) / duracion) * 100;
-                const width = ((o.fin - o.inicio) / duracion) * 100;
-                const titulo = `${o.reserva.nombre} · ${o.reserva.personas}p · ${o.reserva.hora}${o.reserva.creadaPorAdmin ? ' (tel.)' : ''} · ${o.reserva.telefono}`;
-                return `<div class="mapa-bloque" style="left:${left}%; width:${width}%" title="${atributo(titulo)}">${atributo(o.reserva.nombre)}</div>`;
-              }).join('')}
+          <div class="mesa-visual-card ${m.ocupaciones.length ? '' : 'mesa-visual-libre-card'}">
+            ${iconoMesa(m.capacidad)}
+            <div class="mesa-visual-nombre">${atributo(m.nombre)}</div>
+            <div class="mesa-visual-capacidad">${m.capacidad} plazas</div>
+            <div class="mesa-visual-reservas">
+              ${m.ocupaciones.length ? m.ocupaciones.map((o) => `
+                <div class="mesa-visual-reserva-item" title="${atributo(o.reserva.telefono)}">
+                  🕐 ${minutosAHora(o.inicio)}–${minutosAHora(o.fin)} · ${atributo(o.reserva.nombre)} (${o.reserva.personas}p)${o.reserva.creadaPorAdmin ? ' 📞' : ''}
+                </div>
+              `).join('') : '<div class="mesa-visual-libre-texto">Libre todo el turno</div>'}
             </div>
           </div>
         `).join('')}
