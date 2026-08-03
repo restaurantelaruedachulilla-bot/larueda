@@ -127,7 +127,7 @@
   background: var(--color-cream, #fff);
 }
 .plato-card-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
-.asa-arrastre {
+.asa-arrastre, .asa-arrastre-cat {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,7 +139,7 @@
   touch-action: none;
   user-select: none;
 }
-.plato-card.arrastrando, .plato-linea.arrastrando {
+.plato-card.arrastrando, .plato-linea.arrastrando, .cat-card.arrastrando {
   opacity: 0.5;
   box-shadow: 0 4px 14px rgba(47,38,32,0.18);
 }

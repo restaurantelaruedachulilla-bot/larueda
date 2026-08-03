@@ -234,6 +234,17 @@
       ]
     },
     {
+      "categoria": "Hamburguesas",
+      "platos": [
+        {
+          "nombre": "",
+          "descripcion": "",
+          "precio": "",
+          "visible": false
+        }
+      ]
+    },
+    {
       "categoria": "Postres",
       "platos": [
         {

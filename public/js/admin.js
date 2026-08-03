@@ -98,6 +98,7 @@ function renderCategorias() {
     catEl.className = 'cat-card';
     catEl.innerHTML = `
       <div class="cat-card-header">
+        <span class="asa-arrastre-cat" title="Mantén pulsado y arrastra para reordenar">⠿</span>
         <input type="text" value="${atributo(cat.categoria)}" data-cat="${ci}" class="input-categoria">
         <button class="btn-icon btn-borrar-cat" data-cat="${ci}" title="Eliminar categoría">🗑️</button>
       </div>
@@ -112,6 +113,11 @@ function renderCategorias() {
     input.addEventListener('input', (e) => {
       menuActual.carta[e.target.dataset.cat].categoria = e.target.value;
     });
+  });
+  activarArrastre(cont, '.cat-card', '.asa-arrastre-cat', (origen, destino) => {
+    const [cat] = menuActual.carta.splice(origen, 1);
+    menuActual.carta.splice(destino, 0, cat);
+    renderCategorias();
   });
   cont.querySelectorAll('.btn-borrar-cat').forEach((btn) => {
     btn.addEventListener('click', (e) => {
