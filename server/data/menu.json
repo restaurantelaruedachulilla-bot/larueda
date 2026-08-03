@@ -237,10 +237,10 @@
       "categoria": "Hamburguesas",
       "platos": [
         {
-          "nombre": "",
-          "descripcion": "",
-          "precio": "",
-          "visible": false
+          "nombre": "Hamburguesa de carne desmechada de jabalí",
+          "descripcion": "Con emulsión de trufa y cebolla crujiente",
+          "precio": "16€",
+          "visible": true
         }
       ]
     },
@@ -338,6 +338,10 @@
             },
             {
               "nombre": "Burguer de pulled pork con emulsión de trufa",
+              "visible": true
+            },
+            {
+              "nombre": "Hamburguesa de carne desmechada de jabalí con emulsión de trufa y cebolla crujiente",
               "visible": true
             }
           ]
