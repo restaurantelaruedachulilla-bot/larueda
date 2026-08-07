@@ -808,6 +808,8 @@ async function toggleTurno(franjaId, aplicaNormalmente) {
 }
 
 // ---------- Reservas ----------
+let reservasActuales = [];
+
 async function cargarReservas() {
   const cont = document.getElementById('lista-reservas');
   cont.innerHTML = '<p class="cargando">Cargando reservas...</p>';
@@ -819,6 +821,7 @@ async function cargarReservas() {
   const hoy = new Date().toLocaleDateString('sv-SE');
   const reservas = todas.filter((r) => r.fecha >= hoy);
   reservas.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+  reservasActuales = reservas;
 
   if (!reservas.length) {
     cont.innerHTML = '<p class="cargando">No hay reservas por venir.</p>';
@@ -851,6 +854,7 @@ async function cargarReservas() {
           <option value="confirmada" ${r.estado === 'confirmada' ? 'selected' : ''}>Confirmada</option>
           <option value="cancelada" ${r.estado === 'cancelada' ? 'selected' : ''}>Cancelada</option>
         </select>
+        <button class="btn-icon btn-editar-reserva" data-id="${r.id}" title="Editar reserva">✏️</button>
         <button class="btn-icon btn-borrar-reserva" data-id="${r.id}">🗑️</button>
       </div>
     </div>
@@ -868,6 +872,12 @@ async function cargarReservas() {
       cargarAforo();
     });
   });
+  cont.querySelectorAll('.btn-editar-reserva').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const reserva = reservasActuales.find((r) => r.id === e.target.dataset.id);
+      if (reserva) mostrarFormularioEdicionReserva(reserva);
+    });
+  });
   cont.querySelectorAll('.btn-borrar-reserva').forEach((btn) => {
     btn.addEventListener('click', async (e) => {
       if (!confirm('¿Eliminar esta reserva?')) return;
@@ -878,6 +888,113 @@ async function cargarReservas() {
       cargarReservas();
       cargarAforo();
     });
+  });
+}
+
+async function cargarTurnosParaEdicion(select, fecha, franjaIdActual) {
+  select.innerHTML = '<option value="">Cargando turnos...</option>';
+  try {
+    const res = await fetch(`/api/disponibilidad?fecha=${encodeURIComponent(fecha)}`);
+    const data = await res.json();
+    if (!data.franjas.length) {
+      select.innerHTML = '<option value="">Ese día no hay turnos</option>';
+      return;
+    }
+    select.innerHTML = data.franjas.map((f) => `
+      <option value="${f.id}" ${f.id === franjaIdActual ? 'selected' : ''}>${atributo(f.nombre)} · ${atributo(f.inicio)}–${atributo(f.fin)}</option>
+    `).join('');
+  } catch (err) {
+    select.innerHTML = '<option value="">No se han podido cargar los turnos</option>';
+  }
+}
+
+function mostrarFormularioEdicionReserva(reserva) {
+  const card = document.querySelector(`.reserva-card[data-id="${reserva.id}"]`);
+  if (!card) return;
+
+  card.innerHTML = `
+    <form class="form-editar-reserva">
+      <div class="form-row">
+        <label>Nombre</label>
+        <input type="text" name="nombre" value="${atributo(reserva.nombre)}" required>
+      </div>
+      <div class="form-row form-row-split">
+        <div>
+          <label>Teléfono</label>
+          <input type="tel" name="telefono" value="${atributo(reserva.telefono)}" required>
+        </div>
+        <div>
+          <label>Email</label>
+          <input type="email" name="email" value="${atributo(reserva.email || '')}">
+        </div>
+      </div>
+      <div class="form-row form-row-split">
+        <div>
+          <label>Fecha</label>
+          <input type="date" name="fecha" value="${reserva.fecha}" required>
+        </div>
+        <div>
+          <label>Personas</label>
+          <input type="number" name="personas" min="1" value="${reserva.personas}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Turno</label>
+        <select name="franjaId" class="select-turno-editar" required></select>
+      </div>
+      <div class="form-row">
+        <label>Zona preferida</label>
+        <select name="zona">
+          <option value="Cualquiera" ${!reserva.zonaPreferida ? 'selected' : ''}>Sin preferencia</option>
+          <option value="Interior" ${reserva.zonaPreferida === 'Interior' ? 'selected' : ''}>Interior</option>
+          <option value="Terraza" ${reserva.zonaPreferida === 'Terraza' ? 'selected' : ''}>Terraza</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Comentarios</label>
+        <textarea name="comentarios" rows="2">${atributo(reserva.comentarios || '')}</textarea>
+      </div>
+      <div class="reserva-acciones">
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <button type="button" class="btn-link btn-cancelar-edicion">Cancelar</button>
+      </div>
+      <p class="guardar-mensaje editar-mensaje"></p>
+    </form>
+  `;
+
+  const form = card.querySelector('.form-editar-reserva');
+  const selectTurnoEditar = form.querySelector('.select-turno-editar');
+  const inputFechaEditar = form.querySelector('[name="fecha"]');
+
+  cargarTurnosParaEdicion(selectTurnoEditar, reserva.fecha, reserva.franjaId);
+  inputFechaEditar.addEventListener('change', () => {
+    cargarTurnosParaEdicion(selectTurnoEditar, inputFechaEditar.value, null);
+  });
+
+  form.querySelector('.btn-cancelar-edicion').addEventListener('click', () => cargarReservas());
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = form.querySelector('.editar-mensaje');
+    const btnGuardar = form.querySelector('button[type="submit"]');
+    msg.textContent = 'Guardando...';
+    btnGuardar.disabled = true;
+
+    const datos = Object.fromEntries(new FormData(form).entries());
+    try {
+      const res = await fetch(`/api/reservas/${reserva.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify(datos),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'No se ha podido guardar');
+      cargarReservas();
+      cargarAforo();
+    } catch (err) {
+      msg.textContent = '❌ ' + (err.message || 'No se ha podido guardar.');
+      btnGuardar.disabled = false;
+    }
   });
 }
 

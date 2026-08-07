@@ -1016,14 +1016,56 @@ app.get('/api/reservas', requiereAdmin, (req, res) => {
   res.json(leerReservas());
 });
 
+// Edita una reserva ya guardada. Si se cambia fecha, turno, personas o zona, se vuelve a
+// calcular la mesa desde cero (excluyendo la propia reserva de la comprobacion de solapes),
+// igual que si fuera nueva; si no hay mesa para los datos nuevos, no se guarda nada de la
+// edicion y se avisa. El admin no esta sujeto a bloqueos de zona, igual que al crear reservas.
 app.patch('/api/reservas/:id', requiereAdmin, (req, res) => {
-  const { estado } = req.body || {};
   const reservas = leerReservas();
   const reserva = reservas.find((r) => r.id === req.params.id);
   if (!reserva) return res.status(404).json({ error: 'Reserva no encontrada' });
-  reserva.estado = estado;
+
+  const { estado, nombre, telefono, email, comentarios, fecha, franjaId, personas, zona } = req.body || {};
+
+  if (estado !== undefined) reserva.estado = estado;
+  if (nombre !== undefined) reserva.nombre = nombre;
+  if (telefono !== undefined) reserva.telefono = telefono;
+  if (email !== undefined) reserva.email = email;
+  if (comentarios !== undefined) reserva.comentarios = comentarios;
+
+  const cambiaMesa = fecha !== undefined || franjaId !== undefined || personas !== undefined || zona !== undefined;
+  if (cambiaMesa) {
+    const numPersonas = Number(personas !== undefined ? personas : reserva.personas);
+    if (!Number.isInteger(numPersonas) || numPersonas < 1) {
+      return res.status(400).json({ error: 'El número de personas no es válido' });
+    }
+
+    const config = leerConfig();
+    const aperturas = leerAperturas();
+    const nuevaFecha = fecha !== undefined ? fecha : reserva.fecha;
+    const nuevoFranjaId = franjaId !== undefined ? franjaId : reserva.franjaId;
+    const nuevaZona = zona !== undefined ? zona : reserva.zonaPreferida;
+
+    const franja = franjasDelDia(config, nuevaFecha, aperturas).find((f) => f.id === nuevoFranjaId);
+    if (!franja) return res.status(400).json({ error: 'Ese turno no existe ese día.' });
+
+    const otrasReservas = reservas.filter((r) => r.id !== reserva.id);
+    const mesas = asignarMesa(config, nuevaFecha, franja, numPersonas, otrasReservas, nuevaZona, new Set());
+    if (!mesas) {
+      return res.status(409).json({ error: 'No hay ninguna mesa libre para esos datos. Prueba otro turno, zona o fecha.' });
+    }
+
+    reserva.fecha = nuevaFecha;
+    reserva.franjaId = franja.id;
+    reserva.franjaNombre = franja.nombre;
+    reserva.hora = franja.inicio;
+    reserva.personas = numPersonas;
+    reserva.zonaPreferida = nuevaZona && nuevaZona !== 'Cualquiera' ? nuevaZona : '';
+    Object.assign(reserva, resumenMesas(mesas));
+  }
+
   guardarReservas(reservas);
-  res.json({ ok: true });
+  res.json({ ok: true, reserva });
 });
 
 app.delete('/api/reservas/:id', requiereAdmin, (req, res) => {
