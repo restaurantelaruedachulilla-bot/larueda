@@ -325,6 +325,7 @@ function renderVinosLista(ci, gi) {
   cont.innerHTML = vinos.map((v, vi) => `
     <div class="plato-card ${v.visible === false ? 'plato-oculto' : ''}">
       <div class="plato-card-row">
+        <span class="asa-arrastre" title="Mantén pulsado y arrastra para reordenar">⠿</span>
         <input type="text" placeholder="Nombre del vino" value="${atributo(v.nombre)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="nombre">
         <input type="text" placeholder="Precio" value="${atributo(v.precio)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="precio" class="campo-precio">
       </div>
@@ -341,6 +342,11 @@ function renderVinosLista(ci, gi) {
       const { ci, gi, vi, campo } = e.target.dataset;
       menuActual.vinos[ci].grupos[gi].vinos[vi][campo] = e.target.value;
     });
+  });
+  activarArrastre(cont, '.plato-card', '.asa-arrastre', (origen, destino) => {
+    const [vino] = menuActual.vinos[ci].grupos[gi].vinos.splice(origen, 1);
+    menuActual.vinos[ci].grupos[gi].vinos.splice(destino, 0, vino);
+    renderVinosLista(ci, gi);
   });
   cont.querySelectorAll('.btn-vino-visible-toggle').forEach((btn) => {
     btn.addEventListener('click', (e) => {
