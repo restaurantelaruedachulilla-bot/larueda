@@ -41,13 +41,22 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 });
 
 // Tabs
+// "cargaInicial" guarda la promesa de la primera carga de la carta (menuActual). Si el usuario
+// pulsa una pestaña que depende de menuActual (Vinos, Menús) antes de que termine esa carga
+// -tipico en conexiones lentas de movil-, sin esperarla el render fallaba en silencio (menuActual
+// era todavia null) y la pestaña se quedaba vacia, sin ni siquiera el tirador para arrastrar.
+let cargaInicial = null;
+
 document.querySelectorAll('.tab-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', async () => {
     document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach((p) => (p.hidden = true));
     btn.classList.add('active');
     const panelId = 'tab-' + btn.dataset.tab;
     document.getElementById(panelId).hidden = false;
+
+    if (cargaInicial) await cargaInicial;
+
     if (btn.dataset.tab === 'reservas') {
       cargarReservas();
       cargarAforo();
@@ -62,7 +71,8 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
 async function mostrarPanel() {
   pantallaLogin.hidden = true;
   panel.hidden = false;
-  await cargarCartaAdmin();
+  cargaInicial = cargarCartaAdmin();
+  await cargaInicial;
 }
 
 async function guardarMenu(msgElId) {
