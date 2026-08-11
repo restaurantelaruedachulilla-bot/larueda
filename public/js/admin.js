@@ -285,7 +285,7 @@ function renderVinosCategorias() {
   cont.querySelectorAll('.btn-add-grupo').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const ci = Number(e.target.dataset.ci);
-      menuActual.vinos[ci].grupos.push({ denominacion: '', vinos: [{ nombre: '', precio: '', visible: true }] });
+      menuActual.vinos[ci].grupos.push({ denominacion: '', vinos: [{ nombre: '', precioCopa: '', precioBotella: '', descripcion: '', visible: true }] });
       renderVinosGrupos(ci);
     });
   });
@@ -297,6 +297,7 @@ function renderVinosGrupos(ci) {
   cont.innerHTML = cat.grupos.map((g, gi) => `
     <div class="seccion-edit">
       <div class="seccion-edit-header">
+        <span class="asa-arrastre-grupo" title="Mantén pulsado y arrastra para reordenar toda la denominación">⠿</span>
         <input type="text" placeholder="Denominación de origen (ej. D.O. Rioja)" value="${atributo(g.denominacion)}" data-ci="${ci}" data-gi="${gi}" class="input-vinos-denominacion">
         <button class="btn-icon btn-borrar-grupo" data-ci="${ci}" data-gi="${gi}" title="Eliminar denominación">🗑️</button>
       </div>
@@ -313,6 +314,11 @@ function renderVinosGrupos(ci) {
       menuActual.vinos[ci].grupos[gi].denominacion = e.target.value;
     });
   });
+  activarArrastre(cont, '.seccion-edit', '.asa-arrastre-grupo', (origen, destino) => {
+    const [grupo] = menuActual.vinos[ci].grupos.splice(origen, 1);
+    menuActual.vinos[ci].grupos.splice(destino, 0, grupo);
+    renderVinosGrupos(ci);
+  });
   cont.querySelectorAll('.btn-borrar-grupo').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const { ci, gi } = e.target.dataset;
@@ -323,7 +329,7 @@ function renderVinosGrupos(ci) {
   cont.querySelectorAll('.btn-add-vino').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const { ci, gi } = e.target.dataset;
-      menuActual.vinos[ci].grupos[gi].vinos.push({ nombre: '', precio: '', descripcion: '', visible: true });
+      menuActual.vinos[ci].grupos[gi].vinos.push({ nombre: '', precioCopa: '', precioBotella: '', descripcion: '', visible: true });
       renderVinosLista(Number(ci), Number(gi));
     });
   });
@@ -337,7 +343,10 @@ function renderVinosLista(ci, gi) {
       <div class="plato-card-row">
         <span class="asa-arrastre" title="Mantén pulsado y arrastra para reordenar">⠿</span>
         <input type="text" placeholder="Nombre del vino" value="${atributo(v.nombre)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="nombre">
-        <input type="text" placeholder="Precio" value="${atributo(v.precio)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="precio" class="campo-precio">
+      </div>
+      <div class="plato-card-row">
+        <input type="text" placeholder="Precio copa" value="${atributo(v.precioCopa)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="precioCopa" class="campo-precio">
+        <input type="text" placeholder="Precio botella" value="${atributo(v.precioBotella)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="precioBotella" class="campo-precio">
       </div>
       <div class="plato-card-row">
         <input type="text" placeholder="Descripción (bodega, añada, uva...)" value="${atributo(v.descripcion)}" data-ci="${ci}" data-gi="${gi}" data-vi="${vi}" data-campo="descripcion">

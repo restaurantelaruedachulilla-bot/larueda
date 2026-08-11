@@ -70,7 +70,7 @@ async function cargarCarta() {
                 <div class="vino-nombre">${escapeHtml(v.nombre)}</div>
                 ${v.descripcion ? `<div class="vino-desc">${escapeHtml(v.descripcion)}</div>` : ''}
               </div>
-              <div class="vino-precio">${escapeHtml(v.precio)}</div>
+              <div class="vino-precio">${escapeHtml(formatearPrecioVino(v))}</div>
             </div>
           `).join('')}
         `).join('')}
@@ -110,6 +110,15 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+// Solo se publica el precio que este relleno (copa y/o botella): si un vino no se vende por
+// copas, esa casilla se deja vacia en el panel y aqui no se muestra nada de "copa".
+function formatearPrecioVino(v) {
+  const partes = [];
+  if (v.precioCopa) partes.push(`${v.precioCopa} copa`);
+  if (v.precioBotella) partes.push(`${v.precioBotella} botella`);
+  return partes.join(' · ');
 }
 
 // ---------- Traducción automática de la web ----------

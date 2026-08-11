@@ -127,7 +127,7 @@
   background: var(--color-cream, #fff);
 }
 .plato-card-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
-.asa-arrastre, .asa-arrastre-cat {
+.asa-arrastre, .asa-arrastre-cat, .asa-arrastre-grupo {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,7 +139,7 @@
   touch-action: none;
   user-select: none;
 }
-.plato-card.arrastrando, .plato-linea.arrastrando, .cat-card.arrastrando {
+.plato-card.arrastrando, .plato-linea.arrastrando, .cat-card.arrastrando, .seccion-edit.arrastrando {
   opacity: 0.5;
   box-shadow: 0 4px 14px rgba(47,38,32,0.18);
 }
@@ -151,6 +151,7 @@
   font-size: 0.95rem;
 }
 .plato-card .campo-precio { max-width: 110px; }
+.vinos-lista .campo-precio { max-width: none; flex: 1; }
 .plato-card.plato-oculto, .plato-linea.plato-oculto { background: #f3ece2; opacity: 0.6; border-radius: 8px; }
 .btn-visible-toggle { font-size: 1.1rem; }
 
