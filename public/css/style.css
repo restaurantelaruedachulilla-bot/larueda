@@ -299,6 +299,29 @@ a { color: var(--color-brick); }
 .plato { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px dashed rgba(0,0,0,0.1); }
 .plato-nombre { font-weight: 600; }
 .plato-desc { font-size: 0.88rem; color: #6b5c4f; margin-top: 0.1rem; }
+.plato-alergenos { margin-top: 0.3rem; font-size: 0.9rem; letter-spacing: 0.15em; }
+.plato-alergenos span { cursor: default; }
+
+.leyenda-alergenos {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+.leyenda-alergenos-titulo {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--color-charcoal);
+  margin-bottom: 0.6rem;
+}
+.leyenda-alergenos-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  color: #6b5c4f;
+}
+.leyenda-alergenos-lista span { white-space: nowrap; }
 .plato-precio { white-space: nowrap; font-weight: 600; color: var(--color-brick); }
 
 /* Vinos */

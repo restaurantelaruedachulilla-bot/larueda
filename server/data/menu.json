@@ -9,49 +9,78 @@
           "nombre": "Gildas",
           "descripcion": "Aceituna, piparra y anchoa",
           "precio": "2.50€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "pescado"
+          ]
         },
         {
           "nombre": "Ajoarriero",
           "descripcion": "Con bacalao ahumado y huevo cocido",
           "precio": "8€ / 11€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "pescado",
+            "huevos"
+          ]
         },
         {
           "nombre": "Ensaladilla de pescados ahumados",
           "descripcion": "Con mayonesa de ponzu y piparras",
           "precio": "9€ / 12€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "pescado",
+            "huevos",
+            "soja",
+            "gluten"
+          ]
         },
         {
           "nombre": "Tabla de queso manchego",
           "descripcion": "Queso de oveja, 120g",
           "precio": "12€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "lacteos"
+          ]
         },
         {
           "nombre": "Tomate valenciano con ventresca",
           "descripcion": "Con aceite de cilantro",
           "precio": "14€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "pescado"
+          ]
         },
         {
           "nombre": "Tabla de jamón ibérico",
           "descripcion": "100% ibérico de bellota, 100g cortado a cuchillo",
           "precio": "25€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "sulfitos"
+          ]
         },
         {
           "nombre": "Pan con tomate y alioli",
           "descripcion": "",
           "precio": "2€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten",
+            "huevos"
+          ]
         },
         {
           "nombre": "Pan",
           "descripcion": "",
           "precio": "1.20€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten"
+          ]
         }
       ]
     },
@@ -62,31 +91,46 @@
           "nombre": "Torrezno de Soria",
           "descripcion": "Con glaseado de soja ácido",
           "precio": "7€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "soja",
+            "gluten"
+          ]
         },
         {
           "nombre": "Pimientos de Padrón",
           "descripcion": "",
           "precio": "8€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Patatas campesinas",
           "descripcion": "Con emulsión de ajo y puerro",
           "precio": "9€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Croquetas de cangrejo",
           "descripcion": "",
           "precio": "3.50€ / 12€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten",
+            "lacteos",
+            "huevos",
+            "crustaceos"
+          ]
         },
         {
           "nombre": "Morteruelo",
           "descripcion": "Con gallina, jabalí y trufa",
           "precio": "9€ / 14€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten"
+          ]
         }
       ]
     },
@@ -97,19 +141,30 @@
           "nombre": "Huevos rotos con torreznos",
           "descripcion": "Huevos camperos y patatas fritas",
           "precio": "16€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "huevos"
+          ]
         },
         {
           "nombre": "Huevos rotos con sobrasada a la brasa",
           "descripcion": "Con pimientos",
           "precio": "18€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "huevos",
+            "sulfitos"
+          ]
         },
         {
           "nombre": "Huevos rotos con jamón ibérico",
           "descripcion": "Con pimientos",
           "precio": "20€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "huevos",
+            "sulfitos"
+          ]
         }
       ]
     },
@@ -120,19 +175,24 @@
           "nombre": "Chuletas de cordero lechal (350g)",
           "descripcion": "De Segovia, con patatas y huevo frito",
           "precio": "21€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "huevos"
+          ]
         },
         {
           "nombre": "Entrecot nacional (350g)",
           "descripcion": "A la brasa",
           "precio": "21€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Chuletón de vaca simmental",
           "descripcion": "Más de 60 días de maduración",
           "precio": "60€/kg",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         }
       ]
     },
@@ -143,7 +203,10 @@
           "nombre": "Pulpo a la brasa (180g)",
           "descripcion": "Con parmentier de maíz",
           "precio": "21€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "moluscos"
+          ]
         }
       ]
     },
@@ -154,25 +217,31 @@
           "nombre": "Patatas fritas",
           "descripcion": "",
           "precio": "3.50€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Tomate valenciano",
           "descripcion": "Aliñado con AOVE y sal",
           "precio": "4€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Dos huevos fritos",
           "descripcion": "Cobardes y gallinas",
           "precio": "4€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "huevos"
+          ]
         },
         {
           "nombre": "Pimientos de Padrón",
           "descripcion": "",
           "precio": "4€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         }
       ]
     },
@@ -183,19 +252,22 @@
           "nombre": "Olla de berzas",
           "descripcion": "Plato típico chulillano con patatas, judías y verduras",
           "precio": "14€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Arroz de secreto ibérico y coliflor",
           "descripcion": "Mínimo 2 personas",
           "precio": "19€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Arroz de jabalí y ajetes",
           "descripcion": "Mínimo 2 personas",
           "precio": "17€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         }
       ]
     },
@@ -206,19 +278,29 @@
           "nombre": "Manitas de cerdo \"La Rueda\"",
           "descripcion": "Con patatas panadera y su jugo",
           "precio": "14€",
-          "visible": true
+          "visible": true,
+          "alergenos": []
         },
         {
           "nombre": "Rabo de toro estofado",
           "descripcion": "Con vino tinto y patatas",
           "precio": "17€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "sulfitos"
+          ]
         },
         {
           "nombre": "Cachopo de ciervo (400g)",
           "descripcion": "Jamón, queso y cebolla caramelizada al PX",
           "precio": "24€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten",
+            "huevos",
+            "lacteos",
+            "sulfitos"
+          ]
         }
       ]
     },
@@ -229,7 +311,12 @@
           "nombre": "Trucha con veloute de jamón ibérico",
           "descripcion": "",
           "precio": "18€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "pescado",
+            "lacteos",
+            "sulfitos"
+          ]
         }
       ]
     },
@@ -240,7 +327,12 @@
           "nombre": "Hamburguesa de carne desmechada de jabalí",
           "descripcion": "Con emulsión de trufa y cebolla crujiente",
           "precio": "16€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten",
+            "huevos",
+            "lacteos"
+          ]
         }
       ]
     },
@@ -251,37 +343,65 @@
           "nombre": "Bola de helado",
           "descripcion": "Horchata, coco o vainilla",
           "precio": "4€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "lacteos"
+          ]
         },
         {
           "nombre": "Tarta de horchata y fartons",
           "descripcion": "",
           "precio": "6€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten",
+            "lacteos",
+            "huevos"
+          ]
         },
         {
           "nombre": "Tarta cremosa de queso Cabrales",
           "descripcion": "Con crumble de pimienta y miel cruda",
           "precio": "7€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "lacteos",
+            "gluten",
+            "huevos"
+          ]
         },
         {
           "nombre": "Cheesecake de Lotus",
           "descripcion": "Con crema de caramelo salado",
           "precio": "7€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "lacteos",
+            "gluten",
+            "huevos"
+          ]
         },
         {
           "nombre": "Torrija caramelizada",
           "descripcion": "Con helado de horchata",
           "precio": "8€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten",
+            "huevos",
+            "lacteos"
+          ]
         },
         {
           "nombre": "Brownie 72%",
           "descripcion": "Con helado de coco",
           "precio": "9€",
-          "visible": true
+          "visible": true,
+          "alergenos": [
+            "gluten",
+            "huevos",
+            "lacteos"
+          ]
         }
       ]
     }

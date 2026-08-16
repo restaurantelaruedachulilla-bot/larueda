@@ -1,5 +1,23 @@
 document.getElementById('anio').textContent = new Date().getFullYear();
 
+// Los 14 alergenos de declaracion obligatoria segun el Reglamento (UE) 1169/2011.
+const ALERGENOS = [
+  { clave: 'gluten', nombre: 'Gluten', icono: '🌾' },
+  { clave: 'crustaceos', nombre: 'Crustáceos', icono: '🦐' },
+  { clave: 'huevos', nombre: 'Huevos', icono: '🥚' },
+  { clave: 'pescado', nombre: 'Pescado', icono: '🐟' },
+  { clave: 'cacahuetes', nombre: 'Cacahuetes', icono: '🥜' },
+  { clave: 'soja', nombre: 'Soja', icono: '🌱' },
+  { clave: 'lacteos', nombre: 'Lácteos', icono: '🥛' },
+  { clave: 'frutos-cascara', nombre: 'Frutos de cáscara', icono: '🌰' },
+  { clave: 'apio', nombre: 'Apio', icono: '🥬' },
+  { clave: 'mostaza', nombre: 'Mostaza', icono: '🟡' },
+  { clave: 'sesamo', nombre: 'Sésamo', icono: '🟤' },
+  { clave: 'sulfitos', nombre: 'Sulfitos', icono: '🍷' },
+  { clave: 'altramuces', nombre: 'Altramuces', icono: '🫘' },
+  { clave: 'moluscos', nombre: 'Moluscos', icono: '🐚' },
+];
+
 // Menú móvil
 const navToggle = document.getElementById('nav-toggle');
 const mainNav = document.getElementById('main-nav');
@@ -44,12 +62,13 @@ async function cargarCarta() {
             <div>
               <div class="plato-nombre" data-i18n>${escapeHtml(p.nombre)}</div>
               ${p.descripcion ? `<div class="plato-desc" data-i18n>${escapeHtml(p.descripcion)}</div>` : ''}
+              ${iconosAlergenos(p.alergenos)}
             </div>
             <div class="plato-precio">${escapeHtml(p.precio)}</div>
           </div>
         `).join('')}
       </div>
-    `).join('');
+    `).join('') + leyendaAlergenos();
 
     contenedorVinos.innerHTML = (data.vinos || [])
       .map((cat) => ({
@@ -110,6 +129,24 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+function iconosAlergenos(claves) {
+  if (!Array.isArray(claves) || !claves.length) return '';
+  const iconos = ALERGENOS.filter((a) => claves.includes(a.clave));
+  if (!iconos.length) return '';
+  return `<div class="plato-alergenos">${iconos.map((a) => `<span title="${escapeHtml(a.nombre)}">${a.icono}</span>`).join('')}</div>`;
+}
+
+function leyendaAlergenos() {
+  return `
+    <div class="leyenda-alergenos">
+      <p class="leyenda-alergenos-titulo" data-i18n>Alérgenos</p>
+      <div class="leyenda-alergenos-lista">
+        ${ALERGENOS.map((a) => `<span>${a.icono} <span data-i18n>${escapeHtml(a.nombre)}</span></span>`).join('')}
+      </div>
+    </div>
+  `;
 }
 
 // Solo se publica el precio que este relleno (copa y/o botella): si un vino no se vende por

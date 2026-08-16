@@ -2,6 +2,24 @@ let token = sessionStorage.getItem('adminToken') || null;
 let menuActual = null;
 let configActual = null;
 
+// Los 14 alergenos de declaracion obligatoria segun el Reglamento (UE) 1169/2011.
+const ALERGENOS = [
+  { clave: 'gluten', nombre: 'Gluten', icono: '🌾' },
+  { clave: 'crustaceos', nombre: 'Crustáceos', icono: '🦐' },
+  { clave: 'huevos', nombre: 'Huevos', icono: '🥚' },
+  { clave: 'pescado', nombre: 'Pescado', icono: '🐟' },
+  { clave: 'cacahuetes', nombre: 'Cacahuetes', icono: '🥜' },
+  { clave: 'soja', nombre: 'Soja', icono: '🌱' },
+  { clave: 'lacteos', nombre: 'Lácteos', icono: '🥛' },
+  { clave: 'frutos-cascara', nombre: 'Frutos de cáscara', icono: '🌰' },
+  { clave: 'apio', nombre: 'Apio', icono: '🥬' },
+  { clave: 'mostaza', nombre: 'Mostaza', icono: '🟡' },
+  { clave: 'sesamo', nombre: 'Sésamo', icono: '🟤' },
+  { clave: 'sulfitos', nombre: 'Sulfitos', icono: '🍷' },
+  { clave: 'altramuces', nombre: 'Altramuces', icono: '🫘' },
+  { clave: 'moluscos', nombre: 'Moluscos', icono: '🐚' },
+];
+
 const pantallaLogin = document.getElementById('pantalla-login');
 const panel = document.getElementById('panel');
 
@@ -140,7 +158,7 @@ function renderCategorias() {
   cont.querySelectorAll('.btn-add-plato').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const ci = Number(e.target.dataset.cat);
-      menuActual.carta[ci].platos.push({ nombre: '', descripcion: '', precio: '', visible: true });
+      menuActual.carta[ci].platos.push({ nombre: '', descripcion: '', precio: '', alergenos: [], visible: true });
       renderPlatos(ci);
     });
   });
@@ -213,6 +231,11 @@ function renderPlatos(ci) {
         <button class="btn-icon btn-visible-toggle" data-ci="${ci}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
         <button class="btn-icon btn-borrar-plato" data-ci="${ci}" data-pi="${pi}" title="Eliminar plato">🗑️</button>
       </div>
+      <div class="alergenos-selector">
+        ${ALERGENOS.map((a) => `
+          <button type="button" class="chip-alergeno ${(p.alergenos || []).includes(a.clave) ? 'activo' : ''}" data-ci="${ci}" data-pi="${pi}" data-alergeno="${a.clave}" title="${a.nombre}">${a.icono}</button>
+        `).join('')}
+      </div>
     </div>
   `).join('');
 
@@ -240,6 +263,17 @@ function renderPlatos(ci) {
       const { ci, pi } = e.target.dataset;
       menuActual.carta[ci].platos.splice(Number(pi), 1);
       renderPlatos(Number(ci));
+    });
+  });
+  cont.querySelectorAll('.chip-alergeno').forEach((chip) => {
+    chip.addEventListener('click', (e) => {
+      const { ci, pi, alergeno } = e.target.dataset;
+      const plato = menuActual.carta[ci].platos[pi];
+      if (!Array.isArray(plato.alergenos)) plato.alergenos = [];
+      const idx = plato.alergenos.indexOf(alergeno);
+      if (idx >= 0) plato.alergenos.splice(idx, 1);
+      else plato.alergenos.push(alergeno);
+      e.target.classList.toggle('activo');
     });
   });
 }
