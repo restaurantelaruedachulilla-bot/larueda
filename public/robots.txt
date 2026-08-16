@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /cancelar.html
+
+Sitemap: https://larueda.onrender.com/sitemap.xml
