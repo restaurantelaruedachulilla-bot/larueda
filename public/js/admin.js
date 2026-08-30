@@ -900,8 +900,25 @@ async function cargarReservas() {
     grupo.items.push(r);
   });
 
+  // Recuento automatico de comensales por turno (Comida/Cena), sin contar las canceladas,
+  // para ver de un vistazo cuanta gente hay ese dia sin tener que sumar reserva a reserva.
+  porDia.forEach((grupo) => {
+    const resumen = {};
+    grupo.items.forEach((r) => {
+      if (r.estado === 'cancelada') return;
+      const turno = r.franjaNombre || 'Sin turno';
+      resumen[turno] = (resumen[turno] || 0) + Number(r.personas);
+    });
+    grupo.resumen = resumen;
+  });
+
   cont.innerHTML = porDia.map((grupo) => `
     <h3 class="reservas-dia-titulo">${formatearFechaLarga(grupo.fecha)}</h3>
+    <p class="reservas-dia-resumen">
+      ${Object.keys(grupo.resumen).length
+        ? Object.entries(grupo.resumen).map(([turno, total]) => `${atributo(turno)}: <strong>${total}</strong> comensales`).join(' · ')
+        : 'Sin reservas confirmadas'}
+    </p>
     ${grupo.items.map((r) => `
     <div class="reserva-card" data-id="${r.id}">
       <h4>${atributo(r.nombre)} · ${atributo(String(r.personas))}p ${r.creadaPorAdmin ? '📞' : ''}</h4>

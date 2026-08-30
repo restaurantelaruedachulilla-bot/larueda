@@ -485,6 +485,12 @@
   font-size: 1.1rem;
 }
 .reservas-dia-titulo:first-child { margin-top: 0; }
+.reservas-dia-resumen {
+  margin: -0.5rem 0 0.85rem;
+  font-size: 0.85rem;
+  color: #6b5c4f;
+}
+.reservas-dia-resumen strong { color: var(--color-charcoal); }
 
 .reserva-card {
   background: #fff;
