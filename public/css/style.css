@@ -296,6 +296,7 @@ a { color: var(--color-brick); }
   margin-bottom: 0.8rem;
   font-size: 1.25rem;
 }
+.carta-categoria-nota { font-size: 0.82rem; font-style: italic; color: #6b5c4f; margin-top: -0.4rem; margin-bottom: 0.8rem; }
 .plato { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px dashed rgba(0,0,0,0.1); }
 .plato-nombre { font-weight: 600; }
 .plato-desc { font-size: 0.88rem; color: #6b5c4f; margin-top: 0.1rem; }

@@ -130,6 +130,7 @@ function renderCategorias() {
         <input type="text" value="${atributo(cat.categoria)}" data-cat="${ci}" class="input-categoria">
         <button class="btn-icon btn-borrar-cat" data-cat="${ci}" title="Eliminar categoría">🗑️</button>
       </div>
+      <input type="text" placeholder="Nota de la categoría (opcional, ej. condiciones)" value="${atributo(cat.nota)}" data-cat="${ci}" class="input-categoria-nota">
       <div class="platos-lista" data-cat="${ci}"></div>
       <button class="btn-add-plato" data-cat="${ci}">+ Añadir plato</button>
     `;
@@ -140,6 +141,11 @@ function renderCategorias() {
   cont.querySelectorAll('.input-categoria').forEach((input) => {
     input.addEventListener('input', (e) => {
       menuActual.carta[e.target.dataset.cat].categoria = e.target.value;
+    });
+  });
+  cont.querySelectorAll('.input-categoria-nota').forEach((input) => {
+    input.addEventListener('input', (e) => {
+      menuActual.carta[e.target.dataset.cat].nota = e.target.value;
     });
   });
   activarArrastre(cont, '.cat-card', '.asa-arrastre-cat', (origen, destino) => {

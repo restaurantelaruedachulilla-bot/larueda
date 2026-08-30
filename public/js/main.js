@@ -57,6 +57,7 @@ async function cargarCarta() {
       .map((cat) => `
       <div class="carta-categoria">
         <h3 data-i18n>${escapeHtml(cat.categoria)}</h3>
+        ${cat.nota ? `<p class="carta-categoria-nota" data-i18n>${escapeHtml(cat.nota)}</p>` : ''}
         ${cat.platos.map((p) => `
           <div class="plato">
             <div>

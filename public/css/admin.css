@@ -101,6 +101,16 @@
   align-items: center;
   margin-bottom: 0.75rem;
 }
+.input-categoria-nota {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #d8cdbc;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #6b5c4f;
+  margin-bottom: 0.75rem;
+}
 .cat-card-header input {
   flex: 1;
   font-weight: 700;
