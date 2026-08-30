@@ -71,6 +71,18 @@ a { color: var(--color-brick); }
   padding: 0.9rem 1.25rem;
 }
 
+.aviso-cierre {
+  background: var(--color-brick);
+  color: #fff;
+}
+.aviso-cierre p {
+  margin: 0;
+  padding: 0.7rem 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .logo {
   font-family: var(--font-heading);
   font-size: 1.5rem;

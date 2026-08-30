@@ -1,5 +1,13 @@
 document.getElementById('anio').textContent = new Date().getFullYear();
 
+// Cartel de cierre por descanso del personal (9-15 de noviembre de 2026).
+(function mostrarAvisoCierre() {
+  const hoy = new Date().toLocaleDateString('sv-SE');
+  if (hoy >= '2026-11-09' && hoy <= '2026-11-15') {
+    document.getElementById('aviso-cierre').hidden = false;
+  }
+})();
+
 // Los 14 alergenos de declaracion obligatoria segun el Reglamento (UE) 1169/2011.
 const ALERGENOS = [
   { clave: 'gluten', nombre: 'Gluten', icono: '🌾' },

@@ -1,1 +1,586 @@
-[]
+[
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-09-22",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-09-29",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f11"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f12"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f13"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f14"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f15"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f16"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f17"
+  },
+  {
+    "fecha": "2026-11-09",
+    "franjaId": "f18"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f11"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f12"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f13"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f14"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f15"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f16"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f17"
+  },
+  {
+    "fecha": "2026-11-10",
+    "franjaId": "f18"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f11"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f12"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f13"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f14"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f15"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f16"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f17"
+  },
+  {
+    "fecha": "2026-11-11",
+    "franjaId": "f18"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f11"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f12"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f13"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f14"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f15"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f16"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f17"
+  },
+  {
+    "fecha": "2026-11-12",
+    "franjaId": "f18"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f11"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f12"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f13"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f14"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f15"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f16"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f17"
+  },
+  {
+    "fecha": "2026-11-13",
+    "franjaId": "f18"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f11"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f12"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f13"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f14"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f15"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f16"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f17"
+  },
+  {
+    "fecha": "2026-11-14",
+    "franjaId": "f18"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f1"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f2"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f3"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f4"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f5"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f6"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f7"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f8"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f9"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f10"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f11"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f12"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f13"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f14"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f15"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f16"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f17"
+  },
+  {
+    "fecha": "2026-11-15",
+    "franjaId": "f18"
+  }
+]
