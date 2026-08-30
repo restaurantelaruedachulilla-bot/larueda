@@ -485,12 +485,112 @@
   font-size: 1.1rem;
 }
 .reservas-dia-titulo:first-child { margin-top: 0; }
-.reservas-dia-resumen {
-  margin: -0.5rem 0 0.85rem;
-  font-size: 0.85rem;
-  color: #6b5c4f;
+
+/* Calendario de reservas */
+.calendario-reservas-wrap { margin: 1.25rem 0; }
+.calendario-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
 }
-.reservas-dia-resumen strong { color: var(--color-charcoal); }
+.calendario-mes-titulo {
+  margin: 0;
+  color: var(--color-brick);
+  font-size: 1.15rem;
+  text-align: center;
+  flex: 1;
+}
+.btn-nav-mes {
+  background: #fff;
+  border: 1px solid #d8cdbc;
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.calendario-leyenda {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: #6b5c4f;
+  margin-bottom: 0.6rem;
+}
+.calendario-punto {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 0.25rem;
+}
+.calendario-punto-comida { background: #e2b33c; }
+.calendario-punto-cena { background: #5c6b8a; }
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+.calendario-dow {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8a7a6a;
+  padding-bottom: 0.2rem;
+}
+.calendario-celda {
+  aspect-ratio: 1;
+  min-height: 54px;
+  background: #fff;
+  border: 1px solid #eee1cf;
+  border-radius: 8px;
+  padding: 0.25rem 0.15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1px;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.calendario-celda-vacia { background: transparent; border: none; cursor: default; }
+.calendario-dia-numero { font-size: 0.82rem; font-weight: 600; color: var(--color-charcoal); }
+.calendario-celda.calendario-pasado { opacity: 0.45; }
+.calendario-celda.calendario-hoy { border-color: var(--color-brick); border-width: 2px; }
+.calendario-celda.calendario-con-reservas { background: #fbf3e7; }
+.calendario-celda.calendario-seleccionado { background: var(--color-brick); border-color: var(--color-brick); }
+.calendario-celda.calendario-seleccionado .calendario-dia-numero,
+.calendario-celda.calendario-seleccionado .calendario-cifra { color: #fff; }
+.calendario-cifra {
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.calendario-cifra-comida { color: #8a6300; }
+.calendario-cifra-cena { color: #3d4d70; }
+
+/* Detalle de un dia (mesas + reservas) */
+.detalle-turno { margin-top: 1.5rem; }
+.detalle-turno-titulo {
+  color: var(--color-brick);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.detalle-turno-reservas { margin-top: 0.75rem; }
+
+.aforo-detalles {
+  margin-top: 2rem;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding-top: 1rem;
+}
+.aforo-detalles summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #6b5c4f;
+  font-size: 0.88rem;
+}
 
 .reserva-card {
   background: #fff;

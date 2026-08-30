@@ -79,7 +79,7 @@
   </section>
 
   <section id="tab-reservas" class="tab-panel" hidden>
-    <p class="admin-hint">Reservas agrupadas por día, empezando por la fecha más próxima. La mesa se asigna sola según la disponibilidad.</p>
+    <p class="admin-hint">El calendario muestra los comensales de comida y cena de cada día. Toca un día para ver las mesas y el detalle de cada reserva.</p>
 
     <button id="btn-toggle-nueva-reserva" class="btn btn-outline btn-full">📞 + Añadir reserva por teléfono</button>
 
@@ -131,12 +131,28 @@
       <p id="nueva-reserva-mensaje" class="guardar-mensaje"></p>
     </form>
 
-    <label class="config-label" for="input-aforo-fecha">Ver aforo por turno de un día</label>
-    <input type="date" id="input-aforo-fecha" class="config-input-ancho">
-    <p class="ayuda-texto">Haz clic en un turno abierto para cerrarlo ese día (rojo). Los turnos en beige son días de la semana que normalmente cerráis: haz clic para abrirlos excepcionalmente ese día (se pondrán en verde). Vuelve a hacer clic para deshacerlo.</p>
-    <div id="aforo-resultado" class="aforo-resultado"></div>
+    <div class="calendario-reservas-wrap">
+      <div class="calendario-nav">
+        <button type="button" id="btn-mes-anterior" class="btn-nav-mes" aria-label="Mes anterior">◀</button>
+        <h3 id="calendario-mes-titulo" class="calendario-mes-titulo"></h3>
+        <button type="button" id="btn-mes-siguiente" class="btn-nav-mes" aria-label="Mes siguiente">▶</button>
+      </div>
+      <div class="calendario-leyenda">
+        <span><span class="calendario-punto calendario-punto-comida"></span> Comidas</span>
+        <span><span class="calendario-punto calendario-punto-cena"></span> Cenas</span>
+      </div>
+      <div id="calendario-grid" class="calendario-grid"></div>
+    </div>
 
-    <div id="lista-reservas"></div>
+    <div id="detalle-dia-reservas"></div>
+
+    <details class="aforo-detalles">
+      <summary>Cerrar/abrir turnos concretos de 15 minutos (avanzado)</summary>
+      <label class="config-label" for="input-aforo-fecha">Ver aforo por turno de un día</label>
+      <input type="date" id="input-aforo-fecha" class="config-input-ancho">
+      <p class="ayuda-texto">Haz clic en un turno abierto para cerrarlo ese día (rojo). Los turnos en beige son días de la semana que normalmente cerráis: haz clic para abrirlos excepcionalmente ese día (se pondrán en verde). Vuelve a hacer clic para deshacerlo.</p>
+      <div id="aforo-resultado" class="aforo-resultado"></div>
+    </details>
   </section>
 
   <section id="tab-mapa" class="tab-panel" hidden>

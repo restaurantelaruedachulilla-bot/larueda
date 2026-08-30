@@ -876,8 +876,6 @@ async function toggleTurno(franjaId, aplicaNormalmente) {
 let reservasActuales = [];
 
 async function cargarReservas() {
-  const cont = document.getElementById('lista-reservas');
-  cont.innerHTML = '<p class="cargando">Cargando reservas...</p>';
   const res = await fetch('/api/reservas', { headers: { 'x-admin-token': token } });
   const todas = await res.json();
 
@@ -888,38 +886,14 @@ async function cargarReservas() {
   reservas.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
   reservasActuales = reservas;
 
-  if (!reservas.length) {
-    cont.innerHTML = '<p class="cargando">No hay reservas por venir.</p>';
-    return;
-  }
+  renderCalendario();
+  if (diaSeleccionadoDetalle) mostrarDetalleDia(diaSeleccionadoDetalle);
+}
 
-  const porDia = [];
-  reservas.forEach((r) => {
-    let grupo = porDia.find((g) => g.fecha === r.fecha);
-    if (!grupo) { grupo = { fecha: r.fecha, items: [] }; porDia.push(grupo); }
-    grupo.items.push(r);
-  });
-
-  // Recuento automatico de comensales por turno (Comida/Cena), sin contar las canceladas,
-  // para ver de un vistazo cuanta gente hay ese dia sin tener que sumar reserva a reserva.
-  porDia.forEach((grupo) => {
-    const resumen = {};
-    grupo.items.forEach((r) => {
-      if (r.estado === 'cancelada') return;
-      const turno = r.franjaNombre || 'Sin turno';
-      resumen[turno] = (resumen[turno] || 0) + Number(r.personas);
-    });
-    grupo.resumen = resumen;
-  });
-
-  cont.innerHTML = porDia.map((grupo) => `
-    <h3 class="reservas-dia-titulo">${formatearFechaLarga(grupo.fecha)}</h3>
-    <p class="reservas-dia-resumen">
-      ${Object.keys(grupo.resumen).length
-        ? Object.entries(grupo.resumen).map(([turno, total]) => `${atributo(turno)}: <strong>${total}</strong> comensales`).join(' · ')
-        : 'Sin reservas confirmadas'}
-    </p>
-    ${grupo.items.map((r) => `
+// Construye la tarjeta de una reserva (se reutiliza tanto en el detalle de un dia del
+// calendario como en cualquier otro sitio que necesite listar reservas individuales).
+function generarHtmlReservaCard(r) {
+  return `
     <div class="reserva-card" data-id="${r.id}">
       <h4>${atributo(r.nombre)} · ${atributo(String(r.personas))}p ${r.creadaPorAdmin ? '📞' : ''}</h4>
       <div class="reserva-detalle">
@@ -940,34 +914,37 @@ async function cargarReservas() {
         <button class="btn-icon btn-borrar-reserva" data-id="${r.id}">🗑️</button>
       </div>
     </div>
-    `).join('')}
-  `).join('');
+  `;
+}
 
-  cont.querySelectorAll('.select-estado').forEach((sel) => {
+// Engancha los botones/select de las tarjetas de reserva que haya dentro de "contenedor".
+// Tras cualquier cambio se recarga todo (calendario + detalle del dia abierto).
+function activarAccionesReservas(contenedor) {
+  contenedor.querySelectorAll('.select-estado').forEach((sel) => {
     sel.addEventListener('change', async (e) => {
       await fetch(`/api/reservas/${e.target.dataset.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
         body: JSON.stringify({ estado: e.target.value }),
       });
-      cargarReservas();
+      await cargarReservas();
       cargarAforo();
     });
   });
-  cont.querySelectorAll('.btn-editar-reserva').forEach((btn) => {
+  contenedor.querySelectorAll('.btn-editar-reserva').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const reserva = reservasActuales.find((r) => r.id === e.target.dataset.id);
       if (reserva) mostrarFormularioEdicionReserva(reserva);
     });
   });
-  cont.querySelectorAll('.btn-borrar-reserva').forEach((btn) => {
+  contenedor.querySelectorAll('.btn-borrar-reserva').forEach((btn) => {
     btn.addEventListener('click', async (e) => {
       if (!confirm('¿Eliminar esta reserva?')) return;
       await fetch(`/api/reservas/${e.target.dataset.id}`, {
         method: 'DELETE',
         headers: { 'x-admin-token': token },
       });
-      cargarReservas();
+      await cargarReservas();
       cargarAforo();
     });
   });
@@ -1143,33 +1120,19 @@ function iconoMesa(capacidad) {
   `;
 }
 
-async function cargarMapaMesas() {
-  const fecha = mapaFecha.value;
-  const turno = mapaTurno.value;
-  if (!fecha || !turno) { mapaResultado.innerHTML = ''; return; }
+// Genera el HTML de las mesas agrupadas por zona (dibujo + reservas de cada una). Lo usan
+// tanto la pestaña "Mapa de mesas" como el detalle de un dia en el calendario de Reservas.
+function generarHtmlMesasPorZona(mesas, zonasBloqueadas) {
+  const zonas = [];
+  mesas.forEach((m) => {
+    let zona = zonas.find((z) => z.nombre === (m.zona || 'Sin zona'));
+    if (!zona) { zona = { nombre: m.zona || 'Sin zona', mesas: [] }; zonas.push(zona); }
+    zona.mesas.push(m);
+  });
 
-  mapaResultado.innerHTML = '<p class="cargando">Cargando mapa...</p>';
-  try {
-    const res = await fetch(`/api/admin/mapa-mesas?fecha=${encodeURIComponent(fecha)}&turno=${encodeURIComponent(turno)}`, {
-      headers: { 'x-admin-token': token },
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      mapaResultado.innerHTML = `<p class="cargando">${atributo(data.error || 'No se ha podido cargar el mapa.')}</p>`;
-      return;
-    }
-
-    const zonas = [];
-    data.mesas.forEach((m) => {
-      let zona = zonas.find((z) => z.nombre === (m.zona || 'Sin zona'));
-      if (!zona) { zona = { nombre: m.zona || 'Sin zona', mesas: [] }; zonas.push(zona); }
-      zona.mesas.push(m);
-    });
-    const zonasBloqueadas = data.zonasBloqueadas || [];
-
-    mapaResultado.innerHTML = zonas.map((zona) => {
-      const bloqueada = zonasBloqueadas.includes(zona.nombre);
-      return `
+  return zonas.map((zona) => {
+    const bloqueada = (zonasBloqueadas || []).includes(zona.nombre);
+    return `
       <div class="mapa-zona-header">
         <h3 class="config-subtitulo">${atributo(zona.nombre)}</h3>
         <button type="button" class="btn-bloquear-zona ${bloqueada ? 'zona-bloqueada' : ''}" data-zona="${atributo(zona.nombre)}">
@@ -1193,27 +1156,179 @@ async function cargarMapaMesas() {
         `).join('')}
       </div>
     `;
-    }).join('');
+  }).join('');
+}
 
-    mapaResultado.querySelectorAll('.btn-bloquear-zona').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        btn.disabled = true;
-        try {
-          await fetch('/api/admin/bloqueos-zona/toggle', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
-            body: JSON.stringify({ fecha, turno, zona: btn.dataset.zona }),
-          });
-          await cargarMapaMesas();
-        } catch (err) {
-          alert('No se ha podido cambiar el bloqueo de esa zona.');
-          btn.disabled = false;
-        }
-      });
+// Engancha los botones "Bloquear zona" que haya dentro de "contenedor". alCambiar() se llama
+// tras cada cambio para que quien pinto ese contenedor decida como refrescarse.
+function activarBotonesBloqueoZona(contenedor, fecha, turno, alCambiar) {
+  contenedor.querySelectorAll('.btn-bloquear-zona').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      try {
+        await fetch('/api/admin/bloqueos-zona/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+          body: JSON.stringify({ fecha, turno, zona: btn.dataset.zona }),
+        });
+        await alCambiar();
+      } catch (err) {
+        alert('No se ha podido cambiar el bloqueo de esa zona.');
+        btn.disabled = false;
+      }
     });
+  });
+}
+
+async function cargarMapaMesas() {
+  const fecha = mapaFecha.value;
+  const turno = mapaTurno.value;
+  if (!fecha || !turno) { mapaResultado.innerHTML = ''; return; }
+
+  mapaResultado.innerHTML = '<p class="cargando">Cargando mapa...</p>';
+  try {
+    const res = await fetch(`/api/admin/mapa-mesas?fecha=${encodeURIComponent(fecha)}&turno=${encodeURIComponent(turno)}`, {
+      headers: { 'x-admin-token': token },
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      mapaResultado.innerHTML = `<p class="cargando">${atributo(data.error || 'No se ha podido cargar el mapa.')}</p>`;
+      return;
+    }
+    mapaResultado.innerHTML = generarHtmlMesasPorZona(data.mesas, data.zonasBloqueadas);
+    activarBotonesBloqueoZona(mapaResultado, fecha, turno, cargarMapaMesas);
   } catch (err) {
     mapaResultado.innerHTML = '<p class="cargando">No se ha podido cargar el mapa.</p>';
   }
+}
+
+// ---------- Calendario de reservas (vista principal de la pestaña Reservas) ----------
+let mesCalendario = null; // { anio, mes } - mes es 0-indexado (0=enero)
+let diaSeleccionadoDetalle = null;
+
+function resumenComensalesPorFecha(fecha) {
+  const resumen = {};
+  reservasActuales.forEach((r) => {
+    if (r.fecha !== fecha || r.estado === 'cancelada') return;
+    const turno = r.franjaNombre || 'Otros';
+    resumen[turno] = (resumen[turno] || 0) + Number(r.personas);
+  });
+  return resumen;
+}
+
+function renderCalendario() {
+  if (!mesCalendario) {
+    const hoy = new Date();
+    mesCalendario = { anio: hoy.getFullYear(), mes: hoy.getMonth() };
+  }
+  const { anio, mes } = mesCalendario;
+  const primerDia = new Date(anio, mes, 1);
+  const diasEnMes = new Date(anio, mes + 1, 0).getDate();
+  const offsetPrimerDia = (primerDia.getDay() + 6) % 7; // lunes=0 ... domingo=6
+
+  const tituloMes = primerDia.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+  document.getElementById('calendario-mes-titulo').textContent = tituloMes.charAt(0).toUpperCase() + tituloMes.slice(1);
+
+  const hoyStr = new Date().toLocaleDateString('sv-SE');
+
+  const celdasVacias = Array.from({ length: offsetPrimerDia }, () => '<div class="calendario-celda calendario-celda-vacia"></div>');
+  const celdasDias = Array.from({ length: diasEnMes }, (_, i) => {
+    const d = i + 1;
+    const fecha = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const resumen = resumenComensalesPorFecha(fecha);
+    const totalComensales = Object.values(resumen).reduce((s, v) => s + v, 0);
+    const clases = [
+      'calendario-celda',
+      fecha === hoyStr ? 'calendario-hoy' : '',
+      fecha < hoyStr ? 'calendario-pasado' : '',
+      fecha === diaSeleccionadoDetalle ? 'calendario-seleccionado' : '',
+      totalComensales ? 'calendario-con-reservas' : '',
+    ].filter(Boolean).join(' ');
+    return `
+      <button type="button" class="${clases}" data-fecha="${fecha}">
+        <span class="calendario-dia-numero">${d}</span>
+        ${resumen.Comida ? `<span class="calendario-cifra calendario-cifra-comida">🍽️ ${resumen.Comida}</span>` : ''}
+        ${resumen.Cena ? `<span class="calendario-cifra calendario-cifra-cena">🌙 ${resumen.Cena}</span>` : ''}
+      </button>
+    `;
+  });
+
+  const grid = document.getElementById('calendario-grid');
+  grid.innerHTML = ['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d) => `<div class="calendario-dow">${d}</div>`).join('')
+    + celdasVacias.join('') + celdasDias.join('');
+
+  grid.querySelectorAll('.calendario-celda[data-fecha]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      diaSeleccionadoDetalle = btn.dataset.fecha === diaSeleccionadoDetalle ? null : btn.dataset.fecha;
+      renderCalendario();
+      if (diaSeleccionadoDetalle) mostrarDetalleDia(diaSeleccionadoDetalle);
+      else document.getElementById('detalle-dia-reservas').innerHTML = '';
+    });
+  });
+}
+
+document.getElementById('btn-mes-anterior').addEventListener('click', () => {
+  if (!mesCalendario) return;
+  mesCalendario.mes--;
+  if (mesCalendario.mes < 0) { mesCalendario.mes = 11; mesCalendario.anio--; }
+  renderCalendario();
+});
+document.getElementById('btn-mes-siguiente').addEventListener('click', () => {
+  if (!mesCalendario) return;
+  mesCalendario.mes++;
+  if (mesCalendario.mes > 11) { mesCalendario.mes = 0; mesCalendario.anio++; }
+  renderCalendario();
+});
+
+// Al tocar un dia del calendario: mesas visuales de cada turno de ese dia + tarjetas de
+// cada reserva con sus acciones (editar/cambiar estado/borrar), todo en un mismo sitio.
+async function mostrarDetalleDia(fecha) {
+  const cont = document.getElementById('detalle-dia-reservas');
+  const reservasDia = reservasActuales.filter((r) => r.fecha === fecha);
+  const turnos = [...new Set(reservasDia.map((r) => r.franjaNombre).filter(Boolean))];
+
+  if (!turnos.length) {
+    cont.innerHTML = `<h3 class="reservas-dia-titulo">${formatearFechaLarga(fecha)}</h3><p class="cargando">No hay reservas ese día.</p>`;
+    return;
+  }
+
+  cont.innerHTML = `<h3 class="reservas-dia-titulo">${formatearFechaLarga(fecha)}</h3><p class="cargando">Cargando mesas...</p>`;
+
+  const mapas = {};
+  await Promise.all(turnos.map(async (turno) => {
+    try {
+      const res = await fetch(`/api/admin/mapa-mesas?fecha=${encodeURIComponent(fecha)}&turno=${encodeURIComponent(turno)}`, {
+        headers: { 'x-admin-token': token },
+      });
+      mapas[turno] = res.ok ? await res.json() : null;
+    } catch (err) {
+      mapas[turno] = null;
+    }
+  }));
+
+  cont.innerHTML = `<h3 class="reservas-dia-titulo">${formatearFechaLarga(fecha)}</h3>` + turnos.map((turno) => {
+    const items = reservasDia.filter((r) => r.franjaNombre === turno);
+    const totalComensales = items.filter((r) => r.estado !== 'cancelada').reduce((s, r) => s + Number(r.personas), 0);
+    const mapaData = mapas[turno];
+    return `
+      <div class="detalle-turno">
+        <h4 class="detalle-turno-titulo">${atributo(turno)} · ${totalComensales} comensales</h4>
+        <div class="detalle-turno-mesas" data-turno="${atributo(turno)}">
+          ${mapaData ? generarHtmlMesasPorZona(mapaData.mesas, mapaData.zonasBloqueadas) : ''}
+        </div>
+        <div class="detalle-turno-reservas" data-turno="${atributo(turno)}">
+          ${items.map(generarHtmlReservaCard).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  turnos.forEach((turno) => {
+    if (!mapas[turno]) return;
+    const contMesas = cont.querySelector(`.detalle-turno-mesas[data-turno="${CSS.escape(turno)}"]`);
+    if (contMesas) activarBotonesBloqueoZona(contMesas, fecha, turno, () => mostrarDetalleDia(fecha));
+  });
+  activarAccionesReservas(cont);
 }
 
 function formatearFechaLarga(fechaISO) {
