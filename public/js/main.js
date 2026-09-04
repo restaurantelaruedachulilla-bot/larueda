@@ -333,7 +333,7 @@ async function actualizarZonasDisponibles() {
     });
 
     const actual = selectZona.selectedOptions[0];
-    if (actual && actual.disabled) selectZona.value = 'Cualquiera';
+    if (actual && actual.disabled) selectZona.value = '';
 
     if (sinSitio.length === 1) {
       zonaAyuda.textContent = `No quedan mesas en la zona ${sinSitio[0]} para ese turno ese día.`;
