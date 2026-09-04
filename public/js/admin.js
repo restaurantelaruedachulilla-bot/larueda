@@ -229,11 +229,11 @@ function renderPlatos(ci) {
     <div class="plato-card ${p.visible === false ? 'plato-oculto' : ''}">
       <div class="plato-card-row">
         <span class="asa-arrastre" title="Mantén pulsado y arrastra para reordenar">⠿</span>
-        <input type="text" placeholder="Nombre del plato" value="${atributo(p.nombre)}" data-ci="${ci}" data-pi="${pi}" data-campo="nombre">
+        <textarea rows="1" class="campo-auto" placeholder="Nombre del plato" data-ci="${ci}" data-pi="${pi}" data-campo="nombre">${atributo(p.nombre)}</textarea>
         <input type="text" placeholder="Precio" value="${atributo(p.precio)}" data-ci="${ci}" data-pi="${pi}" data-campo="precio" class="campo-precio">
       </div>
       <div class="plato-card-row">
-        <input type="text" placeholder="Descripción (opcional)" value="${atributo(p.descripcion)}" data-ci="${ci}" data-pi="${pi}" data-campo="descripcion">
+        <textarea rows="1" class="campo-auto" placeholder="Descripción (opcional)" data-ci="${ci}" data-pi="${pi}" data-campo="descripcion">${atributo(p.descripcion)}</textarea>
         <button class="btn-icon btn-visible-toggle" data-ci="${ci}" data-pi="${pi}" title="${p.visible === false ? 'Oculto: pulsa para mostrar' : 'Visible: pulsa para ocultar'}">${p.visible === false ? '🙈' : '👁️'}</button>
         <button class="btn-icon btn-borrar-plato" data-ci="${ci}" data-pi="${pi}" title="Eliminar plato">🗑️</button>
       </div>
@@ -245,11 +245,16 @@ function renderPlatos(ci) {
     </div>
   `).join('');
 
-  cont.querySelectorAll('input').forEach((input) => {
+  cont.querySelectorAll('input, textarea').forEach((input) => {
     input.addEventListener('input', (e) => {
       const { ci, pi, campo } = e.target.dataset;
       menuActual.carta[ci].platos[pi][campo] = e.target.value;
     });
+  });
+  cont.querySelectorAll('textarea.campo-auto').forEach((ta) => {
+    autoRedimensionar(ta);
+    ta.addEventListener('input', () => autoRedimensionar(ta));
+    ta.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
   });
   activarArrastre(cont, '.plato-card', '.asa-arrastre', (origen, destino) => {
     const [plato] = menuActual.carta[ci].platos.splice(origen, 1);
@@ -1313,11 +1318,11 @@ async function mostrarDetalleDia(fecha) {
     return `
       <div class="detalle-turno">
         <h4 class="detalle-turno-titulo">${atributo(turno)} · ${totalComensales} comensales</h4>
-        <div class="detalle-turno-mesas" data-turno="${atributo(turno)}">
-          ${mapaData ? generarHtmlMesasPorZona(mapaData.mesas, mapaData.zonasBloqueadas) : ''}
-        </div>
         <div class="detalle-turno-reservas" data-turno="${atributo(turno)}">
           ${items.map(generarHtmlReservaCard).join('')}
+        </div>
+        <div class="detalle-turno-mesas" data-turno="${atributo(turno)}">
+          ${mapaData ? generarHtmlMesasPorZona(mapaData.mesas, mapaData.zonasBloqueadas) : ''}
         </div>
       </div>
     `;
@@ -1336,6 +1341,11 @@ function formatearFechaLarga(fechaISO) {
   const fecha = new Date(y, m - 1, d);
   const texto = fecha.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+function autoRedimensionar(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
 }
 
 function atributo(str) {
