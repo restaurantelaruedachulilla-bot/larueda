@@ -1311,22 +1311,32 @@ async function mostrarDetalleDia(fecha) {
     }
   }));
 
-  cont.innerHTML = `<h3 class="reservas-dia-titulo">${formatearFechaLarga(fecha)}</h3>` + turnos.map((turno) => {
+  const reservasHtml = turnos.map((turno) => {
     const items = reservasDia.filter((r) => r.franjaNombre === turno);
     const totalComensales = items.filter((r) => r.estado !== 'cancelada').reduce((s, r) => s + Number(r.personas), 0);
-    const mapaData = mapas[turno];
     return `
       <div class="detalle-turno">
         <h4 class="detalle-turno-titulo">${atributo(turno)} · ${totalComensales} comensales</h4>
         <div class="detalle-turno-reservas" data-turno="${atributo(turno)}">
           ${items.map(generarHtmlReservaCard).join('')}
         </div>
+      </div>
+    `;
+  }).join('');
+
+  const mesasHtml = turnos.map((turno) => {
+    const mapaData = mapas[turno];
+    return `
+      <div class="detalle-turno">
+        <h4 class="detalle-turno-titulo">${atributo(turno)}</h4>
         <div class="detalle-turno-mesas" data-turno="${atributo(turno)}">
           ${mapaData ? generarHtmlMesasPorZona(mapaData.mesas, mapaData.zonasBloqueadas) : ''}
         </div>
       </div>
     `;
   }).join('');
+
+  cont.innerHTML = `<h3 class="reservas-dia-titulo">${formatearFechaLarga(fecha)}</h3>${reservasHtml}<h3 class="reservas-dia-subtitulo">Mesas</h3>${mesasHtml}`;
 
   turnos.forEach((turno) => {
     if (!mapas[turno]) return;

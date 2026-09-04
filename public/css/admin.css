@@ -492,6 +492,13 @@
   font-size: 1.1rem;
 }
 .reservas-dia-titulo:first-child { margin-top: 0; }
+.reservas-dia-subtitulo {
+  margin: 2rem 0 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--color-olive, #7a8450);
+  color: var(--color-olive, #7a8450);
+  font-size: 1.05rem;
+}
 
 /* Calendario de reservas */
 .calendario-reservas-wrap { margin: 1.25rem 0; }
