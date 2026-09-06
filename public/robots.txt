@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /cancelar.html
 
-Sitemap: https://larueda.onrender.com/sitemap.xml
+Sitemap: https://restaurantelarueda.site/sitemap.xml
